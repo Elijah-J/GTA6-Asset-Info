@@ -225,6 +225,11 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     `adb52ec3` (3 = fixed material, 1 = paint; a few 4 and 5), palette row
     `c8313558`, own index `9bdd4c51`, six more colours (`68075bcd` defaults
     to an olive brown, probably dirt). High for colour, mode and row.
+    *Re-read with recovered names (2026-11-23, see [field
+    names](#vehicle-library-field-names)): the record is three groups of
+    palette picks, and the "row" and "mode" fields are the first Selection
+    (palette row) and Page (palette array slice) of one group; `9bdd4c51`
+    is `albedoSelection`, not an own index.*
   - Surface record `9e4de959` (757): `2cc72f7c` and `174770cc` name
     `307f162c` records (`roughnessLow` `e4be3b70`, `roughnessHigh`
     `26e5d460`; names resolve by joaat; high); `6c3ddabc` and `038e1179`
@@ -242,7 +247,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     low = 0), 0.7–0.9 / 0.9–1.0 on chrome and bare metal (30 have low ≥ 0.9,
     34 high = 1.0). Another low / high pair, `4b19d0cb` / `de1ccc51` (0.14 on
     80 records, 0 on paint, 0.28 on leather, 0.75 on two), is unknown (low);
-    `d3d2bcd6` is 0.75 on all 99. This matches the shader reading below
+    `d3d2bcd6` is 0.75 on all 99. *Names recovered later:* `albedoMultiply`,
+    `albedoScreen` and `sunBleachScreen`. This matches the shader reading below
     (metalness and roughness pairs blended by `lyr0materialatex` red and
     green) by meaning and values; that these fields fill those shader bytes
     is not traced.
@@ -345,6 +351,46 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
 - Open: the column choice in a palette row and how metalness reaches the
   output (decided in shader code, only partly read), how modifiers combine, the
   second layer's colour, modes 4 and 5, weapon colours.
+
+## Vehicle library field names
+
+(2026-11-23.) Recovered by testing camelCase combinations of one to three
+words plus common suffixes (0, 1, Low, High, Min, Max, A, B, C, Start, End,
+Hash) against the 874 unresolved member hashes of the library schema.
+One- and two-word hits are high confidence (expected chance hits well
+under 1 in 100); three-word hits are kept only where a sibling field
+confirms the stem. Every name below was re-hashed and matches
+(case-sensitive joaat).
+
+| Struct | Fields |
+|---|---|
+| `307f162c` surface ranges (complete) | name, `metalLow` `f763652d`, `metalHigh` `09dd33c1`, `roughnessLow` `e4be3b70`, `roughnessHigh` `26e5d460`, `albedoMultiply` `4b19d0cb`, `albedoScreen` `de1ccc51`, `sunBleachScreen` `d3d2bcd6` |
+| `cf980e6f` detail set | `detailIndex0` / `1` (`57eed29a`, `3f50215d`), `detailStrength0` / `1` (`fc889990`, `0c1f38bd`), `detailRoughnessStrength0` / `1` (`d289cb55`, `39711926`), `detailTintStrength0` / `1` (`fcb994fa`, `27f2eb6c`), `detailTile0` / `1` (`f8602adc`, `ea228e61`), `detailFadeRange` `a2590842`, `anisoIndex` `39adfa9f`, `anisoTile` `913ee1ad` |
+| `9e4de959` surface | `detailTiling0` / `1` (`6c5cd25d`, `6322bfe9`), `detailRotation` `a6500dc0`, `paintHash` `96479496` (reference to the coat record), `primerType` `78b545dd` |
+| `2b84f07e` coat | `useAnisotropy` `495363e4`, `anisotropyIntensity` `d92602db`, `clearCoatIntensity` `f0310a8b`, `clearCoatRoughness` `c5cb49ba`, `useSpecularColor` `61e82f14`, `useFlakes` `e57c6a65`, `flakeCoverage` `df5b7432`, `flakeSize` `ef79abb2`, `flakeOrientation` `a17adbe1`, `baseCoatRoughness` `c92019cc`, `useEmissive` `c8d48032`, `filmThickness` `85d188cc`, `sheenIntensity` `210d19b3`, `sheenFade` `469c3c58`, `sheenReflectance` `850e331c` |
+| `825d57ab` per-part entry | `index` `91501139`, `albedoPalette` `328f860c`, `specularPalette` `dd222aef`, `paintPalette` `a609a79a`, `materialPresetPalette` `db0f3f7c` |
+| `1b1a2e6c` preset set | `wearPresets` `edad007e`, `materialPresets` `0723c6c9` |
+| `cc518af0` wear | `ageWearHash` `993a1850`, `controlFilterHash` `02a27216`, `primerFilterHash` `879774bd`, `dustIntensity` `cbfa05fe`, `controlIntensityA` / `B` / `C` (`262c839d`, `9b826e47`, `b770a627`), `primerIntensityA` / `B` / `C` (`9ed9875c`, `c74bd840`, `4a7f5ea9`), `rustStart` / `rustEnd` (`8f02219f`, `7a2d3f04`), `rustStartB` / `rustEndB` (`9d7c73e7`, `1170352b`), `rustStartC` / `rustEndC` (`39abac47`, `9970c52a`), `primerStart` / `primerEnd` (`70b0608e`, `f47f68a1`), `primerGradientStart` / `End` (`05e9c19e`, `687d8894`) |
+
+**Colour record `f1379639` = three groups of palette picks** (pattern high,
+proven by inverting the hash: all six fields of a group need one identical
+prefix state; meaning medium-high, agrees with the pixel shader):
+`albedoSelection` `9bdd4c51` and `albedoPage` `09714f5c`; group Y:
+`c8313558`, `6076324c`, `52b096c1` = `<Y>Selection`, `…SelectionB`,
+`…SelectionC` and `adb52ec3`, `9dad9c4d`, `abe838c2` = `<Y>Page`,
+`…PageB`, `…PageC`; group X: `aa45174e`, `61231e48`, `338bc31a`
+(Selection, B, C) and `bc3d1f2b`, `db811fa6`, `48d07a43` (Page, B, C).
+Selection = palette row, Page = palette array slice. Stem X hashes as
+`boatPrimer` (probable: a two-word hit with about 1 in 250 chance); stem Y
+is unknown (not a lower-case word of up to 9 letters, nor any two-word
+combination of 1,818 words).
+
+The part set's `3d9aef8b` third field (`96479496`) is the same `paintHash`
+name. Open: stem Y; the surface struct's remaining reference fields
+(probably ending in `Hash`); the colour record's six trailing colours; six
+floats and one bool of the detail set. About 287 names were recovered in
+all; the rest (wheel, edge, bleach, scratch, cutoff fields and others) are
+not listed here.
 
 ## Open questions
 

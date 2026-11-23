@@ -666,7 +666,7 @@ full lowercase joaat of the bone name, not the 16-bit tag. It matches the
 `u32` at `+0x1c` in the [ped bone record](07-models.md#75-skeleton-fragments-confirmed).
 Verified on the `ambient_malebody` and `ambient_femalebody` fragments at
 `packs.rpf@0x454db010` and `packs.rpf@0x45404010` respectively.
-Property `0x98e1750c`, kind `0`, is an XYZW local rotation;
+Property `0x98e1750c` (`bonerotation`), kind `0`, is an XYZW local rotation;
 `0xf791a95f`, kind `2`, is an XYZ local translation. Other track
 properties can target controls rather than indexed bones.
 
@@ -1119,7 +1119,7 @@ follows from the text. Copies of one table sit at fixed strides through
 - Labels are joaat of the lower-case label. A **subtitle's label is its
   voice-line name plus a 2-digit variation**, e.g. `AG_SUR_GEAR_FIRST1_01`.
   The minigames' dialogue PSO (`shared_minigame000.rpf@19000`) keys lines by
-  joaat of the line name → {`8d6b17bd` hash, `MissionId`}. Most label names
+  joaat of the line name → {`8d6b17bd` (`BankName`), `MissionId`}. Most label names
   are not recovered.
 - Inline markup: `~sl:gap:duration~` splits a subtitle into timed pieces
   (seconds); `~n~` new line; `~b~`, `~s~` colours; `~1~` parameters;

@@ -297,7 +297,7 @@ above that `4bfd27dd` is the only drawable key):
   `tanktopcasual_fr1_028_disheveled_un_full`). `4bfd27dd` head drawable,
   `023e5a2f` hair / brows / body hair, `2a8cdb1d` garment name or a shape
   word (high for these three); `a9473ab4` style (casual, sports, swim …),
-  `e60617ae` colour, `fe330559` length, `928c398d` front / back, `3a57a0fc`
+  `e60617ae` colour, `fe330559` length, `928c398d` front / back, `3a57a0fc` (`pedtype`)
   body type (medium, named from the words they hold).
 - A colour variant's `080eec39` (sometimes `e13ebaf8`) is its parent / base
   item id; Category is the slot (eyes, hair, hats, ArmorTorso, Helmets,

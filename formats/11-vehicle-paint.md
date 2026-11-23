@@ -75,17 +75,32 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   `phoenix` rims at about 14.6 inch, close to a real car's 15 inch, so the
   earlier reading of `wheelScale` as the rim radius in metres (a dirt bike
   has 0.2538 / 0.2234, which would be 21 / 18 inch) is doubtful.
-  *Later measurement (2026-11-23, medium-high for the rim) reverses this and
-  withdraws the 1.625 factor:* `wheelScale` / `wheelScaleRear` read as the
-  **rim radius in metres** (0.217 on a BMX with 20-inch wheels, 0.303 on a
+  *Later measurement (2026-11-23) withdraws the 1.625 factor and first read*
+  `wheelScale` / `wheelScaleRear` as the **rim radius in metres** (now
+  **low**, see the arch check below) (0.217 on a BMX with 20-inch wheels, 0.303 on a
   cruiser bicycle, 0.252 / 0.195 and 0.254 / 0.223 on dirt bikes, 0.249 on a
   supercar, 0.343 on an armoured truck). Every shared `rim_*` model has a
-  radius of exactly 0.5 (bounding box, 500+ models), so the rim scale is
-  `wheelScale` / 0.5; tyre models have an outer radius of 0.54 to 1.19 at
-  that unit scale. Over 203 `_hi` vehicles, tyre radius × 2 × `wheelScale`
+  radius of exactly 0.5 (bounding box, 500+ models; high), which suggested a
+  rim scale of `wheelScale` / 0.5 (not established as the game's rule);
+  tyre models have an outer radius of 0.54 to 1.19 at that unit scale. Over
+  203 `_hi` vehicles, tyre radius × 2 × `wheelScale`
   puts the tyre bottom a median 0.22 m below the body's lowest point (one
   case 4 cm above). Helicopters have `wheelScale` 0.05–0.08, no
   configuration with a rim, and `wheel_*` bones parented to skid bones.
+  **Arch check** (2026-11-23, 213 `_hi` vehicles; arch radius = the nearest
+  body vertex above the axle within 12 cm of the wheel plane): with scale 2 ×
+  `wheelScale` the tyre's outer radius is a median 0.96 of the arch radius
+  (10th–90th percentile 0.83–1.42), so on about half the fleet the tyre is
+  as big as the arch; per tyre model the median is 0.92–1.11
+  (`tyre_car_001` 0.96 over 92 vehicles, `tyre_lowpro_001` 1.11 over 12,
+  `tyre_truck_001` 1.09 over 29). Reading `wheelScale` as the tyre's outer
+  radius instead gives a median arch / `wheelScale` of 1.65, too small. A
+  single factor of about 1.7 fits ordinary cars but not sports cars and
+  trucks. A dirt bike's front and rear values differ (0.252 / 0.195) with
+  both axles at the same height, so there `wheelScale` is not the outer
+  radius. **Neither reading fits; the real rule is unknown.** The
+  `tyre_profile` / `rim_scale` bones below suggest the tyre's outer radius
+  is set separately from the rim.
 - **Shared wheel skeleton** (2026-11-23; bones high, role inferred): every
   `rim_*` and `tyre_*` model carries one 15-bone skeleton: `wheel_lf_link`,
   `rim_offset_mover_lf`, `rim_scale_lf`, `rim_dmg_1`–`5_lf`,
@@ -99,7 +114,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
 ## Open questions
 
 - Secondary and pearl colours, liveries; whether the colours are linear.
-- How the tyre is sized relative to the rim, and the wheel width: what
+- What `wheelScale` measures, how the tyre is sized relative to the rim,
+  and the wheel width: what
   drives the shared wheel skeleton's width and profile bones.
 - The shader constant buffer.
 - The `19df25d7` palette lookup, which two-layer materials are painted, and the channel layout of the layer maps.

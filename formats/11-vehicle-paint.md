@@ -13,7 +13,7 @@
 | `4d56d7fe` / `2bb2ede8` (`lyr1materialatex` / `lyr0materialatex`) | BC1 atlas, normal-like | inferred |
 | `84c69350` / `58b6e707` (`lyr0normaltex` / `lyr1normaltex`) | BC5 normals | confirmed |
 | shader constant buffer (+0x08) | ~0x160 bytes of floats, layout not keyed by the parameter table | unknown |
-| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours). **Array of 8 slices (2026-11-23, high):** the texture is 128 × 256 × 8 slices; the descriptions above looked only at slice 0. A colour record's Page is the slice, Selection the row ([slices](#palette-slices)) | format, sharing, array confirmed; role high |
+| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours). **Array of 8 slices (2026-11-23, high):** the texture is 128 × 256 × 8 slices; the descriptions above looked only at slice 0. A colour record's Page is the slice, Selection the row ([slices](#vehicle-library-field-names)) | format, sharing, array confirmed; role high |
 | `346394ea` / `7d4f12e2` (`lyr0diffusetex` / `lyr1diffusetex`) | **linear BC7 detail maps, not colour**: R and G grey around 0.5, B a sparse mask | confirmed (not colour; channels on one map) |
 | COLOR0.a on `standard_vehicle_2lyr` | a **part id** (0–255, a few values per material), not a layer weight | confirmed (ambulance, SUV) |
 
@@ -402,7 +402,7 @@ page 5 = wear colours (primer, rust). The three surface records per part
 would then carry Y's picks A, B and C (base colour and two wear layers).
 The field first documented as "mode" (`adb52ec3`, 1 and 3) is Y's Page A.
 
-<a id="palette-slices"></a>**Confirmed (2026-11-23, high):** the palette
+**Palette slices, confirmed (2026-11-23, high):** the palette
 `19df25d7` is an array of 8 slices, and Page is the slice index: every
 (Selection, Page) pair with both values ≥ 0, in every group of every
 record, lands on a non-black row of that slice (0 misses).

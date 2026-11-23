@@ -101,6 +101,13 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   radius. **Neither reading fits; the real rule is unknown.** The
   `tyre_profile` / `rim_scale` bones below suggest the tyre's outer radius
   is set separately from the rim.
+  **Superseded by stored wheel discs** (2026-11-23): the tyre's outer
+  radius and half width are stored as collision discs in the vehicle
+  fragment ([§13.4](13-collision.md#vehicle-fragment-bounds-and-wheel-discs);
+  high). `wheelScale` ÷ that radius runs 0.29–2.08 over the fleet, median
+  0.70 (mostly 0.6–0.9), so `wheelScale` is not the tyre size; the rim
+  radius remains the best guess (low). The rim's own radius is not found in
+  the data.
 - **Shared wheel skeleton** (2026-11-23; bones high, role inferred): every
   `rim_*` and `tyre_*` model carries one 15-bone skeleton: `wheel_lf_link`,
   `rim_offset_mover_lf`, `rim_scale_lf`, `rim_dmg_1`–`5_lf`,
@@ -114,8 +121,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
 ## Open questions
 
 - Secondary and pearl colours, liveries; whether the colours are linear.
-- What `wheelScale` measures, how the tyre is sized relative to the rim,
-  and the wheel width: what
+- What `wheelScale` measures and how the game sets the rim radius and
+  tyre profile (the tyre's outer radius and width are the wheel discs): what
   drives the shared wheel skeleton's width and profile bones.
 - The shader constant buffer.
 - The `19df25d7` palette lookup, which two-layer materials are painted, and the channel layout of the layer maps.

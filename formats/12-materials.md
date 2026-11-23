@@ -11,7 +11,9 @@ Where the names come from:
   NUL-terminated technique, sampler and texture names and 24-byte binding
   records. Variables are `{u32 hash, u32 same hash, 0x30, …}`; texture
   bindings are `{texture hash, parameter hash, 02 01 xx xx, 00 80 00 00}`,
-  e.g. (`diffusetexture`, `diffusetex`). 88 of 89 sampled drawable
+  e.g. (`diffusetexture`, `diffusetex`). The third byte is the parameter's
+  slot in the material's texture table (2026-11-23, high; see
+  [the shader archive](../structure/06-models-shaders.md#archive-layout-in-detail-2026-11-23)). 88 of 89 sampled drawable
   parameter hashes occur in these records;
 - a word search: names not stored as text were found by joining likely
   words and testing joaat. Per-layer sets (`lyr0…`, `lyr1…`) check

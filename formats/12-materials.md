@@ -324,6 +324,48 @@ lists (Probability, Channel) pairs; `DirtDefinitions` hold scalars,
 `ColorLookup` and `IgnoreZoneColor`. Which mask channel the game samples is
 unknown.
 
+**Clothing colour: wardrobe tint palettes** (2026-11-23):
+
+- Ped clothing shaders (e.g. `ped_standard_muv`, `d5ed50f4`) bind no
+  colour texture. The packed data map (`739e3d0d`) reads R = 255
+  (251–255), G = fabric shade (about 60–205), B = flat per-region levels
+  (0 to about 100), A about 127 (measured).
+- **Palette textures** (high): 21 textures in one `textures.rpf`
+  dictionary (the `distant_window_emissives_atlas` txd):
+  `ped_tint_generic_{clean,desaturated,vibrant}`,
+  `ped_tint_garment_{clean,desaturated,vibrant}`, `ped_tint_hair`,
+  `ped_tint_vstation_{generic,generic_desat,special,special_desat,master1–4}`,
+  `animal_tint_{generic,generic_1,vibrant,vibrant_1,desaturated}` and
+  `proxytint_palette`. Each is 64 × 256 R8G8B8A8_UNORM_SRGB, one mip, in the
+  Gfx10 `SW_4KB_S` layout ([§4](04-xbox-tiling.md); decoding it with the
+  dictionary's 16 × 16-tile order scrambles the 4-byte texels). Each row is
+  one colour as a dark-to-light ramp in texels 2–55; texels 0–1 are a
+  constant (20, 20, 20); texels 56–63 are one grey ramp, the same on every
+  row.
+- **Item fields** (high): in `f795e8ba`, `5ecf9331` = joaat of the palette
+  texture name, and `c4d75d79`, `f4fb3dec`, `ab5d2a85` (u8, in schema
+  order) are the palette rows of tints 0, 1 and 2; 255 = off.
+- **Resolution rule** (medium, statistical): walk the item, then its
+  `080eec39` parents; the first item whose three bytes are neither
+  255, 255, 255 (inherit) nor 0, 0, 0 (unset) sets the tint. The palette is
+  that item's own, or `ped_tint_vstation_generic` (`05317603`) when it is 0.
+  Check against the colour tag (`e60617ae`) on 48,817 items tagged black,
+  white, blue, red or green: 39 % resolve a tint; of those, tint 0's row at
+  mid shade matches the tag 61 % of the time (`vstation_generic` 68 %,
+  `vstation_generic_desat` 67 %, `vstation_special` 71 %, `generic_clean`
+  27 %). As the default palette, `vstation_generic` matches 61 %,
+  `vstation_generic_desat` 58 %, `generic_clean` 37 %. Byte 0 as the primary
+  tint beats bytes 1 and 2 (15,486 against 12,233 / 12,320 matches).
+  Palette 0 with tints 0, 0, 0 occurs on 48 K items, and `generic_clean`
+  with 0, 0, 0 carries every colour tag, so that combination reads as unset
+  or set at run time.
+- Tint 0 probably follows the data map's G (medium); how R and B bring in
+  tints 1 and 2 is unknown.
+- Open: palette `fcef23e3` (eyes, teeth, belts) is not in that dictionary;
+  the `e13ebaf8` link targets resolve to no item id or known name; on a few
+  sets `37e52277.46d26d93` holds ARGB colours (alpha `ff`), meaning
+  unknown.
+
 Open: whether head sets really pair freely with clothing sets, the `StateName`
 states, and most scalar fields of `f795e8ba`; the same structs appear in
 hundreds of other resources, keyed by shared Category ids.

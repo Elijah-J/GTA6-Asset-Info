@@ -551,6 +551,37 @@ same pattern as the vehicle layer detail maps, which suggests a 0.5-centred
 channel picks a position along a colour ramp (inferred; the shaders are
 native code). The colour data itself was not found.
 
+**How the weapon shader colours** (2026-11-23; read from the deferred pixel
+shader's machine code; mechanism high, metal medium, block field meanings
+partly unknown). This confirms the gradient-map reading above and replaces
+the material palette guess:
+
+- Textures: `speculartex`, `20245319`, `bumptex`, `speculartex2` and an
+  optional `materialid` (BC4). There is no colour texture.
+- Sub-material index = min(7, floor(63 × `materialid`.r)), or a flat
+  per-vertex uint when there is no `materialid` texture, so a weapon
+  material has up to 8 sub-materials.
+- Everything else comes from one parameter block per material in a raw GPU
+  buffer, read at base + index × 16: arrays of 8 entries of 16 bytes,
+  128 bytes apart, from +16 to about +3472. Seen: +16 flags, +144 a scale,
+  +1936 a texture index per sub-material, +2064 / +2192 / +2320 three RGBA
+  byte colours, and more float3 sets for two overlay layers.
+- Colour is a three-stop gradient over a grey value g (the green channel
+  of the sub-material's texture):
+
+  ```text
+  g < 0.5:  grad = lerp(low, mid, 2 g)
+  else:     grad = mid + (high - mid) * (g - 0.5)
+  rgb = grad * a + (1 - a) * g       # a = alpha of the mid colour
+  ```
+
+  So each sub-material has three tint colours applied as a gradient map,
+  and the textures are greyscale data.
+- G-buffer: as for vehicles, diffuse = base × (1 − metal), with no
+  metalness channel.
+- Open: which game data fills the parameter block, and which of the two
+  upper colour fields is mid and which is high.
+
 Open: which variant of each slot a weapon carries by default and where part
 colours come from; what mounts on the `WAP_Rail_*` points and how the shared
 `w_at_*` attachments choose them; where a magazine follower and a pistol's

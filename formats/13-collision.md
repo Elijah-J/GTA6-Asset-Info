@@ -253,8 +253,10 @@ margin = half the width, bbox max at `+0x20` = (margin, radius, radius). The
 translation of the child's transform (`+48` of its 4 × 4) is the centre.
 Each wheel has one disc at its wheel bone's pivot in Y and Z (up to a few cm
 off in X) with the **tyre's outer radius and half width**; a second, thinner
-disc per wheel is the brake disc (half width about a tenth of its radius on
-cars). Over 243 wheeled `_hi` vehicles, 228 had a disc on every wheel
+disc per wheel is the brake disc (medium-high: a brake disc model scaled to
+it sits behind the rim spokes on two cars): radius 0.142 front / 0.151 rear
+on a supercar, 0.146 on a small hatchback, 0.157 on a sports car; half width
+about a tenth of the radius; centre 1–2 cm inboard of the wheel disc. Over 243 wheeled `_hi` vehicles, 228 had a disc on every wheel
 (matched on the pivot); helicopters have none. Examples (radius / half
 width): small hatchback 0.325 / 0.0975; sports car 0.35 / 0.1325 front,
 0.1625 rear; golf cart 0.24 / 0.1075; BMX 0.268 / 0.02; dirt bike 0.324 /

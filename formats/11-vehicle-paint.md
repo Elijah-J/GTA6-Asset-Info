@@ -13,7 +13,7 @@
 | `4d56d7fe` / `2bb2ede8` (`lyr1materialatex` / `lyr0materialatex`) | BC1 atlas, normal-like | inferred |
 | `84c69350` / `58b6e707` (`lyr0normaltex` / `lyr1normaltex`) | BC5 normals | confirmed |
 | shader constant buffer (+0x08) | ~0x160 bytes of floats, layout not keyed by the parameter table | unknown |
-| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it* | format, sharing confirmed; role inferred |
+| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours) | format, sharing confirmed; role high |
 | `346394ea` / `7d4f12e2` (`lyr0diffusetex` / `lyr1diffusetex`) | **linear BC7 detail maps, not colour**: R and G grey around 0.5, B a sparse mask | confirmed (not colour; channels on one map) |
 | COLOR0.a on `standard_vehicle_2lyr` | a **part id** (0–255, a few values per material), not a layer weight | confirmed (ambulance, SUV) |
 
@@ -42,8 +42,8 @@ vehicle tables. Field names are case-sensitive joaat and match GTA V's
 | Struct | Count (game-data resource) | Fields |
 |---|---|---|
 | `e59aa857` model info | 327 | `gameName` (`120e5836`, usually joaat of the model name, see below), `handlingId` (`ec41bd9c`, the model name), `txdName`, `wheelScale` (`933301be`), `wheelScaleRear` (`76706238`), `wheelType` (`a2e90c68`), `layout`, `HDTextureDist`, `lodDistances`, `vehicleClass`, `swankness`, `plateType`, `defaultBodyHealth` … (52 names resolve) |
-| `51019114` configuration | 3,879 | `fb1f80ff` model (field name `handling`), **`5bdc13e3` body colour** (ARGB u32), `e89b8540` part models (joaat names, about 150: frame, bumpers, exhaust, `brakedisc_*`, `caliper_*`, and one `rim_*` and one `tyre_*` in 82 %) |
-| `fc1c7000` variation set | 4,772 | `fb1f80ff` model (`handling`), **`8c866829` (`colours`) weighted paint-colour list**: 1 to 400 ARGB colours with repeats (2,246 sets; this is the pool of 17,632 colours), `59a59c3e` (`slots`) weighted part groups: `37a6f9ef` slot, `a12ff3a2` (`options`) list of {`8e6612bf` part, `dc732774` (`probability`) weight %} |
+| `51019114` configuration | 3,879 | `fb1f80ff` model (field name `handling`), **`5bdc13e3` body colour** (u32 colour; first read as ARGB, but red is probably in the low byte, see [byte order](#vehicle-part-colours)), `e89b8540` part models (joaat names, about 150: frame, bumpers, exhaust, `brakedisc_*`, `caliper_*`, and one `rim_*` and one `tyre_*` in 82 %) |
+| `fc1c7000` variation set | 4,772 | `fb1f80ff` model (`handling`), **`8c866829` (`colours`) weighted paint-colour list**: 1 to 400 colours (same type as the body colour) with repeats (2,246 sets; this is the pool of 17,632 colours), `59a59c3e` (`slots`) weighted part groups: `37a6f9ef` slot, `a12ff3a2` (`options`) list of {`8e6612bf` part, `dc732774` (`probability`) weight %} |
 
 With the per-vehicle packs this covers 373 models (305 named), 4,063
 configurations (3,339 with a rim and a tyre) and 2,377 colour lists. Handling is
@@ -77,8 +77,9 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     car's own space; `boot`, `bumper_f`, `mod_spoiler_attach`,
     `mod_spoiler_attach01`, `mod_attach_exhaust_lr` / `_rr`); `2b490ab7`
     lists the stock bones it replaces (a bumper lists `bumper_f` and its
-    indicator bones); `8605bf0e` is a 64-bit value per model, meaning
-    unknown.
+    indicator bones); `8605bf0e` is a 64-bit value per model (on one mod
+    element per vehicle it is the name of the vehicle's part set, see
+    [part colours](#vehicle-part-colours)).
   - One sports car has 123 records, 31 with elements, 43 elements for its 43
     part models; 323 of 373 vehicles have parts (7,915 records with
     elements). Open: slots `46268fee`, `9bbfb64c`, `ac89920d`, `5a4394ab`
@@ -103,7 +104,10 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     floats; `b5feb11f`; `3d9aef8b`); 3,936 `825d57ab` (41 × 96), 1,312
     `fe88b23d` (41 × 32) and a root `f14244fd`.
   - Open: how a part id picks a preset, where the table hashes become
-    colours, and how a vehicle links to its companion resource.
+    colours, and how a vehicle links to its companion resource. *Partly
+    answered under [part colours](#vehicle-part-colours) (a later reading of
+    the same tables; where the two differ, e.g. on `f5908771`'s fields, they
+    are not reconciled).*
 - **Convertible roof** (2026-11-23, high): as in GTA V,
   `animConvRoofDictName` = joaat(`va_<model>`) and `animConvRoofName` =
   joaat(`roof`), lower-case (`va_sentinelclassic2` = `180f9ebf`, `roof` =
@@ -112,7 +116,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   same value in both fields. `animConvRoofWindowsAffected` is a 4-element
   array on the convertibles looked at; how it is used is unknown.
 - **Colours** are all dark (`phoenix`: `ff091f30`, `ff122214`), so they are
-  probably linear. Converted from linear to sRGB they give plausible paints
+  probably linear. *(These examples were read as ARGB; with red in the low
+  byte, see [byte order](#vehicle-part-colours), the channels swap.)* Converted from linear to sRGB they give plausible paints
   (#356278 steel blue, #4b664f sage). Inferred; not checked in game.
 - **Colour lists** (corrected 2026-11-21; earlier read as 100-colour
   palettes): colours repeat, e.g. `phoenix` has 400 entries with 10
@@ -169,6 +174,63 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   them (not shown); no wheel width was found in model info, configurations
   or the per-vehicle singleton structs.
 
+## Vehicle part colours
+
+(2026-11-23.)
+
+- **Part id** (high): the two-layer vehicle shaders carry a part id 0–255
+  in the vertex colour alpha (see the shader table), confirmed by the tables
+  below.
+- **Part set** `f14244fd` (338 found; one per vehicle body in its own 0x7a
+  resource in `packs.rpf`). `78476477` is a list with one `8b464cf4`, whose
+  `2efff0ae` is 256 × `3d9aef8b` {`4f9f7603` colour record name, `aad92e41`
+  name of an `e50efcde` record (name + colour), `96479496`}; `9ac2b332` is a
+  list with one `578f6a03`, whose `4e3e21e7` is 256 × `f5908771`
+  {`8576d517` surface record name, four half floats, five more name
+  hashes} and whose `3aa8426b` is 256 × u16. The set's name is a 64-bit
+  value. High for the two name fields, low for the rest.
+- **Link** (high): the set's 64-bit name appears in the vehicle's own pack
+  in its variation sets `fc1c7000` (+0x18) and in one mod element
+  `77f2b89e` (+0x20, `8605bf0e`); 319 models link.
+- **Library:** one 0x7a resource in `data.rpf` with 172 struct types.
+  - Colour record `f1379639` (1,851): name, colour `5bdc13e3`, mode
+    `adb52ec3` (3 = fixed material, 1 = paint; a few 4 and 5), palette row
+    `c8313558`, own index `9bdd4c51`, six more colours (`68075bcd` defaults
+    to an olive brown, probably dirt). High for colour, mode and row.
+  - Surface record `9e4de959` (757): `2cc72f7c` and `174770cc` name
+    `307f162c` records (`roughnessLow` `e4be3b70`, `roughnessHigh`
+    `26e5d460`; names resolve by joaat; high); `6c3ddabc` and `038e1179`
+    name `cf980e6f` records (two small integers that look like detail
+    texture indices, and tiling scales; medium to low); `5cffe5e0` names a
+    colour record.
+- **Palette texture** `19df25d7` (high: rows match materials on four
+  vehicles: rubber, plastics, leathers, chrome, red): the same 128 × 256
+  texture on every vehicle; row = a colour record's row, 128 columns from
+  dark to bright. Rows 1–32 are black because the game fills them from paint
+  colours; mode 3 records use their stored row. What selects the column is
+  unknown.
+- **Colour byte order:** type 0x15 colour values have **red in the low
+  byte** (`0xAABBGGRR` as a u32). High for the library's 151 named colours
+  (`4ce375e6`), which begin 37, 37, 39 / 101, 106, 121 / 88, 89, 90 / 156,
+  161, 163 / 150, 145, 140 / 81, 84, 89, the start of GTA IV's car colour
+  list, only when read that way. Medium-high that it carries to the body
+  colours and paint lists (same type and field hash; not checked in game),
+  so the earlier ARGB readings above have red and blue swapped.
+- **Configuration part lists** (`51019114.e89b8540`) are mostly names of
+  `0caef606` records in the library (32,804 there), not in the vehicle pack.
+  Each has a slot `37a6f9ef` and a list `61e1e572` of typed modifier records
+  (medium on the roles; the application order is not decoded):
+  `6225734f` {`662d9b79` group name, Priority, indices = part ids};
+  `501ff112` {`178cc382` channel, `662d9b79` group, six flags}; `b94308f5`
+  {`ca2065a9` channel, `2c89a8d2` colour record, `7a84e7bf` surface record};
+  `c328e66e`, `84f5099b`, `1f6c6730`, `08b2439a` (channel + mask + level;
+  slot `75939b79` covers all 256 ids and looks like a dirt level); `f5e9d7df`
+  (a list of further records); `51aab7c1` / `44cc9d8c` / `d62c0436` /
+  `ed9cf5df` (livery and decal layers with texture hashes).
+- Open: the column choice in a palette row, how modifiers combine,
+  metalness, the second layer's colour, modes 4 and 5, rim, tyre and weapon
+  colours.
+
 ## Open questions
 
 - Secondary and pearl colours, liveries; whether the colours are linear.
@@ -176,7 +238,7 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   tyre profile (the tyre's outer radius and width are the wheel discs): what
   drives the shared wheel skeleton's width and profile bones.
 - The shader constant buffer.
-- The `19df25d7` palette lookup, which two-layer materials are painted, and the channel layout of the layer maps.
+- The `19df25d7` palette column choice ([part colours](#vehicle-part-colours)), which two-layer materials are painted, and the channel layout of the layer maps.
 - Where the rim colour comes from: vehicle configurations store one body
   colour; variation sets have a list (`0bf8dac6`) parallel to the paint
   list, holding 64-bit hashes (4 distinct in the one resource looked at),

@@ -467,6 +467,31 @@ per-layer vec4s are in [§12](12-materials.md).
   Probably on / off sequences (sirens, indicators, strobes); not played
   back, so the timing unit and the flags are unknown. 54 vehicle models have
   siren or strobe-light bones.
+  *Refined (2026-11-23; structure high: 339 of 373 vehicle records resolve
+  patterns through the chain below, and ambulance lamps light on the right
+  bones):*
+  - Pattern `0f93517e` (160 bytes): name, slot, clock `1b953013` (u64; only
+    two values seen, one on siren patterns, one on ordinary lamps), speed
+    `699dd4d9` (f16, mostly 1.0), lamp list `d3d4919b`. Where: 157 patterns
+    in the vehicle library, 178 in a shared pattern pack, and small light
+    packs per emergency vehicle (1–10 patterns each).
+  - Step `67cbceee`: `a13c79ef` f16 **phase offset** (mostly 0–1, a few
+    above 1), then the **flash type** number: in the packs a u8 `5b92fa4b`
+    (4-byte struct), in the library a u16 `fc46055f` plus u8 `96e5b9a7`
+    (6-byte struct). 29 type numbers are in use (0–38); 1 is by far the most
+    common, indicators use 6.
+  - Link chain: configuration part `0caef606` → list `61e1e572` →
+    `da592d57` {`1ff6a884` pattern names, `dd466dfe` another name list,
+    probably lamp sets} → pattern.
+  - Lamp set `865400aa` {list `804fdca7` of `ba860a07`}: `079baba7` u64 whose
+    low 32 bits are the bone name hash, `066532dd` light archetype name hash,
+    plus an archetype u64 (name hash in the high half, a second hash in the
+    low half). Archetype names found by guessing: `red`, `amber`,
+    `halogen`, `halogen_warm`, `led`, `led_warm_white`, `warm_white`,
+    `indicator_amber`, `amber_roof_spotlight`; 117 more are hashes only.
+  - Open: what each flash type looks like over time (no table found in the
+    meta resources), the cycle length, the two clock values, and the
+    archetype definitions (colour, intensity).
 - **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents
   of the front wheel bones (on a motorcycle `wheel_turn_lf` is the fork); the
   steering wheel is bone `steeringwheel` under `steeringcolumn`. Model info

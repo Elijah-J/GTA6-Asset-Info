@@ -375,11 +375,61 @@ per-layer vec4s are in [§12](12-materials.md).
   the left-front wheel at unit scale (rim radius 0.5, tyre 0.88). The game
   mirrors and scales them per vehicle. Each spawn configuration names its
   rim and tyre, and the model info has `wheelScale` / `wheelScaleRear`
-  ([§11](11-vehicle-paint.md#vehicle-tables)); 1.625 × `wheelScale` fits by
-  eye, but the game's rule is not established. The wheel bones' pivots give the mount
-  points.
+  ([§11](11-vehicle-paint.md#vehicle-tables)); the 1.625 × `wheelScale`
+  fit is withdrawn and what `wheelScale` measures is unknown. The tyre's
+  outer radius and width are stored as [collision
+  discs](13-collision.md#vehicle-fragment-bounds-and-wheel-discs). The
+  wheel bones' pivots give the mount points.
 - **Damage parts**: separate fragments `<car>_dmg_mod_<part>_NNN`.
   **Mod-kit parts**: `<car>_<part>_<kit>`. Both with `_hi`/`_mid`.
+
+## 7.8 Weapons (modular)
+
+(2026-11-23.) **Location** (high, counted from the index): `data.rpf` holds
+2,855 models named `w_*` for 95 base weapons (by class word: ammo 16, me 14,
+at 8, smg 7, pi 6, sg 6, ar 5, lr 5, rv 5, sports 5, ex 4, kit 4, sr 4, tr 4,
+mg 2). `levels.rpf` has only 19 placeholder shapes (`w_preset_*`,
+`wpn_proxy_*`, `w_root_01`).
+
+**Structure** (high): a weapon's own model, `w_<class>_<make>_<NN>` (plus
+`_hi` / `_mid`), is a skeleton with a shell of about 60–150 triangles (an
+assault rifle's: 4 bones, 148 triangles, 14 KB). The visible weapon is
+separate part models `<weapon>_<slot>_<NN>` with the same LOD suffix; on that
+rifle: receiver, barrel (3 variants), handguard (3), stock (3), mag (3),
+dustcover (2), sight_r (2), bolt, pgrip, trigger, muzzle and follower. Part
+`_hi` models run up to 1.4 MB (the receiver: 9,173 triangles).
+
+**Attach points** (rule high: eleven weapons assemble with it, a rifle,
+pistols, shotgun, SMG, revolver, sniper rifle, launcher, machine gun,
+machete and grenade; bone lists from one rifle and one pistol):
+
+- A part's root bone is `AAP_<Slot>`, at its origin; the model it mounts on
+  has a bone `WAP_<Slot>`. Names match case-insensitively (`WAP_Dustcover` /
+  `AAP_DustCover`), and the AAP name can differ from the file's slot word (a
+  rifle's pgrip part has `AAP_Grip`).
+- A part with no skeleton is modelled around its attach point and takes the
+  `WAP` bone named after its slot.
+- Rifle: the base has `WAP_Receiver`; the receiver has `WAP_Barrel`,
+  `_Bolt`, `_Dustcover`, `_Grip`, `_Handguard`, `_Mag`, `_Sight_R`, `_Stock`
+  and `_Trigger`; a barrel has `WAP_Muzzle`; one handguard has
+  `WAP_Rail_Front_Bot` / `_Side_1` / `_Top` and `WAP_FrontGrip`; a dustcover
+  variant has `WAP_IronSight_R` and `WAP_Rail_Optics`.
+- Pistol: the base has `WAP_Frame`; the frame has `WAP_Barrel`, `_Mag`,
+  `_Magwell`, `_PGrip`, `_Slide` and `_Trigger`; the slide has
+  `WAP_Sight_F`, `_Sight_R` and `_Muzzle_Slide`.
+- Other bones: `Wpn_Root`, `Wpn_Main`, `Wpn_Holster`, and `Wpn_LOC_*` /
+  `Wpn_Anim_*` pairs (bolt, cock, sling loop).
+
+**Shader `weapon`** (`e68a4a98`): binds `speculartex`, `bumptex` and
+`speculartex2` and no colour map (66 of 72 part materials looked at). Both
+specular maps are linear BC7 data (1024² on a stock); the second's red
+channel looks like a metal mask. The colour probably comes from a material
+palette (medium, inferred from the missing colour map).
+
+Open: which variant of each slot a weapon carries by default and where part
+colours come from; what mounts on the `WAP_Rail_*` points and how the shared
+`w_at_*` attachments choose them; where a magazine follower and a pistol's
+reflex mount attach (no matching `WAP` bone on the builds tried).
 
 ## Open questions
 

@@ -286,16 +286,22 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     colour, so it reads as the body paint (240 of 319 models then gain
     painted panels, e.g. a saloon's rear doors). Colour record `2a13d29a`
     is `black`.
-  - **Configurations differ** (medium-high): on one sports car, 1 of 17
-    configurations leaves the rear deck's part id on the `black` record
-    while 15 bind the boot and bodywork groups (which contain that id) to
-    the body paint channel; take the result most configurations give. The
-    same car's roof part id is assigned fixed colour record `a4a56fb8`
-    (palette row 151, dark blue-grey), which fits a fabric convertible top.
+  - **Option lists** `f5e9d7df` {name, `bf340aab` list of `0caef606`
+    names} (high that they must be followed): a list of parts to choose one
+    from (paint finishes, trims, wheel sets: 3 to 10 entries each on one
+    sports car). A configuration reaches part of its colour bindings only
+    through these lists. Which entry the game picks is unknown.
+  - **Configurations differ** (medium-high): following the first entry of
+    each option list, one sports car's 17 configurations give 16 distinct
+    results (paint; a roof that is either fixed colour record `a4a56fb8`,
+    palette row 151, a dark blue-grey that fits a fabric top, or gloss
+    black; interior materials). *Correction (2026-11-23): an earlier note
+    said 1 of the 17 leaves the rear deck unpainted; that came from not
+    following option lists, and all 17 bind it to the body paint.*
   - Open: modifiers `08b2439a` (channel + mask + level on a slot covering
-    all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, option
-    lists `f5e9d7df`, livery layers, and which configuration a spawned
-    vehicle gets.
+    all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, which
+    option-list entry is used, livery layers, and which configuration a
+    spawned vehicle gets.
 - Open: the column choice in a palette row, how modifiers combine,
   metalness, the second layer's colour, modes 4 and 5, rim, tyre and weapon
   colours.

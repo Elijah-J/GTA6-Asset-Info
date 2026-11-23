@@ -228,12 +228,17 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   - Surface record `9e4de959` (757): `2cc72f7c` and `174770cc` name
     `307f162c` records (`roughnessLow` `e4be3b70`, `roughnessHigh`
     `26e5d460`; names resolve by joaat; high); `6c3ddabc` and `038e1179`
-    name `cf980e6f` records (two small integers that look like detail
-    texture indices, and tiling scales; medium to low); `5cffe5e0` names a
+    name `cf980e6f` detail sets (`detailIndex0` `57eed29a` / `detailIndex1`
+    `3f50215d`, detail atlas layers, −1 = none; `detailStrength0`
+    `fc889990` / `detailStrength1` `0c1f38bd`; `detailTile0` `f8602adc` /
+    `detailTile1` `ea228e61`; `anisoIndex` `39adfa9f`, `anisoTile`
+    `913ee1ad`); the surface itself also has `detailTiling0` `6c5cd25d`,
+    `detailTiling1` `6322bfe9` and `detailRotation` `a6500dc0` (names exact
+    case-sensitive joaat matches, 2026-11-23); `5cffe5e0` names a
     colour record.
   - **Metalness** (2026-11-23, medium-high): `307f162c` (99 in the
-    library) also holds a metalness pair, `f763652d` (low) and `09dd33c1`
-    (high): 0 / 0 on plastics, rubber, leather and paint (60 of 99 have
+    library) also holds a metalness pair, `metalLow` `f763652d` and
+    `metalHigh` `09dd33c1` (names exact case-sensitive joaat matches): 0 / 0 on plastics, rubber, leather and paint (60 of 99 have
     low = 0), 0.7–0.9 / 0.9–1.0 on chrome and bare metal (30 have low ≥ 0.9,
     34 high = 1.0). Another low / high pair, `4b19d0cb` / `de1ccc51` (0.14 on
     80 records, 0 on paint, 0.28 on leather, 0.75 on two), is unknown (low);

@@ -103,6 +103,7 @@ pointers (none seen).
 | 0x10 / 0x11 / 0x12 / 0x13 / 0x15 | s8 / u8 / s16 / u16 / u32 | confirmed |
 | 0x4a | u32 hash | confirmed |
 | 0x21 | f32 | confirmed |
+| 0x20 | f16 (2 bytes; 2026-11-23, in the vehicle library) | inferred |
 | 0x32 / 0x33 | vec3 (12 B) / vec3 (16 B) | confirmed |
 | 0x34 | vec4 / quaternion | confirmed |
 | 0x08 | u64 | confirmed |

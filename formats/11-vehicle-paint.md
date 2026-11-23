@@ -231,6 +231,20 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     name `cf980e6f` records (two small integers that look like detail
     texture indices, and tiling scales; medium to low); `5cffe5e0` names a
     colour record.
+  - **Metalness** (2026-11-23, medium-high): `307f162c` (99 in the
+    library) also holds a metalness pair, `f763652d` (low) and `09dd33c1`
+    (high): 0 / 0 on plastics, rubber, leather and paint (60 of 99 have
+    low = 0), 0.7–0.9 / 0.9–1.0 on chrome and bare metal (30 have low ≥ 0.9,
+    34 high = 1.0). Another low / high pair, `4b19d0cb` / `de1ccc51` (0.14 on
+    80 records, 0 on paint, 0.28 on leather, 0.75 on two), is unknown (low);
+    `d3d2bcd6` is 0.75 on all 99. This matches the shader reading below
+    (metalness and roughness pairs blended by `lyr0materialatex` red and
+    green) by meaning and values; that these fields fill those shader bytes
+    is not traced.
+  - Of a surface record's two `307f162c` records, `2cc72f7c` is the
+    surface itself and `174770cc` is in every sample rougher and
+    non-metallic (roughness 0.65–1.0, metalness 0), which fits the shader's
+    wear layer (medium).
 - **Palette texture** `19df25d7` (high: rows match materials on four
   vehicles: rubber, plastics, leathers, chrome, red): the same 128 × 256
   texture on every vehicle; row = a colour record's row, 128 columns from

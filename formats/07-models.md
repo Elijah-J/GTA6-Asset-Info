@@ -489,9 +489,32 @@ per-layer vec4s are in [§12](12-materials.md).
     low half). Archetype names found by guessing: `red`, `amber`,
     `halogen`, `halogen_warm`, `led`, `led_warm_white`, `warm_white`,
     `indicator_amber`, `amber_roof_spotlight`; 117 more are hashes only.
+  - **Lamp colours** (2026-11-23; links high: 19,799 of 19,808 vehicle
+    lamps resolve to a light set by exact id and name matches). *Correction
+    to the bullet above:* `066532dd` is the **light set** name hash (the
+    names listed above are set names), and `ea42cb63` is the light
+    archetype reference. In the vehicle library it is type 0x4d: high
+    32 bits the set name again, low 32 bits the archetype's name hash. In
+    the packs it is type 0x4f, the archetype's 64-bit id.
+    - The light archetypes are ordinary archetypes (`82d6fc83`) in the
+      levels archive: 64-bit id `8bfb6095` at +0 (repeated in `99d56b7b`),
+      name hash at +0x74. Their extension is `7af058f7` (not the usual
+      light extension `27922c43`) and holds named light sets `76402c3c`
+      {name hash, list `f54b227b` of light attribute records}.
+    - Each light: colour u8[3] `5bdc13e3` (two more u8[3] fields,
+      `8822fbce` and `3a615dea`, are `ffffff` here), intensity float
+      `efcd993d`, and a flash block `e9476573` {type u8 `5b92fa4b`, speed
+      `699dd4d9`, offset}, the same fields as the pattern steps above.
+    - All 55 light archetypes the vehicles use are in one resource (805
+      named sets, 2,319 lights). One set name can have different colours in
+      different archetypes (70 of 720 names), so both halves of the
+      reference matter. Example: an ambulance's three siren sets are white,
+      intensities 1000, 2600 and 4000, so the colour seen in game must come
+      from the lens.
   - Open: what each flash type looks like over time (no table found in the
-    meta resources), the cycle length, the two clock values, and the
-    archetype definitions (colour, intensity).
+    meta resources), the cycle length, the two clock values; whether the
+    light colour bytes are linear or sRGB, and where the lens colour comes
+    from.
 - **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents
   of the front wheel bones (on a motorcycle `wheel_turn_lf` is the fork); the
   steering wheel is bone `steeringwheel` under `steeringcolumn`. Model info

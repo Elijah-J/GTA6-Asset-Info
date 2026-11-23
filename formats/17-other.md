@@ -543,6 +543,28 @@ byte is its class.**
   positions in three vehicles). High for the object and the reference
   convention; no field meaning is known (which reference is the horn, for
   example).
+  *Re-checked on six records (2026-11-23, medium):* not every u32 is a
+  reference. Each is `0xffffffff`, a small number (`0x22`, `0x7c7`–`0x7cb`;
+  the file's first table has 2,040 entries, so probably an index into it),
+  or an object reference. Emergency vehicles fill fewer fields than cars.
+  No sound name hash appears in the record, so which vehicle uses which
+  siren or horn is still unknown.
+- **Siren sounds** (2026-11-23; names and waves high, from decoded audio):
+  the sound file holds class-12 simple sounds under plain joaat names:
+  `RESIDENT_VEHICLES_SIREN_WAIL_01`–`_04`,
+  `RESIDENT_VEHICLES_SIREN_QUICK_01`–`_04`,
+  `RESIDENT_VEHICLES_SIREN_FIRETRUCK_WAIL_01`,
+  `RESIDENT_VEHICLES_SIREN_FIRETRUCK_QUICK_01`, `VEHICLES_HORNS_SIREN_1`
+  and `_2` (the same waves as `WAIL_01` and `QUICK_01`),
+  `VEHICLES_HORNS_AMBULANCE_WARNING` and `SIRENS_AIRHORN`;
+  `VEHICLES_HORNS_POLICE_WARNING` and `VEHICLES_HORNS_FIRETRUCK_WARNING`
+  are class-6 wrappers with one child. The category object
+  `VEHICLES_SIRENS` is in the schema-41 file. All their waves are in one
+  container (name hash `af365ada`), a bank of 58 streams: 26 sounds use 24
+  of them, 12 of those sounds unnamed. Wails last 3.8–6.3 s and yelps
+  0.25–0.5 s, mono 48 kHz Opus. All ten named simple sounds confirm the
+  stream id rule above (low 29 bits of the wave hash). Open: the horn
+  sounds themselves.
 
 ## Animation
 

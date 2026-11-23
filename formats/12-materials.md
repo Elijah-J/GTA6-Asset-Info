@@ -413,13 +413,48 @@ with which garment, body-shape preset values, the `StateName`
 states, and most scalar fields of `f795e8ba`; the same structs appear in
 hundreds of other resources, keyed by shared Category ids.
 
+**Wardrobe field names** (2026-11-23; case-sensitive joaat, every name
+re-hashed and matching; high for one- and two-word hits that fit the data):
+
+| Struct | Fields |
+|---|---|
+| `f795e8ba` kit (the item / preset above) | `KitName` `65121749`, `TemplateName` `080eec39`, `States` `ebacf18c`, `Palette` `5ecf9331`, `Tint0` / `Tint1` / `Tint2` (`c4d75d79`, `f4fb3dec`, `ab5d2a85`), `GarmentPreset` `e13ebaf8`, `PropertyTags` `12f85293` |
+| `37e52277` kit state | `StateName` `3eaddcd7`, `Asset` `e7cb9e1b`, `KitLayer` `1d52bc91`, `ToStateNames` `83698d93` |
+| `147fdab5` asset | `Drawable` `41acf8eb`, `Albedo` `ead733fc`, `Material` `9d1000d8` |
+| `a9d57751` kit set | `IncludedKits` `fb5bb20d` |
+| other | `AssetName` `7deba6f8` |
+
+Still unnamed: `46d26d93`, `a41d353b`, `9a289423`, `35ff19d7`, `3b7601de`,
+`7e43b9a9`, `b70a22c1`, `ba2e6e5b`.
+
+Property tag keys (lower-case joaat; medium-high where the values fit):
+`kittype` `2d497cdb`, `pedtype` `3a57a0fc`, `hairlength` `d35f809f` (values
+`l01`–`l09`), `slodstyle` `2a8cdb1d`, `ethnicity` `6ba0d406`,
+`dirtdefinition` `83cc4207`, `bodyshapeprimary` `36313cc7`, `goretype`
+`ccd28d61`, `decorationpresets` `d9f1087b`, `weatheringcategories`
+`33045a8d`, `outfitpedtype` `fa177698`, `noasset` `ca0f75a6`,
+`audio_lower` `1630a5bc`, `audio_accessories` `32d6cdc7`, `audio_hands`
+`37f749b3`, `audio_head` `77e42c9f`, `audio_face` `90705e5e`, `audio_shoe`
+`b860b6b5`, `audiofabric` `ac83b156`. Hair style values include `bob`,
+`lob`, `bun`, `topknot` and `cornrows`. *`2a8cdb1d` was read above as a
+garment name or shape; the name `slodstyle` suggests a low-detail style
+(not reconciled).*
+
 **Hair colour on items** (2026-11-23, counts high): of the hair items used
 by outfit variations, about 14 K have tint bytes 0, 0, 0 (palette
 `ped_tint_generic_clean` or none), about 330 name `ped_tint_hair`
 (`1e64f584`) with a real row (rows 3–86 seen), which is the stored hair
 colour of those characters, and 22 name `fcef23e3`, which is not one of
 the 21 named palettes of the ped tint dictionary. The game probably picks
-the hair colour at run time for the rest (inferred).
+the hair colour at run time for the rest (inferred). *A second survey
+(medium, absence of evidence) found hair kits with `Palette` = the general
+clothing palette or 0 and `Tint0`–`2` always 0 or 255; this disagrees with
+the 330 `ped_tint_hair` rows above and is kept alongside them.* The strand
+hair colour is also not in the kit property tags or in the groom resource
+header (512 bytes: bounds, counts, half-float shape parameters, a 16-byte
+profile curve, no colours). The hair pixel shader reads its two ramp row
+numbers from a 336-byte per-instance record built at run time
+([shader notes](../structure/06-models-shaders.md#archive-layout-in-detail-2026-11-23)).
 
 **Cut skin meshes** (2026-11-23, confirmed by name listing): besides the
 whole meshes, the packs hold only `hand_<fit>_000_{croptop_a00, tshirt_a02,

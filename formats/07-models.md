@@ -604,6 +604,11 @@ the material palette guess:
   metalness channel.
 - Open: which game data fills the parameter block, and which of the two
   upper colour fields is mid and which is high.
+- *Negative result (medium):* the two material name hashes used by weapon
+  component lists (`b5e90fae`, `228565d0`) occur in no decoded PSO or
+  script document of the script archive, the story script pack or the
+  common archive, and a 1–3 word name search found no name. Where weapon
+  tint colours are defined is unknown.
 
 Open: which variant of each slot a weapon carries by default and where part
 colours come from; what mounts on the `WAP_Rail_*` points and how the shared

@@ -83,7 +83,18 @@ assert joaat("rage__fwInstancedMapData") == 0xf14a15be
 ```
 
 **Pool reference (confirmed):** u64 with the **1-based block index in bits
-0–12** and the **byte offset in bits 20+**.
+0–12** and the **byte offset in bits 20+**. (A later note gives bits 0–11;
+not reconciled, and no index above 4,095 is known to settle it.)
+
+**Pool references take priority over pointers** (2026-11-23, high): when
+the offset is 0x500–0x5FF or 0x600–0x6FF with a zero low byte, a pool
+reference also looks like a system (`0x5…`) or graphics (`0x6…`) pointer;
+e.g. `0x50000003` = block 3, offset 0x500. Over every pointer, array and map
+member in the levels archive, 14,471 values are ambiguous; in every case the
+pool reading lands in a block of the expected struct, none needs the
+pointer reading, and none lands on a block start as a pointer. Read such
+members as pool references. Open: whether these members ever hold real
+pointers (none seen).
 
 ## Type codes
 

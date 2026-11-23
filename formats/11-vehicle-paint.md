@@ -172,7 +172,23 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   `rim_inside_edge_lf`. Rims skin to the `rim_*` bones, tyres to the four
   profile bones. The game probably sets wheel width and tyre profile through
   them (not shown); no wheel width was found in model info, configurations
-  or the per-vehicle singleton structs.
+  or the per-vehicle singleton structs. *Later (2026-11-23, high):* every
+  one of these bones sits at the hub, so shaping is by bone scale only;
+  tyres skin to `tyre_profile_*` (bead) and `tread_profile_*` (tread).
+  Rim models have radius 0.5; tyre models differ (0.627 low profile, 0.788
+  ordinary car; the shared-tyre 0.875 above is one model).
+- **Wheel fitment** (2026-11-23; ratio high, rest low): the configuration
+  part in slot `39d5e253` lists a `9a172293` record whose `3d37e0df` is
+  **rim radius ÷ tyre outer radius** (0.82 / 0.86 on a sports car,
+  0.74–0.79 on a saloon, 0.58–0.68 on a pickup, 0.65 on an ambulance;
+  rims rendered at that ratio look right on three vehicles). 2,328 of
+  4,063 configurations have one. With the tyre's outer radius from the
+  [wheel disc](13-collision.md#vehicle-fragment-bounds-and-wheel-discs)
+  this gives the rim radius. Records with `0341ff8f` = true hold small
+  offsets (−0.1, 0.03, −0.025) in the same fields and sit in other slots:
+  relative adjustments, not applied. `a12d16c3` is a tagged value (tags 0,
+  2, 3), maybe the axle. `wheelScale` is not the rim radius (0.219 on the
+  sports car whose rim is 0.82 × 0.35 m); its meaning is still unknown.
 
 ## Vehicle part colours
 
@@ -227,6 +243,41 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   slot `75939b79` covers all 256 ids and looks like a dirt level); `f5e9d7df`
   (a list of further records); `51aab7c1` / `44cc9d8c` / `d62c0436` /
   `ed9cf5df` (livery and decal layers with texture hashes).
+- **Modifiers in detail** (2026-11-23; refines the bullet above):
+  - **Where** (high): the part list names `0caef606` records both in the
+    library (32,804) and in the vehicle's own pack (142 in one saloon's
+    pack; *an earlier count found only 4 of 75 in the pack on another
+    car*). The modifier records themselves are in the library; the
+    vehicle's own `0caef606` records list the group definitions valid for
+    that vehicle.
+  - **Group definition** `6225734f` (high): `662d9b79` group name,
+    `1470edc0` priority, `e9bf9f2d` list of part ids (u8). One group name
+    has several definitions (one per vehicle shape). Names are lower-case
+    joaat; resolved: `bodywork` `b8920f97`, `doors` `87c4912b`, `mirrors`
+    `c57a9c4b`, `badge` `31f606eb`, and bone names `bonnet` `659da09b`,
+    `boot` `b55e9119`, `bumper_f` `e7a4b1f5`, `bumper_r` `8d48fd33`.
+  - **Named group** `000639e9` (971 in the library): name, `3acbce85` byte
+    array of part ids, `ca2065a9` a channel name (array layout high,
+    channel meaning medium). The array uses member type 0x44 (a pool
+    reference u64, then u16 count and u16 capacity, [§8](08-meta.md)); the
+    same type holds number plate text in `7e0936de` (name + characters) in
+    vehicle packs.
+  - **Binding** `501ff112` (medium-high): `662d9b79` group, `178cc382`
+    channel, `1470edc0` priority and six flags, of which `c8d27281` =
+    colour and `7a84e7bf` = surface (`75939b79`, `db4bdec4`, `e2e82803`,
+    `a1f60489` not understood). **Assignment** `b94308f5`: `ca2065a9`
+    channel, `2c89a8d2` colour record (`f1379639`), `7a84e7bf` surface
+    record (`9e4de959`), plus `a8167b82`, `b2e15619`, `43394f02`. Applying
+    bindings in priority order gives sensible results on four vehicles.
+  - **Body paint channel** `7ed76b9f` (inferred): body panel groups bind to
+    it at priority 1 over a priority-0 default, and no assignment sets its
+    colour, so it reads as the body paint (240 of 319 models then gain
+    painted panels, e.g. a saloon's rear doors). Colour record `2a13d29a`
+    is `black`.
+  - Open: modifiers `08b2439a` (channel + mask + level on a slot covering
+    all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, option
+    lists `f5e9d7df`, livery layers, and which configuration a spawned
+    vehicle gets.
 - Open: the column choice in a palette row, how modifiers combine,
   metalness, the second layer's colour, modes 4 and 5, rim, tyre and weapon
   colours.

@@ -14,6 +14,14 @@ Copyright (c) 2026 Ahmet Dedeler
 
 (Licensed MIT OR Apache-2.0; used here under MIT.)
 
+## Read only (nothing copied)
+
+These projects were read for ideas; no code, tables or data from them are
+included here, so no licence notice applies.
+
+- Leonida (GPL-3.0): the idea of using the BC anchor-index rule as an exact
+  check on decoded BCPack index presets.
+
 ## MIT License
 
 The following permission notice applies to each work listed above.

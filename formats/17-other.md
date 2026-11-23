@@ -977,7 +977,54 @@ files; find them by root element, not by position:
 
 Open: the meaning of each timecycle value's second number, which modifier
 applies to which game or moment; the weapon presets' own numbers are not in
-these files.
+these files. The full timecycle format is in
+[Timecycle and weather](#timecycle-and-weather).
+
+## Timecycle and weather
+
+(2026-11-23; checked against an independent XML parse: 32,742 modifier
+values and 59,170 cycle rows, 0 mismatches.) The timecycle data is plain XML
+in `common.rpf`, so every variable has its name. The archive stores no file
+names: identify documents by root element (`timecycle_modifier_data`,
+`timecycle_keyframe_data`, `time_data`, `CContentsOfWeatherXmlFile`,
+`CustomClouds`). Some entries hold several XML documents back to back (one
+holds three area files) (high).
+
+**Modifiers** (high): 4,593 in 50 files. Attributes: `name`,
+`description`, `groupApplyTag`, `localApplyIndex`, `userFlags`, and
+`numAxes` / `numKeyframes` when animated; a modifier may have a
+`<submodifiers>` list. Each variable holds two numbers: the first is the
+value; the second is 0 in 88 % of records and 1 in 10 % (also 5000, 100,
+73 …), meaning unknown. Animated modifiers have `<axis controlValue
+blendType>` blocks with one number per keyframe (times in
+`keyframe_t_value`). Weather modules have `input_min` / `input_max` /
+`output_min` / `output_max` blocks for high-level weather variables (11
+blocks: fog, gradient, rain chance). One variable is written twice with
+different numbers (`water_clip_extinction_b`: 150, then 200); which copy
+the game uses is unknown.
+
+**File names:** `TC_Files.meta` lists 50 `TIMECYCLEMOD_FILE` names plus
+`UNDERWATER_DEEP.xml`, which is a keyframe file. Files are packed in
+case-insensitive name order; aligning that order with each file's modifier
+names (an area code prefix or a word of the file name) maps all 50 (high for
+the area and arcade files; by order only for `timecycle_mods_1`–`4`).
+
+**Weather cycles** (high): 27 keyframe files (`W_<NAME>.XML` from the
+weather list; `sleet` is not in that list). Each has `GLOBAL` and `URBAN`
+regions and about 1,100 variables, with 13 samples per variable at hours 0,
+4, 5, 6, 7, 9, 12, 16, 18, 19, 20, 21 and 22, each with an interpolation
+type and `uw_tc_mod`. There are 1,426 distinct variable names; families
+include postfx 376, local 240, light 140, sky 104 and fog 15.
+
+**Arcade:** `TC_mods_Arcade_Games.xml` has the 34 `ARCADE_*` modifiers.
+`Overlay_ArcadeCabinetCRT` is in `TC_mods_APFX.xml` (`groupApplyTag`
+`animpostfx`): `postfx_noise` 1.0, `postfx_noise_size` 0.6,
+`postfx_exposure_perpixel_amount` 0.75. The `CustomClouds` group
+`arcade_TwinStickShooter` removes the clouds and adds its own. The minigame
+pack has no timecycle data.
+
+Open: the run-time strength and blending of modifiers, the second number
+and `userFlags`, and what the engine does with each variable.
 
 ## Script data documents
 

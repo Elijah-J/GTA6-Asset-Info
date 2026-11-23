@@ -60,6 +60,50 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   and what `gameName` means where it differs (it looks like a display or
   make name); field `1d2a64a8` also equals the model name hash on some
   records.
+- **Mod parts** (2026-11-23, high: parts placed at the named bone's bind
+  pose sit correctly on two cars, and kit names resolve for all 12
+  two-element kits of one car) sit in the vehicle's own pack resource (the
+  0x7a resource with one model info):
+  - `0caef606` is a part or a kit. `e6e17f14` (`name`) is joaat of the part
+    model's name or of a kit name; a kit name is its left and right models'
+    names without the side word (`comet7_exhaust_histr_19` for `…_lr_19` and
+    `…_rr_19`; side words `_l_`, `_r_`, `_lr_`, `_rr_`). `37a6f9ef` is the
+    slot: joaat of `bonnet`, `bumper_f`, `bumper_r`, `exhaust`, `spoiler`,
+    `splitter`, `diffuser`, `towing`, `chassis`, `roof` (`bc96a7e5`) or
+    `livery` (`805d8f10`). `7e5d1612` (`elements`) names `77f2b89e`
+    records; `61e1e572` is a list of hashes.
+  - `77f2b89e` is one model of a part: the low u32 of u64 `079baba7` is
+    joaat of the bone the model is authored around (`chassis` `d418625e`, the
+    car's own space; `boot`, `bumper_f`, `mod_spoiler_attach`,
+    `mod_spoiler_attach01`, `mod_attach_exhaust_lr` / `_rr`); `2b490ab7`
+    lists the stock bones it replaces (a bumper lists `bumper_f` and its
+    indicator bones); `8605bf0e` is a 64-bit value per model, meaning
+    unknown.
+  - One sports car has 123 records, 31 with elements, 43 elements for its 43
+    part models; 323 of 373 vehicles have parts (7,915 records with
+    elements). Open: slots `46268fee`, `9bbfb64c`, `ac89920d`, `5a4394ab`
+    and others.
+- **Material set: located, not decoded** (2026-11-23; high that this is the
+  vehicle's material set, since the counts 41 and 256 match the layer
+  records and the 0–255 part ids in the body's vertex colour alpha; low on
+  every field's meaning):
+  - A configuration's part list (`e89b8540`, 75–150 joaat names) is mostly
+    not models: on one car 4 of 75 are records in its own pack, and the other
+    71 are defined by name in none of the 327 vehicle resources.
+  - Mod records with no elements sit in slots `46268fee` (37 on that car),
+    `9bbfb64c` (27), `ac89920d` (9) and `livery` (4). Their `61e1e572`
+    lists name `44cc9d8c` records (41 on that car): name, data (a hash; 41
+    distinct), layer (tag 1 on 37, tag 0 on 4) and layout (`91dc6b5f` on all;
+    7,908 occurrences across packs, 1,611 in `data.rpf`).
+  - The data hashes are defined in a **companion 0x7a resource** per
+    vehicle: 41 × `b07176ab` (one per `44cc9d8c`; each with `09bd7c2c`, 32 ×
+    `fe88b23d` {`c6a46bcd` hash, floats}, three lists of `825d57ab`, a list
+    `fc07418c` and two 64-bit values); three tables of exactly 256 entries
+    (`f5908771`: six hashes and three 16-byte fields that look like half
+    floats; `b5feb11f`; `3d9aef8b`); 3,936 `825d57ab` (41 × 96), 1,312
+    `fe88b23d` (41 × 32) and a root `f14244fd`.
+  - Open: how a part id picks a preset, where the table hashes become
+    colours, and how a vehicle links to its companion resource.
 - **Convertible roof** (2026-11-23, high): as in GTA V,
   `animConvRoofDictName` = joaat(`va_<model>`) and `animConvRoofName` =
   joaat(`roof`), lower-case (`va_sentinelclassic2` = `180f9ebf`, `roof` =

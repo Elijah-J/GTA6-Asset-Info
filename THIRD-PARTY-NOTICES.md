@@ -14,6 +14,14 @@ Copyright (c) 2026 Ahmet Dedeler
 
 (Licensed MIT OR Apache-2.0; used here under MIT.)
 
+Used for: the BC1 preset slots and selector codebook
+([§6A.2](formats/06a-bcpack-tables.md#6a2-bc1-preset-slots),
+[§6A.3](formats/06a-bcpack-tables.md#6a3-bc1-selector-quadrant-codebook)),
+the generation of the static rANS model tables
+([§6A.1](formats/06a-bcpack-tables.md#6a1-static-rans-models)), and its
+published multi-lane decoding rules and BC1 reconstruction, restated in
+[§6](formats/06-bcpack.md).
+
 ## Read only (nothing copied)
 
 These projects were read for ideas; no code, tables or data from them are

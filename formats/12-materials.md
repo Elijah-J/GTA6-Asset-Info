@@ -413,6 +413,42 @@ with which garment, body-shape preset values, the `StateName`
 states, and most scalar fields of `f795e8ba`; the same structs appear in
 hundreds of other resources, keyed by shared Category ids.
 
+**Hair colour on items** (2026-11-23, counts high): of the hair items used
+by outfit variations, about 14 K have tint bytes 0, 0, 0 (palette
+`ped_tint_generic_clean` or none), about 330 name `ped_tint_hair`
+(`1e64f584`) with a real row (rows 3–86 seen), which is the stored hair
+colour of those characters, and 22 name `fcef23e3`, which is not one of
+the 21 named palettes of the ped tint dictionary. The game probably picks
+the hair colour at run time for the rest (inferred).
+
+**Cut skin meshes** (2026-11-23, confirmed by name listing): besides the
+whole meshes, the packs hold only `hand_<fit>_000_{croptop_a00, tshirt_a02,
+tshirt_b00, tshirt_c05}` and `feet_<fit>_000_{pantshigh_a02 … a04,
+shortshigh_a02, shortsmid_a02, pantsrip_a00, gstring_a00}`; female fits have
+`_full`, male fits only `nude_cull`. Which garment selects which cut is
+still unknown.
+
+**Negative results** (2026-11-23): head-shape distance does not identify a
+character (the nearest of 142 named female heads to `cs_lucia`'s is
+`player_story000_00` at 2.0 mm against a median of 2.9 mm, but unrelated
+pairs reach the same ratio); and the hair placeholder tag `023e5a2f` cannot
+link a headless character to its model, because generic peds borrow named
+characters' placeholders as stand-ins.
+
+### Ped model table
+
+(2026-11-23.) One PSO in the packs holds 2,714 records of struct
+`eb66d086`, one per ped model, `Name` = joaat of the model name.
+
+| Field | Contents | Confidence |
+|---|---|---|
+| `dc3dfe39` | a character name hash: 1,505 distinct values; for 47 of 114 `cs_` models it is joaat of the model name without `cs_`; zero on 35. `player_story000_00` holds joaat(`lucia`) and `player_story000_01` joaat(`jason`), each on exactly one record | confirmed for those two and `cs_baelux`; real field name unknown |
+| `57134685`, `7689b960` | a gender-class name (`GEN_FEMALE`, `GEN_MALE` …; 5 distinct values) | high |
+| `877619b0`, `df0e1fb5` | 159 and 49 distinct values, unresolved | – |
+
+This is the only stored link found between the cutscene prefixes
+`cs_lucia` / `cs_jason` and the protagonist models.
+
 ### Animal shader `ped_standard_animal`
 
 (2026-11-23.) On shader `295b85a9` the colour slot can hold a **region

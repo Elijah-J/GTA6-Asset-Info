@@ -528,6 +528,9 @@ byte is its class.**
 
 ## Animation
 
+**Convertible roof clips** are not in `anim.rpf`: see
+[below](#convertible-roof-clips).
+
 `anim.rpf` holds two families. Bodies in the low region of the archive are
 `0DRP` v122 cutscene/scenario metadata; above them, bodies whose
 `+0x10..+0x3F` is all zero are clip dictionaries (inferred from a sample of
@@ -819,6 +822,27 @@ cause is open, as are other within-sequence discontinuities.
 Types 6 and 9 remain undecoded, but neither occurred in the 212,302
 unique sequences reached from 294,810 validated clips in 52,923
 dictionaries. Type 3 occurred in only 30 of those sequences.
+
+### Convertible roof clips
+
+(2026-11-23, high.) `levels.rpf` holds 170 clip dictionaries as entries with
+no recovered name, in the same layout as `anim.rpf`'s (every unnamed
+object's system page was tested; `packs.rpf`, `data.rpf` and `common.rpf`
+hold none). Eleven are `va_<model>` vehicle dictionaries (carbonizzare,
+comet7, dominator9, dominatorclassic, jubilee, lasso, schutzen,
+sentinelclassic2, vigero3, windsor2, zion2); the rest are map object clips
+(names ending `_clip`).
+
+Each convertible's dictionary has one clip, `roof`, with one animation
+3.8–11.1 s long: 12–74 bone channels (rotation and translation), one mover
+track and one float track. Every bone id is the joaat of a lower-case bone
+name on the car's own skeleton (all ten map fully). Time 0 is the roof up,
+the end the roof stowed; it drives the bones under `convertible_roof`,
+including `roof_cover`. `va_jubilee` instead holds one clip,
+`sunroof_r_anim` (1.67 s, 2 bones). The model info names the dictionary and
+clip ([§11](11-vehicle-paint.md#vehicle-tables)). Open: what the float
+track carries; whether hardtops or other vehicles keep clips under other
+dictionary names.
 
 ### Pose root and trajectory
 

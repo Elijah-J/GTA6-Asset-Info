@@ -60,6 +60,13 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   and what `gameName` means where it differs (it looks like a display or
   make name); field `1d2a64a8` also equals the model name hash on some
   records.
+- **Convertible roof** (2026-11-23, high): as in GTA V,
+  `animConvRoofDictName` = joaat(`va_<model>`) and `animConvRoofName` =
+  joaat(`roof`), lower-case (`va_sentinelclassic2` = `180f9ebf`, `roof` =
+  `bc96a7e5`); the named dictionary and clip exist
+  ([§17](17-other.md#convertible-roof-clips)). A non-convertible has the
+  same value in both fields. `animConvRoofWindowsAffected` is a 4-element
+  array on the convertibles looked at; how it is used is unknown.
 - **Colours** are all dark (`phoenix`: `ff091f30`, `ff122214`), so they are
   probably linear. Converted from linear to sRGB they give plausible paints
   (#356278 steel blue, #4b664f sage). Inferred; not checked in game.

@@ -231,9 +231,11 @@ dashes allowed the wheel bones appear and the wheels mount. Allow at least
   `_rear`, `tension_bow`, `tension_frame_front` / `_rear_upper` /
   `_rear_lower`, `bow_overhead`, `rearwindow_bow`, `SoftTop_01`–`09` (some
   with `_L` / `_Mid` / `_R`), `softtop_lowlod`, and `roof_cover_ctrl` >
-  `roof_cover`. The folding animation is not found: no clip dictionary name
-  contains the car's name, a roof bone name, `softtop` or
-  `convertible_roof`.
+  `roof_cover`. The folding animation is clip `roof` in dictionary
+  `va_<model>` in `levels.rpf`, named by the model info (see
+  [§11](11-vehicle-paint.md#vehicle-tables) and
+  [convertible roof clips](17-other.md#convertible-roof-clips); an
+  earlier search of dictionary names found nothing).
 - An electric scooter has `wheelScale` 0.08 and no rim in its
   configurations, like helicopters, but it does have wheel discs (radius
   0.145). A tanker trailer body has 55 bones, none for wheels or axles, and

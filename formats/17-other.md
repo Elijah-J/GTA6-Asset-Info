@@ -162,7 +162,7 @@ Header (the public Bink container layout; all u32):
 | 16 | frame count again |
 | 20, 24 | width, height |
 | 28, 32 | fps numerator, denominator |
-| 36 | video flags (`0x40013` typical) |
+| 36 | video flags (`0x40013` typical); **bit `0x100000` = transparency channel** (`0x140012` / `0x140013`; 2026-11-23, high, see below) |
 | 40 | audio track count n |
 | 44 | Bink 2 only: one more u32 (`0005e987` seen) |
 | then | n × u32 largest decoded audio size, n × (u16 sample rate, u16 flags; `0x7000` on 48 kHz stereo), n × u32 track id |
@@ -230,9 +230,18 @@ except 020 / 021, so it works as a lookup key. All at 30 fps.
 | 004 | console | console boot logo | 1920 × 1080, 198 | yes |
 | 005 | beat-'em-up | subway loading screen | 2560 × 1440, 255 | no |
 | 006, 011–014, 017, 018 | time shooter | install, boot, title, intro, cabinet screen, emergency landing, time travel | 2560 × 1440; 799, 372, 123, 733, 302, 509, 602 | yes |
-| 007–010, 015, 016 | probably the time shooter | screen-edge glow overlays, about 3 s each | 1920 × 1080 | no |
+| 007–010, 015, 016 | probably the time shooter | screen-edge glow overlays, about 3 s each; **007–010 and 015 carry a transparency channel** | 1920 × 1080; 85 or 86 frames (016: 91) | no |
 | 019, 022, 023 | puzzle game | studio logos, intro, title | 2560 × 1440; 601, 2177, 297 | yes, yes, no |
 | 020, 021 | puzzle game | credits, and a white version of the same size (a mask or variant) | 1920 × 1080, 3,382 | no |
+
+**Transparency channel** (2026-11-23; high, 24 movies inspected): five of
+the six overlays (007–010, 015) have video flags `0x140012` or `0x140013`;
+016 and the ordinary cutscenes have `0x40012` / `0x40013`. A Bink 2 decoder
+outputs the five as YUV 4:2:0 with alpha and the others without, and the
+channel holds a sensible edge-glow mask, so flag bit `0x100000` marks a
+transparency channel. On four of the five the mask is exactly half in the
+screen centre. Open: whether colour is premultiplied, how the game blends
+them, and which game event each belongs to.
 
 The rest of the archive is in-world TV adverts, phone and social clips,
 effect and UI loops, and the publisher logo (177). **The beat-'em-up's long
@@ -954,6 +963,21 @@ title at `+0x0C`, a u32 credit count at `+0x60`, then 8-byte credits
 The title hash is joaat of the **lowercased** title with seed `0xC3CCF6AD`
 (804/804 titles, confirmed). AWC stream ids use unseeded joaat of the title, so
 the two never coincide.
+
+## Arcade values in `common.rpf` XML
+
+(2026-11-23; counts and structure high.) `common.rpf` holds 208 plain XML
+files; find them by root element, not by position:
+
+| Root | Arcade content |
+|---|---|
+| `timecycle_modifier_data` (two files) | 43 modifiers with "arcade" in the name: 34 `ARCADE_*`, 8 `ArcadeGame_*` / `ArcadeShooter_*`, 1 `Overlay_ArcadeCabinetCRT`. Each has a name, `groupApplyTag` (`final` or `animpostfx` in the ones read) and child elements whose text is two numbers |
+| `CPedInventoryLoadOutManager` | 8 `LO_AG_TSS_*` loadouts: a weapon preset name plus flags |
+| `CDamageDataManager` | 33 `Arcade_*` damage rules (10 `Arcade_TwinStick_*`, 23 `Arcade_BeatEmUp_*`), typed by a `type` attribute (clamp, multi-reference, conditions) |
+
+Open: the meaning of each timecycle value's second number, which modifier
+applies to which game or moment; the weapon presets' own numbers are not in
+these files.
 
 ## Script data documents
 

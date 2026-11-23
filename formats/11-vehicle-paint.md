@@ -385,6 +385,32 @@ Selection = palette row, Page = palette array slice. Stem X hashes as
 is unknown (not a lower-case word of up to 9 letters, nor any two-word
 combination of 1,818 words).
 
+**Value counts over all 1,851 colour records** (2026-11-23; counts high,
+meaning medium: inferred from the counts and the pixel shader):
+
+- Group Y, Page A: 1 in 1,323 records (Selection 0–246), 3 in 179
+  (Selection 79–255), no pick (−1) in 345. Pages B and C are either both −1
+  or both 5 (Selection 0–242). (A, B, C) combinations: (1, 5, 5) 730;
+  (1, −1, −1) 575; (−1, −1, −1) 342; (3, −1, −1) 179.
+- Group X: Page A is 2 (Selection 0–511) or 3; Pages B and C are 5, 4 or 6,
+  always with Selection −1. X's Selection A equals Y's Selection A in
+  1,834 of 1,851 records.
+- `albedoPage`: −1 in 1,376 records, otherwise 0, 4 or 5.
+
+Reading: page 1 = paint rows filled at run time, page 3 = fixed materials,
+page 5 = wear colours (primer, rust). The three surface records per part
+would then carry Y's picks A, B and C (base colour and two wear layers).
+The field first documented as "mode" (`adb52ec3`, 1 and 3) is Y's Page A.
+If this holds, the palette texture is an array of at least 6 slices (not
+checked against the texture header). Open: what group X's second palette
+(page 2, up to 512 rows) is.
+
+**Per-part entry references** (`825d57ab`; high, every name resolved over
+7,966 entries): `albedoPalette` → colour record `f1379639`;
+`specularPalette` → `e50efcde` (name, specular colour); `paintPalette` →
+coat record `2b84f07e`; `materialPresetPalette` → surface record
+`9e4de959`.
+
 The part set's `3d9aef8b` third field (`96479496`) is the same `paintHash`
 name. Open: stem Y; the surface struct's remaining reference fields
 (probably ending in `Hash`); the colour record's six trailing colours; six

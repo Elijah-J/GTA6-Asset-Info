@@ -454,6 +454,19 @@ per-layer vec4s are in [§12](12-materials.md).
   only the two `drlight` bones. How the game switches a lamp is not decoded
   (the shader name suggests the lamp bones are animated; no clip or value
   was read).
+- **Light patterns** (2026-11-23; structure medium, meaning low): struct
+  `0f93517e` (157 in the vehicle library in `data.rpf`): name, slot
+  `37a6f9ef`, a half float `699dd4d9` (1.0 in the sample; the struct also
+  has a field whose hash is `timeMultiplier`), and a list `d3d4919b` of
+  `69a4bdea` {`395039a9` joaat of a lamp bone name, u64 flags, list
+  `a478703e` of 6-byte steps `67cbceee` {`a13c79ef` half float, `fc46055f`
+  u16 (0 or 1), `96e5b9a7` u8}}. 571 distinct lamp names occur; 200
+  resolve to vehicle bone names (`auxlight_*`, `bootlight_*`,
+  `brakelight_*`, `drlight_*`, `foglight_*`, `headlight_*`, `indicator_*`,
+  `doorlight_*`, `int_ceiling*`, `dashglow` …). Lamps have 1–29 steps.
+  Probably on / off sequences (sirens, indicators, strobes); not played
+  back, so the timing unit and the flags are unknown. 54 vehicle models have
+  siren or strobe-light bones.
 - **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents
   of the front wheel bones (on a motorcycle `wheel_turn_lf` is the fork); the
   steering wheel is bone `steeringwheel` under `steeringcolumn`. Model info

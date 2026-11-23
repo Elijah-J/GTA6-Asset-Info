@@ -237,6 +237,30 @@ matches none. In `packs.rpf@0x454db010`, the composite is at `0x262b0` and
 the first matrix is at `0x25210`. This validates bind-pose placement, not
 how the runtime updates the body.
 
+### Vehicle fragment bounds and wheel discs
+
+(2026-11-23.) A vehicle fragment's physics is an **embedded type-6
+composite** inside the fragment's system page (not at its root), with the
+same header as a standalone composite: `+0x70` child pointers, `+0x78`
+child transforms (64 bytes each), `+0x98` u16 count twice (high: the
+children and transforms resolve). Its children use more bound types than
+level collision: 0, 1, 2, 3, 4, 8, 9, 10, 13 and 14 were seen. Type 13 has a
+symmetric bbox and reads as a box, type 14 is cylinder-like and type 4 looks
+like convex geometry (all inferred); only type 8 is decoded.
+
+**Type 8: disc** on the local X axis (high): `+0x14` f32 radius, `+0x2C` f32
+margin = half the width, bbox max at `+0x20` = (margin, radius, radius). The
+translation of the child's transform (`+48` of its 4 × 4) is the centre.
+Each wheel has one disc at its wheel bone's pivot in Y and Z (up to a few cm
+off in X) with the **tyre's outer radius and half width**; a second, thinner
+disc per wheel is the brake disc (half width about a tenth of its radius on
+cars). Over 243 wheeled `_hi` vehicles, 228 had a disc on every wheel
+(matched on the pivot); helicopters have none. Examples (radius / half
+width): small hatchback 0.325 / 0.0975; sports car 0.35 / 0.1325 front,
+0.1625 rear; golf cart 0.24 / 0.1075; BMX 0.268 / 0.02; dirt bike 0.324 /
+0.045 front, 0.318 / 0.055 rear; armoured truck 0.61 / 0.174. This is the
+stored wheel size ([§11](11-vehicle-paint.md#vehicle-tables)).
+
 ### Physics-group pairs
 
 A non-null fragment root `+0x58` can point to two u32 count words (equal
@@ -290,6 +314,7 @@ axis or the runtime limit solver.
 - Joint-limit reference frames, swing evaluation and runtime constraint composition.
 - The runtime use of the physics-group pairs.
 - A railway-only surface (none found).
+- The fields of vehicle composite child types 0–4, 9, 10, 13 and 14.
 
 
 ---

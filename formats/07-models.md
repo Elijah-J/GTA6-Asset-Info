@@ -457,10 +457,8 @@ per-layer vec4s are in [§12](12-materials.md).
 - **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents
   of the front wheel bones (on a motorcycle `wheel_turn_lf` is the fork); the
   steering wheel is bone `steeringwheel` under `steeringcolumn`. Model info
-  `steerWheelMult` is 0.7 on a sports car. No 0x7a resource in `data.rpf`,
-  `packs.rpf` or `common.rpf` holds a handling record (searched by value);
-  the handling rows are in a PSO instead
-  ([§17](17-other.md#vehicle-handling)).
+  `steerWheelMult` is 0.7 on a sports car. The steering lock is the handling
+  record's `fSteeringLock` (in a PSO, [§17](17-other.md#vehicle-handling)).
 - **Damage parts**: separate fragments `<car>_dmg_mod_<part>_NNN`.
   **Mod-kit parts**: `<car>_<part>_<kit>`. Both with `_hi`/`_mid`.
 
@@ -510,7 +508,12 @@ palette (medium, inferred from the missing colour map).
 Open: which variant of each slot a weapon carries by default and where part
 colours come from; what mounts on the `WAP_Rail_*` points and how the shared
 `w_at_*` attachments choose them; where a magazine follower and a pistol's
-reflex mount attach (no matching `WAP` bone on the builds tried).
+reflex mount attach (no matching `WAP` bone on the builds tried); how a
+weapon model is tied to its display text (the text tables hold weapon names,
+e.g. one under label `2bd414b5` matching a pistol's model word, but no 0x7a
+resource or decoded PSO in `data.rpf` holds a weapon model's name hash or
+that label, and the label is not joaat of the model name or obvious
+prefixed forms).
 
 ## Open questions
 

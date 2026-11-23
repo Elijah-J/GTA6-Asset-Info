@@ -286,6 +286,12 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     colour, so it reads as the body paint (240 of 319 models then gain
     painted panels, e.g. a saloon's rear doors). Colour record `2a13d29a`
     is `black`.
+  - **Configurations differ** (medium-high): on one sports car, 1 of 17
+    configurations leaves the rear deck's part id on the `black` record
+    while 15 bind the boot and bodywork groups (which contain that id) to
+    the body paint channel; take the result most configurations give. The
+    same car's roof part id is assigned fixed colour record `a4a56fb8`
+    (palette row 151, dark blue-grey), which fits a fabric convertible top.
   - Open: modifiers `08b2439a` (channel + mask + level on a slot covering
     all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, option
     lists `f5e9d7df`, livery layers, and which configuration a spawned

@@ -130,6 +130,13 @@ inflated resource stores `gameName=0xe54c8bcf` and `handlingId=0x32e37f93`
 | `bdaf2dc0` | suspension: travel, damping |
 | `c746f5ed`, `82173b9e`, `0da11ed9` | unknown |
 
+**Steering lock** (2026-11-23; field and join high, inheritance medium):
+`fSteeringLock` (`d9cd734b`) in the wheels component is in radians: 0.72
+(41.3°) on a sports car, 42.7° on a saloon, 36.4° on an ambulance, 51° on a
+dirt bike; most cars are at 39–41°. A record without the field takes it from
+its base record (`HANDLING_BASE`) through the `ParentName` chain; with that,
+333 of 373 vehicle models resolve to a lock.
+
 Mass, drag, gear ratios, final drive, brakes, steering lock, wheel mass,
 suspension travel and damping, anti-roll bar force and fuel are named; most
 other fields, the torque curve's included, are decoded values with hashed

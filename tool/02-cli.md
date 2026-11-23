@@ -256,6 +256,7 @@ sixng pso data --out out
 sixng handling data --out out
 # Vehicle model info (wheel scale and type), spawn configurations (colour, rim, tyre, parts)
 # and weighted paint-colour lists: <out>/vehicles/vehicles.json
+# (format 6 adds display_name and make per vehicle, null when absent)
 sixng vehicles packs --out out
 ```
 

@@ -60,6 +60,18 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   and what `gameName` means where it differs (it looks like a display or
   make name); field `1d2a64a8` also equals the model name hash on some
   records.
+- **Display names** (2026-11-23, high: checked on about ten vehicles, the
+  make + name pairs are the expected ones): a vehicle's display name is in
+  the [text tables](17-other.md#text-gxt) of `data.rpf` under the label
+  equal to `gameName` (joaat of the lower-case model name); its make is
+  under the value of `vehicleMakeName` (`3db8df3e`, case-sensitive joaat).
+  No separate label string is stored. 321 of 373 models have a name
+  string and 312 a make string (those without are mostly trailers and farm
+  implements). A label occurs in 10–13 tables, one per language; the first
+  in file order that has it is English. Model generations are told apart in
+  the name text itself (a year prefix in English, a year suffix in at least
+  one other language). Open: for the 46 records whose `gameName` differs
+  from `handlingId`, which text the game shows.
 - **Mod parts** (2026-11-23, high: parts placed at the named bone's bind
   pose sit correctly on two cars, and kit names resolve for all 12
   two-element kits of one car) sit in the vehicle's own pack resource (the

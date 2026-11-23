@@ -68,6 +68,10 @@ at least 2 mips), mip 0 box-downsampled against mip 1, RGB PSNR on the
 | BC6H | 29.1 dB | 18.0 dB | 89 | 58 % |
 | BC7 | 40.9 dB | 32.8 dB | 1,433 | 6.7 % |
 
+*Later figures (2026-11-23):* BC7 median 37.9 dB with 1.7 % under 20 dB
+after the [secondary index reset](#63-bc7-blocks-codec-0x1c); BC6H 22.1 dB
+with 36 % under 20 dB after the refits in [§6.7](#67-open-unknowns).
+
 BC1 has no fitted tables, so its 3.6 dB gap is a population effect (BCPack
 mip 0s are larger and more detailed), not decode error. Allowing for that,
 BC5 is at plain quality and BC7 about 4–5 dB short. BC6H is weakest, partly
@@ -283,9 +287,31 @@ bit positions and O on the odd ones.
   index (block `i − di`) + unzigzag(residual) mod 16, 4-bit MSB-aligned;
   `di = 0` gives zeros. Modes 4/5 put the second (2-bit) index set in lanes
   6, 7, 8, 10 with the same layout.
+- **Secondary index state resets** (2026-11-23, high; corrects the earlier
+  decode): a block with no second index set (every mode except 4 and 5)
+  **resets the second index state to zero**; it does not carry the previous
+  block's second set forward. Evidence is exact, not fitted: an anchor index
+  never has its top bit set, and on chains that do not touch the preset
+  tables the old rule broke that on 29 % of chained mode 4/5 blocks, the new
+  rule on 0 of 2,249,610 (first 300 BC7 chunks). Mip 0 against mip 1 over
+  1,433 BC7 textures: mean 35.1 → 38.7 dB, median 33.5 → 37.9 dB, under 30
+  dB 27.1 → 6.8 %, under 20 dB 2.0 → 1.7 %; 917 textures gain more than
+  1 dB, none lose more than 1 dB.
 - **Anchors:** blocks whose anchor index has the top bit set (5.4 %, all
   modes 4/5) are made legal by swapping the endpoints and inverting the
-  indices, which leaves the pixels unchanged (confirmed).
+  indices, which leaves the pixels unchanged (confirmed). *Probably mostly an
+  artefact of the old secondary-state rule above, since with the reset no
+  table-independent block has such an anchor (inferred; not re-counted).*
+- **Anchor rule as a check** (2026-11-23, high; BC6H and BC7): in every
+  block whose index chain stays inside the chunk, each anchor index decodes
+  with its top bit clear: BC6H 0 violations in 2,433,955 anchor reads (all
+  268 chunks), BC7 0 for the primary set in every mode. This gives exact
+  constraints on index preset values at anchor pixels.
+- **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
+  subset, but the stream carries channel 0 of both endpoints with a p-bit
+  position; on table-independent chains the two always agree (0 of 247,606
+  differ). The fitted endpoint presets break this in 17,451 of 447,824
+  table-dependent cases, so some preset values are provably wrong.
 - **History:** endpoints and indices both have a fixed 256-slot table. Each
   chunk's root blocks only fix the top w bits their mode reads, so the
   table was fitted by voting per value at each root's width (inferred).
@@ -478,6 +504,16 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
   (256 slots × 3 subsets × 2 endpoints × RGBA, 8-bit) and index presets
   (256 × 2 sets × 16, 4-bit). They will be published here once the BC6H
   and BC7 refits settle.
+- **Anchor-consistent BC6H tables** (2026-11-23; tables medium-low): a
+  joint fit of all slots on plain-reference and bootstrap chunks, then index
+  presets made anchor-consistent: 992 slot / anchor entries (pixels 0, 2, 8,
+  15), 720 pinned to one exact value, 235 to two, 0 violations left. Mip
+  check on BCPack-only textures: median 19.6 → 22.1 dB, under 20 dB 51.7 →
+  36.0 % (plain BC6H 29.1 dB); plain-reference check unchanged at 87.7 %,
+  28.6 dB. BC6H is still not exact: blocks whose endpoint chain starts
+  inside the chunk score much worse on the plain-reference check than
+  table-rooted ones (53 % against 89 % within tolerance), which suggests the
+  zero-distance default or another endpoint rule is still wrong (open).
 - **BC7:** the order of the mode 0 / 2 headers is fitted (medium).
 
 **BC1/3/4/5:** Confirm the disputed or fitted endpoint presets and selector

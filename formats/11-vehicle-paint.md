@@ -41,7 +41,7 @@ vehicle tables. Field names are case-sensitive joaat and match GTA V's
 
 | Struct | Count (game-data resource) | Fields |
 |---|---|---|
-| `e59aa857` model info | 327 | `gameName` (`120e5836`, joaat of the model name), `handlingId` (`ec41bd9c`), `txdName`, `wheelScale` (`933301be`), `wheelScaleRear` (`76706238`), `wheelType` (`a2e90c68`), `layout`, `HDTextureDist`, `lodDistances`, `vehicleClass`, `swankness`, `plateType`, `defaultBodyHealth` … (52 names resolve) |
+| `e59aa857` model info | 327 | `gameName` (`120e5836`, usually joaat of the model name, see below), `handlingId` (`ec41bd9c`, the model name), `txdName`, `wheelScale` (`933301be`), `wheelScaleRear` (`76706238`), `wheelType` (`a2e90c68`), `layout`, `HDTextureDist`, `lodDistances`, `vehicleClass`, `swankness`, `plateType`, `defaultBodyHealth` … (52 names resolve) |
 | `51019114` configuration | 3,879 | `fb1f80ff` model (field name `handling`), **`5bdc13e3` body colour** (ARGB u32), `e89b8540` part models (joaat names, about 150: frame, bumpers, exhaust, `brakedisc_*`, `caliper_*`, and one `rim_*` and one `tyre_*` in 82 %) |
 | `fc1c7000` variation set | 4,772 | `fb1f80ff` model (`handling`), **`8c866829` weighted paint-colour list**: 1 to 400 ARGB colours with repeats (2,246 sets; this is the pool of 17,632 colours), `59a59c3e` (`slots`) weighted part groups: `37a6f9ef` slot, `a12ff3a2` (`options`) list of {`8e6612bf` part, `dc732774` (`probability`) weight %} |
 
@@ -49,6 +49,17 @@ With the per-vehicle packs this covers 373 models (305 named), 4,063
 configurations (3,339 with a rim and a tyre) and 2,377 colour lists. Handling is
 a separate PSO ([§17](17-other.md#vehicle-handling)).
 
+- **Joining model info to a model** (2026-11-23, high): `gameName` is not
+  always the model name: 46 of 325 distinct records hold a different value
+  there than in `handlingId` (case-sensitive joaat). `handlingId` is what
+  configurations and variation sets use as owner, and it matches the
+  drawable name. Falling back to `handlingId` when `gameName` finds nothing
+  raises the models with model info from 312 to 357 of 373; every surveyed
+  vehicle with wheel mounts then has a record except two damage variants
+  and one train. Open: whether several models can share one `handlingId`,
+  and what `gameName` means where it differs (it looks like a display or
+  make name); field `1d2a64a8` also equals the model name hash on some
+  records.
 - **Colours** are all dark (`phoenix`: `ff091f30`, `ff122214`), so they are
   probably linear. Converted from linear to sRGB they give plausible paints
   (#356278 steel blue, #4b664f sage). Inferred; not checked in game.
@@ -64,12 +75,32 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   `phoenix` rims at about 14.6 inch, close to a real car's 15 inch, so the
   earlier reading of `wheelScale` as the rim radius in metres (a dirt bike
   has 0.2538 / 0.2234, which would be 21 / 18 inch) is doubtful.
+  *Later measurement (2026-11-23, medium-high for the rim) reverses this and
+  withdraws the 1.625 factor:* `wheelScale` / `wheelScaleRear` read as the
+  **rim radius in metres** (0.217 on a BMX with 20-inch wheels, 0.303 on a
+  cruiser bicycle, 0.252 / 0.195 and 0.254 / 0.223 on dirt bikes, 0.249 on a
+  supercar, 0.343 on an armoured truck). Every shared `rim_*` model has a
+  radius of exactly 0.5 (bounding box, 500+ models), so the rim scale is
+  `wheelScale` / 0.5; tyre models have an outer radius of 0.54 to 1.19 at
+  that unit scale. Over 203 `_hi` vehicles, tyre radius × 2 × `wheelScale`
+  puts the tyre bottom a median 0.22 m below the body's lowest point (one
+  case 4 cm above). Helicopters have `wheelScale` 0.05–0.08, no
+  configuration with a rim, and `wheel_*` bones parented to skid bones.
+- **Shared wheel skeleton** (2026-11-23; bones high, role inferred): every
+  `rim_*` and `tyre_*` model carries one 15-bone skeleton: `wheel_lf_link`,
+  `rim_offset_mover_lf`, `rim_scale_lf`, `rim_dmg_1`–`5_lf`,
+  `rim_non_dmg_lf`, `tread_profile_inside` / `outside_lf`,
+  `tyre_profile_inside` / `outside_lf`, `wheel_width_mover_lf` and
+  `rim_inside_edge_lf`. Rims skin to the `rim_*` bones, tyres to the four
+  profile bones. The game probably sets wheel width and tyre profile through
+  them (not shown); no wheel width was found in model info, configurations
+  or the per-vehicle singleton structs.
 
 ## Open questions
 
 - Secondary and pearl colours, liveries; whether the colours are linear.
-- The game's rule for sizing the shared rim and tyre from `wheelScale`
-  (1.625 × is fitted); the tyre width.
+- How the tyre is sized relative to the rim, and the wheel width: what
+  drives the shared wheel skeleton's width and profile bones.
 - The shader constant buffer.
 - The `19df25d7` palette lookup, which two-layer materials are painted, and the channel layout of the layer maps.
 - Where the rim colour comes from: vehicle configurations store one body

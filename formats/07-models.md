@@ -421,6 +421,23 @@ per-layer vec4s are in [§12](12-materials.md).
   outer radius and width are stored as [collision
   discs](13-collision.md#vehicle-fragment-bounds-and-wheel-discs). The
   wheel bones' pivots give the mount points.
+- **Brake parts** (2026-11-23) are shared models in `levels.rpf` with no
+  skeleton: `brakedisc_<kind>_<NNN>` (race, sport, std, track; 11 models)
+  and `caliper_<N>pot_<NNN>`, `caliper_*_stock`, `caliper_rimlight` (12).
+  Every brake disc has a radius of exactly 0.5 (bbox y, z −0.5 to 0.5, x
+  −0.125 to 0.05; high); calipers are modelled around the same unit disc
+  (extent 0.557), so both scale by the wheel's [brake-disc
+  radius](13-collision.md#vehicle-fragment-bounds-and-wheel-discs) ÷ 0.5
+  (medium that the caliper shares the disc's space unrotated). A
+  configuration names at most one of each: of 4,063, 2,030 name both, 228
+  only a disc, 14 only a caliper and 1,791 neither.
+- **Hinged panels** (names high; hinge line medium, two cars): bones
+  `door_dside_f`, `door_dside_r`, `door_pside_f`, `door_pside_r`, `bonnet`
+  and `boot` sit on the hinge line, and the panel's vertices lie to one side,
+  which gives the opening direction (one hatchback's bonnet hinges at the
+  windscreen end, one convertible's at the nose). Doors have a
+  `door_droop_<side>` parent. Open: opening limits, and hinge axes that are
+  neither vertical nor lateral.
 - **Damage parts**: separate fragments `<car>_dmg_mod_<part>_NNN`.
   **Mod-kit parts**: `<car>_<part>_<kit>`. Both with `_hi`/`_mid`.
 

@@ -315,8 +315,16 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   (rendered this way, a plausible grey alloy with darker centre parts on
   three vehicles). The embedded 129 × 1 marker palette on the wheel shaders
   is still unexplained.
-- Open: the column choice in a palette row and metalness (both decided in
-  shader code, which is native and not read), how modifiers combine, the
+- **From the shader code** (2026-11-23, medium; one vehicle G-buffer
+  pixel shader read as machine code, see
+  [the shader archive](../structure/06-models-shaders.md#archive-layout-in-detail-2026-11-23)):
+  the palette is sampled as a 2D array with v = (row + 0.5) / 256, the row
+  and array slice being bytes 0 and 1 of a per-part surface record field
+  (three surface records per part); metalness and roughness are low / high
+  byte pairs in the same record, blended by the red and green channels of
+  `lyr0materialatex`; the G-buffer has no metalness channel.
+- Open: the column choice in a palette row and how metalness reaches the
+  output (decided in shader code, only partly read), how modifiers combine, the
   second layer's colour, modes 4 and 5, weapon colours.
 
 ## Open questions

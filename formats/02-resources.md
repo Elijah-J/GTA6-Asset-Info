@@ -25,6 +25,19 @@
 - Small graphics pages of meta resources are stored **uncompressed right
   after the zlib stream** (next 16-byte boundary), invisible to a zlib
   carver ([§8](08-meta.md)).
+- **Graphics page as its own stream** (2026-11-23; layout high, trigger
+  medium): when a map resource's last zlib stream inflates to a whole
+  multiple of 64 KiB (64 K, 128 K and 448 K seen; 105 files in the levels
+  archive, 2 in the minigame pack), the graphics page is not stored
+  uncompressed after it. It is a separate zlib stream a few KiB to about 20
+  KiB further on, 16-byte aligned, inflating to exactly the graphics block
+  extent or that rounded up to 64 KiB (e.g. 309,056 bytes needed, 327,680
+  stored). Files whose last chunk is partial keep the uncompressed page.
+  What fills the gap before the stream is unknown. Reading this layout
+  brought prop-batch instances with garbage transforms from 130,066 to 0
+  of 24.9 M in the levels archive and from 5,728 to 0 of 57,545 in the
+  minigame pack (together with the pool-reference rule in
+  [§8](08-meta.md)).
 
 ## 2.2 Resource types
 

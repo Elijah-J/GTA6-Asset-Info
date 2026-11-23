@@ -23,6 +23,7 @@
 |---|---|---|
 | `4aa38282` `standard_vehicle_2lyr` | **not only body paint**: one SUV has 12 materials on it, the largest (82 K triangles) spanning the whole car including the interior. Rule of thumb (inferred): a material is body paint when it binds no detail texture and its meshes sit on body bones. Real per-part colours are not decoded | confirmed (coverage) |
 | `99ad6fc9` `standard_vehicle_2lyr_tyre_inst` | tyres; `diffusetex` is the engine-default white | confirmed |
+| `c5cdbdd2` `standard_vehicle_2lyr_wheel_inst`, `99ad6fc9` | rims and tyres embed one **129 × 1 tint palette**, `584f3a883128c1a4`, identical on every rim and tyre looked at: entries 0–7 pure red, yellow, green, blue, magenta, grey (85), orange, cyan; 8–63 shades in groups of four; 64–128 one pink. Probably a placeholder the game overwrites with the wheel colour (inferred from the marker colours and the sharing) | palette confirmed; role medium |
 | `389206d1` `standard_vehicle_alpha` | lamp lenses and clear covers, alpha bucket. `diffusetex` RGB is one constant colour (128, 128, 98 on the sample), opacity in alpha (78–255); also `extinctionlut` and `refractionbumptexture` slots. 41 materials in a 20,000-model sample | confirmed on one vehicle |
 | `03b27476` `standard_vehicle_2lyr_reflector` | lamp reflectors (earlier grouped with car paint) | inferred (name, position) |
 | `29648098` `standard_vehicle_emissive_animated_bones`, `5a693bbe` `standard_vehicle_emissive_layer` | lamps and lit panels; `emissivetex` (`8e0d63ee`) and `diffusetex` bind the same texture | confirmed on one vehicle |
@@ -71,6 +72,10 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   (1.625 × is fitted); the tyre width.
 - The shader constant buffer.
 - The `19df25d7` palette lookup, which two-layer materials are painted, and the channel layout of the layer maps.
+- Where the rim colour comes from: vehicle configurations store one body
+  colour; variation sets have a list (`0bf8dac6`) parallel to the paint
+  list, holding 64-bit hashes (4 distinct in the one resource looked at),
+  meaning unknown.
 - Spawn configurations list about 100 part joaats; only rim, tyre, caliper, brake disc and one damage part resolve, and 0 of 218 are bone names.
 
 

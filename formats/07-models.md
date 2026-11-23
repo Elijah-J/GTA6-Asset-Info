@@ -40,6 +40,7 @@ u32 magic `0x4042` at 0.
 | 6 | 0x26 | 4 | skin weights, 4 × u8 (sum 255), with slot 8 format 0x25 | confirmed |
 | 8 | 0x00 | **1 or 2** | skin joint: one bone index, weight 1. Width = section size / V (next section offset − this offset). 1 = u8, **2 = u16 LE** | confirmed |
 | 8 | 0x25 | 4 | skin joints, 4 × u8 (wheels, tyres, ped clothing) | confirmed |
+| 8 | 0x4A | 8 | skin joints, **4 × u16**, weights in slot 6 (2026-11-23). On the 284 `_hi` vehicles' LOD 0 meshes: 440 meshes in 159 models (10.4 M vertices: body, trim, door cards); indices stay below the bone count (max 383 of 384); 4 of the 440 have an index that does not resolve. Slot 8 elsewhere: format 0x00 4,644 meshes, 0x25 382, 0x8C 157, none 2,551 | high |
 | 7 | 0x26 | 4 | ped meshes: a second set of 4 skin weights (the 8 weights sum to 255) | confirmed |
 | 9 | 0x25 | 4 | ped meshes: a second set of 4 skin joints, with slot 7 | confirmed |
 | 11 | 0x27 | 4 | tangent R10G10B10A2: xyz = v / 1023 × 2 − 1 (model space); A2 = 3 → bitangent sign w = −1 | confirmed |
@@ -192,6 +193,12 @@ should be re-exported.**
 
 Bone, joint and attach-point names (`suspension_lf`,
 `bonnet_catch_l_pos1_attach` …) are plain strings in the system page.
+`wheel_[lr][fmr]N` are the wheels. On a motorcycle `wheel_turn_lf` is the
+steering / fork bone (high: rotating it moves the fork), and
+`wheel_parent_lr` and `wheel_lr_drive` carry the swingarm and the drive
+(medium). Open: why slot 8 uses format 0x4A instead of a width-8 format-0
+stream, and whether the 2,551 vehicle meshes without slot 8 bind to a bone
+some other way.
 
 The separate [fragment physics tables](13-collision.md#134-fragment-physics)
 link groups of collision shapes to skeleton bones on the two ambient rigs.

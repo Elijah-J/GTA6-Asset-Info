@@ -200,6 +200,45 @@ steering / fork bone (high: rotating it moves the fork), and
 stream, and whether the 2,551 vehicle meshes without slot 8 bind to a bone
 some other way.
 
+**Bone names are not only letters, digits and underscores** (2026-11-23,
+high): vehicle skeletons hold breakable-joint bones named like
+`connect-chassis-bumper_f-1`. A reader that ends the bone array at the
+first such name cuts the skeleton short; on a motorhome it stopped at bone
+107, before the wheel bones, leaving 18 meshes with joint indices past the
+bones read. The array continues with consecutive index fields, and with
+dashes allowed the wheel bones appear and the wheels mount. Allow at least
+`-`, `.`, `#`, `+` and space; the full character set is unknown.
+
+**More vehicle bones** (2026-11-23):
+
+- **Dual wheels** (high): the inner wheel of a pair has its own bone, the
+  outer wheel's name plus `_inr` (`wheel_lr_inr`, `wheel_lm1_inr`,
+  `wheel_rf_inr`), and its own [wheel disc](13-collision.md#vehicle-fragment-bounds-and-wheel-discs).
+  Outer and inner discs: x = 1.44 and 0.98 on a semi-trailer chassis
+  (radius 0.6, half width 0.174), 1.11 and 0.99 on a small baggage trailer
+  (radius 0.18, half width 0.052). Two equal discs can lie within 12 cm on
+  one axle line, so match each wheel bone to the nearer disc.
+- **Wheel helpers** (high for the names): `wheel_turn_<pos>` (steering),
+  `wheel_<pos>_drive`, `wheel_parent_<pos>`, `hub_<pos>`,
+  `spacer_wheel_<pos>`, `camber_<pos>`. A train car has `bogie_f` and
+  `bogie_r`, with four wheel bones each (`wheel_lf`, `wheel_lm1`,
+  `wheel_rf`, `wheel_rm1`; `wheel_lm2`, `wheel_lr`, `wheel_rm2`,
+  `wheel_rr`). Rail wheels use `rim_train_001` with no tyre in the
+  configuration; that rim reads as a wheel with an axle stub (bbox x −0.82
+  to 0.39 at radius 0.5; medium).
+- **Convertible soft top** (bones high): a bone `convertible_roof` with 39
+  descendants on the one car looked at: `frame_base`, `top_frame_front` /
+  `_rear`, `tension_bow`, `tension_frame_front` / `_rear_upper` /
+  `_rear_lower`, `bow_overhead`, `rearwindow_bow`, `SoftTop_01`–`09` (some
+  with `_L` / `_Mid` / `_R`), `softtop_lowlod`, and `roof_cover_ctrl` >
+  `roof_cover`. The folding animation is not found: no clip dictionary name
+  contains the car's name, a roof bone name, `softtop` or
+  `convertible_roof`.
+- An electric scooter has `wheelScale` 0.08 and no rim in its
+  configurations, like helicopters, but it does have wheel discs (radius
+  0.145). A tanker trailer body has 55 bones, none for wheels or axles, and
+  no discs; which chassis carries it is unknown.
+
 The separate [fragment physics tables](13-collision.md#134-fragment-physics)
 link groups of collision shapes to skeleton bones on the two ambient rigs.
 
@@ -449,7 +488,9 @@ reflex mount attach (no matching `WAP` bone on the builds tried).
 - Why some vehicle skeletons stop early: `dominator_hi` (72 bones) and
   `trotter_hi` / `_mid` (107) end after `cargo_volume`, `chassis_dummy` and
   `chassis_lowlod`, though their strings hold the door and wheel bone names
-  (typical cars have 270–390 bones; 3 of 365 bodies).
+  (typical cars have 270–390 bones; 3 of 365 bodies). *Probably the
+  bone-name character set above (a reader stopping at a dashed name);
+  inferred, these three not re-checked.*
 
 
 ---

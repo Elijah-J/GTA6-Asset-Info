@@ -471,7 +471,19 @@ files).
   `wavy`, `sb`, `curly`, `sf`, `sm`, `l01`–`l09`, `p`, `sr`, `braided`,
   `f01`–`f03`, `full`). `3938f375` is one hash with 217 distinct values
   (two resolve to character names; one value covers 489 assets);
-  `86a7e2f6` one hash with 171 values, none resolved.
+  `86a7e2f6` one hash with 171 values, none resolved. *Later (2026-11-23,
+  confirmed):* the `e3da9c8b` list is joaat of the words of the asset's
+  name (`hair`, `lob`, `wavy`, `l08`, `non`, `sf`, `n`), or the whole stem
+  for a character's own asset; fit and number are not among them.
+- **Piece ids** (2026-11-23): hair / fur assets list 5,591 distinct piece
+  ids against 5,599 groom pieces in the archive. Nine single-piece assets
+  have a piece id equal to their own GUID, so the ids look like GUIDs, not
+  name hashes (inferred). The wardrobe tag `023e5a2f` often names a
+  stand-in placeholder of another style (one placeholder prefix comes with
+  up to 25 GUIDs). The asset → groom file link is still not stored anywhere
+  found; placing by name words, archive order, piece counts and geometry
+  gives a probability (780 assets placed: 86 at 0.9 or more, 330 at 0.5 or
+  more).
 - **No name link** (confirmed negative): of 612,380 material presets, the
   429 named after hair or fur placeholders are all animal; none of the 856
   human placeholders has a preset named after it, and no hair asset field

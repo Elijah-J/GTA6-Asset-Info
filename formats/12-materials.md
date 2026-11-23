@@ -317,7 +317,46 @@ above that `4bfd27dd` is the only drawable key):
   struct `a5ea6310` {`fc7eaa76` variation id, `fee182a6` outfit type,
   `Scale`}. Only clothing sets are listed; head sets are not, which
   suggests any head set can pair with any listed clothing set (inferred).
-  Outfit types are shared between models.
+  Outfit types are shared between models. *Later (2026-11-23, confirmed:
+  ids resolve):* map struct `78262a67`, key joaat(model name); items list
+  the model's outfits in order with a fourth field, `548de055` (bool);
+  `Scale` is `3cba3fe6`. 2,717 models, 33,688 entries; for 2,689 models all
+  variations are in exactly one wardrobe resource. No default-outfit marker
+  was found; the 6,275 outfit type values are unresolved.
+- **Variations include variations** (confirmed on the resources checked): a
+  variation's item list (`fb5bb20d`) also holds ids that are not items of
+  the resource but other variations: a head set, a body set with the skin
+  meshes, brows, a body-shape preset (tagged `BodyShapePreset`). A full look
+  is the outfit plus everything it includes, recursively. *This weakens the
+  "head sets pair freely" reading above: an outfit can name its own head
+  set (not reconciled).*
+- **Item states** (`37e52277`): `StateName`; `46d26d93` a flat ARGB colour
+  (on about 14 K of 80 K garment items used by variations); and `e7cb9e1b`
+  with `41acf8eb` asset GUID, `ead733fc` colour texture and `d689b17f`
+  normal. For hair, brows, beards and lashes the GUID is the strand-hair
+  asset (confirmed: 668 of 670 are in the piece table). A head item's state
+  names the face albedo and normal (both in the texture stores); a body
+  item's colour texture is in no store (only masks, detail and normal maps
+  are), so body skin is probably built at run time (inferred). 54 % of
+  garment items used by variations store neither a state colour nor tint
+  bytes.
+- **Colour tag** `e60617ae` (confirmed): 20 distinct values over 103,231
+  tagged items; 18 are joaat of a colour word in lower case, capitalised or
+  upper case (black, blue, white, brown, gold, grey, khaki, red, silver,
+  navy, pink, green, purple, olive, yellow, orange, cream, beige), 99.5 % of
+  uses; `f90074d1` and `b64fdfce` are unresolved.
+- **Head tag `4bfd27dd` finds a wardrobe** when the model is listed under
+  another name: 159 of 327 character prefixes resolve only this way
+  (confirmed by count).
+- **Shoes:** the name token before `_full` is a heel class: `fh` (178
+  drawables, flat by geometry), `hh` 19, `sh` 7, `mh` 5 (inferred from names
+  and geometry); the foot pose per class is not found.
+- **Attached accessories:** a watch's mesh sits at its own root bone
+  (`Watch_Root`, under `SKEL_ROOT` at the authoring origin), with unused
+  attach bones `Watch_L_Wrist` / `Watch_R_Wrist` under `RB_L_Wrist01` /
+  `RB_R_Wrist01`; moving the root onto an attach bone places it (one watch,
+  by render). Item states named left / right probably pick the side (not
+  checked).
 
 **Dirt presets** (2026-11-23; high for the layout): plain XML in
 `common.rpf`. `CannedColors` maps a key to an RGB colour; `AlphaChannels`
@@ -368,7 +407,9 @@ unknown.
   sets `37e52277.46d26d93` holds ARGB colours (alpha `ff`), meaning
   unknown.
 
-Open: whether head sets really pair freely with clothing sets, the `StateName`
+Open: whether head sets really pair freely with clothing sets, hair palette
+`fcef23e3` (not `ped_tint_hair`), tints 1 and 2, which cut skin mesh goes
+with which garment, body-shape preset values, the `StateName`
 states, and most scalar fields of `f795e8ba`; the same structs appear in
 hundreds of other resources, keyed by shared Category ids.
 

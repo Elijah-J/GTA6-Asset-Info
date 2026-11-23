@@ -503,7 +503,15 @@ machete and grenade; bone lists from one rifle and one pistol):
 `speculartex2` and no colour map (66 of 72 part materials looked at). Both
 specular maps are linear BC7 data (1024² on a stock); the second's red
 channel looks like a metal mask. The colour probably comes from a material
-palette (medium, inferred from the missing colour map).
+palette (medium, inferred from the missing colour map). *Later look at one
+pistol part (2026-11-23; contents high, roles low):* every channel is
+greyscale data. `speculartex`: R dark surface detail, G detail centred on
+0.5, B flat 0.5, A an occlusion-like mask. `speculartex2`: R sparse wear
+specks (not read as a metal mask here; not reconciled), G broader dirt /
+wear, B centred on 0.5 (height-like), A 255. The 0.5-centred channel is the
+same pattern as the vehicle layer detail maps, which suggests a 0.5-centred
+channel picks a position along a colour ramp (inferred; the shaders are
+native code). The colour data itself was not found.
 
 Open: which variant of each slot a weapon carries by default and where part
 colours come from; what mounts on the `WAP_Rail_*` points and how the shared

@@ -302,9 +302,22 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, which
     option-list entry is used, livery layers, and which configuration a
     spawned vehicle gets.
-- Open: the column choice in a palette row, how modifiers combine,
-  metalness, the second layer's colour, modes 4 and 5, rim, tyre and weapon
-  colours.
+- **Wheel colours** (2026-11-23; ids and shared palette high, medium that
+  nothing else recolours rims): the shared rim and tyre models
+  (`standard_vehicle_2lyr_wheel_inst` `c5cdbdd2`, `…_tyre_inst`
+  `99ad6fc9`) bind the same `19df25d7` material palette as bodies, and their
+  vertices carry part ids in the vertex colour alpha (one sports rim: 244 on
+  most vertices, then 241, 240, 239, 31, 237). The ids index the part set
+  of the vehicle the wheel is fitted to: its part table has entries for the
+  237–248 range, and its configurations bind wheel groups to channels with
+  colour and surface records like any other part. So rim colour is per
+  vehicle and per configuration, from the same data as body parts
+  (rendered this way, a plausible grey alloy with darker centre parts on
+  three vehicles). The embedded 129 × 1 marker palette on the wheel shaders
+  is still unexplained.
+- Open: the column choice in a palette row and metalness (both decided in
+  shader code, which is native and not read), how modifiers combine, the
+  second layer's colour, modes 4 and 5, weapon colours.
 
 ## Open questions
 
@@ -317,7 +330,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
 - Where the rim colour comes from: vehicle configurations store one body
   colour; variation sets have a list (`0bf8dac6`) parallel to the paint
   list, holding 64-bit hashes (4 distinct in the one resource looked at),
-  meaning unknown.
+  meaning unknown. *Answered (2026-11-23): from the vehicle's part set, see
+  [wheel colours](#vehicle-part-colours); `0bf8dac6` is still unknown.*
 - Spawn configurations list about 100 part joaats; only rim, tyre, caliper, brake disc and one damage part resolve, and 0 of 218 are bone names.
 
 

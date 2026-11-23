@@ -13,7 +13,7 @@
 | `4d56d7fe` / `2bb2ede8` (`lyr1materialatex` / `lyr0materialatex`) | BC1 atlas, normal-like | inferred |
 | `84c69350` / `58b6e707` (`lyr0normaltex` / `lyr1normaltex`) | BC5 normals | confirmed |
 | shader constant buffer (+0x08) | ~0x160 bytes of floats, layout not keyed by the parameter table | unknown |
-| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours) | format, sharing confirmed; role high |
+| `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours). **Array of 8 slices (2026-11-23, high):** the texture is 128 × 256 × 8 slices; the descriptions above looked only at slice 0. A colour record's Page is the slice, Selection the row ([slices](#palette-slices)) | format, sharing, array confirmed; role high |
 | `346394ea` / `7d4f12e2` (`lyr0diffusetex` / `lyr1diffusetex`) | **linear BC7 detail maps, not colour**: R and G grey around 0.5, B a sparse mask | confirmed (not colour; channels on one map) |
 | COLOR0.a on `standard_vehicle_2lyr` | a **part id** (0–255, a few values per material), not a layer weight | confirmed (ambulance, SUV) |
 
@@ -401,9 +401,29 @@ Reading: page 1 = paint rows filled at run time, page 3 = fixed materials,
 page 5 = wear colours (primer, rust). The three surface records per part
 would then carry Y's picks A, B and C (base colour and two wear layers).
 The field first documented as "mode" (`adb52ec3`, 1 and 3) is Y's Page A.
-If this holds, the palette texture is an array of at least 6 slices (not
-checked against the texture header). Open: what group X's second palette
-(page 2, up to 512 rows) is.
+
+<a id="palette-slices"></a>**Confirmed (2026-11-23, high):** the palette
+`19df25d7` is an array of 8 slices, and Page is the slice index: every
+(Selection, Page) pair with both values ≥ 0, in every group of every
+record, lands on a non-black row of that slice (0 misses).
+
+| Slice | Content | Picked by |
+|---|---|---|
+| 0 | dark (left) to bright (right); rows 1–32 near-black | `albedoSelection` with `albedoPage` 0 (220 rows) |
+| 1 | bright to darker, many near-grey | Y's first pick, Page 1 (245 rows, 0–246) |
+| 2 | white to a tinted colour | X's first pick, Page 2 (same row as Y in 1,834 of 1,851) |
+| 3 | saturated fixed-material colours | either group's first pick with Page 3 (175 rows, 79–255) |
+| 4 | mostly near-black (186 rows) | `albedoPage` 4 |
+| 5 | greys to brown, wear colours | Y's picks B and C (167 rows) and `albedoPage` 5 |
+| 6, 7 | near-black everywhere | nothing |
+
+So the row in `c8313558` belongs to slice `adb52ec3` (1 or 3), not slice 0.
+Slices 1, 2, 3 and 5 run bright to dark from left to right, the opposite of
+slice 0. *Correction:* group X is not a taller palette; only 3 of its 1,503
+selections exceed 255 (the 0–511 range above comes from those few). Open:
+what is written at run time into the near-black rows (slice 0 rows 1–32,
+most of slice 4, slices 6 and 7), and which shader inputs read group X and
+`albedoSelection`.
 
 **Per-part entry references** (`825d57ab`; high, every name resolved over
 7,966 entries): `albedoPalette` → colour record `f1379639`;

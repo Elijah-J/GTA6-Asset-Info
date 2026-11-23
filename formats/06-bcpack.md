@@ -306,7 +306,18 @@ bit positions and O on the odd ones.
   block whose index chain stays inside the chunk, each anchor index decodes
   with its top bit clear: BC6H 0 violations in 2,433,955 anchor reads (all
   268 chunks), BC7 0 for the primary set in every mode. This gives exact
-  constraints on index preset values at anchor pixels.
+  constraints on index preset values at anchor pixels. Over the full BC7
+  corpus with the secondary reset: 0 violations in 24,316,547 anchor reads
+  across all 5,167 chunks, both index sets, every mode. The fitted BC7 index
+  presets needed only 7 value changes to satisfy it (374 violations in
+  131,497,437 table-dependent reads before, 0 after); 1,166 of the 2,942
+  preset entries read as anchors are pinned to one exact value.
+- **BC6H no-wrap rule** (2026-11-23, high): in transformed modes an
+  endpoint is w plus a signed delta, and it never leaves [0, 2^bits): 0
+  wraps in 1,606,398 table-independent endpoints (all 268 chunks). The
+  fitted endpoint presets break it in 23,162 of 30,227,202 table-dependent
+  endpoints (0.077 %, concentrated in a few slots), so those values are
+  wrong; a refit is under way.
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606
@@ -494,6 +505,11 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
      plain references weighted higher.
   6. After any refit against a subset, check each changed field on every
      texture of the codec and keep the old value where it is better.
+  7. Use the exact rules (anchor top bit clear, BC6H no-wrap, mode 1 p-bit
+     agreement) as hard constraints. Do not fit BC6H delta presets by
+     centring the deltas on zero without reference pixels: it lowered the
+     plain-reference score from 87.7 to 83.8 %, so deltas are not
+     zero-centred.
 - **Fitted tables** (not game data): BC3 presets (256 slots, colour and
   alpha), its colour quadrant codebook (256 entries, BC1's layout with
   other entries) and alpha index-pair table (64 entries of two 3-bit
@@ -510,10 +526,13 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
   15), 720 pinned to one exact value, 235 to two, 0 violations left. Mip
   check on BCPack-only textures: median 19.6 → 22.1 dB, under 20 dB 51.7 →
   36.0 % (plain BC6H 29.1 dB); plain-reference check unchanged at 87.7 %,
-  28.6 dB. BC6H is still not exact: blocks whose endpoint chain starts
-  inside the chunk score much worse on the plain-reference check than
-  table-rooted ones (53 % against 89 % within tolerance), which suggests the
-  zero-distance default or another endpoint rule is still wrong (open).
+  28.6 dB. BC6H is still not exact. (Blocks whose endpoint chain starts
+  inside the chunk score lower on that check, but that comes from three
+  high-contrast modes, the 7-bit / 6-bit-delta two-region mode and both
+  untransformed modes, which score low against a downsampled reference
+  wherever they occur; zero-distance blocks of the 10-bit untransformed
+  mode match the reference per-channel ranges. No BC6H rule error is
+  indicated.)
 - **BC7:** the order of the mode 0 / 2 headers is fitted (medium).
 
 **BC1/3/4/5:** Confirm the disputed or fitted endpoint presets and selector

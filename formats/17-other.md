@@ -525,6 +525,17 @@ byte is its class.**
   fields, the unknown header field sizes, the gap chunks of the split
   file, the headerless classes 17, 49 and 57, the game-object fields, and the other schemas
   (game objects, speech and others use a different header).
+- **Vehicle game objects** (2026-11-23): the game-object file (schema 581,
+  115,183 objects) has one object per vehicle, named by the model name hash
+  (the same joaat as the model): class 9, 108 bytes. After a 12-byte start
+  (class, a flags word, the name hash again) come about 17 u32 references
+  to other objects of the same file, as indices in data-offset order like
+  the sound files, `0xffffffff` = none. The targets are of classes 206 (24
+  bytes), 209 (40), 238 (28), 218 (8), 252 (12), 161 (36) and 44 (200);
+  several are shared by all vehicles (the same class-44 objects at the same
+  positions in three vehicles). High for the object and the reference
+  convention; no field meaning is known (which reference is the horn, for
+  example).
 
 ## Animation
 

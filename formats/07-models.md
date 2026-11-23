@@ -438,6 +438,29 @@ per-layer vec4s are in [§12](12-materials.md).
   windscreen end, one convertible's at the nose). Doors have a
   `door_droop_<side>` parent. Open: opening limits, and hinge axes that are
   neither vertical nor lateral.
+- **Lamps** (2026-11-23, high: bone and shader names plus skinning on three
+  vehicles): a lamp is up to three meshes on its own bones: a reflector
+  (`standard_vehicle_2lyr_reflector`, `03b27476`) skinned to the lamp
+  bone, a lens (`standard_vehicle_alpha`, `389206d1`) skinned to
+  `<lamp>_glass`, and on some lamps an LED mesh
+  (`standard_vehicle_emissive_animated_bones`, `29648098`) skinned to the
+  lamp bones. Lamp bones seen: `headlight_l` / `_r`, `headlight_hi_l` /
+  `_r`, `headlightcase_lf` / `_rf`, `drlight_lf` / `_rf`, `taillight_m`
+  (and `_l` / `_r`), `brakelight_l` / `_r`, `reversinglight_l` / `_r`,
+  `indicator_lf` / `_lm` / `_lr` / `_rf` / `_rm` / `_rr`, `platelight`,
+  `bootlight_ls`, `doorlight_lf` / `_rf`, `interiorlight`, each with a
+  `_glass` partner where it has a lens. On one sports car one 485-triangle
+  LED mesh is skinned across 13 lamp bones; on a saloon the LED mesh covers
+  only the two `drlight` bones. How the game switches a lamp is not decoded
+  (the shader name suggests the lamp bones are animated; no clip or value
+  was read).
+- **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents
+  of the front wheel bones (on a motorcycle `wheel_turn_lf` is the fork); the
+  steering wheel is bone `steeringwheel` under `steeringcolumn`. Model info
+  `steerWheelMult` is 0.7 on a sports car. No 0x7a resource in `data.rpf`,
+  `packs.rpf` or `common.rpf` holds a handling record (searched by value);
+  the handling rows are in a PSO instead
+  ([§17](17-other.md#vehicle-handling)).
 - **Damage parts**: separate fragments `<car>_dmg_mod_<part>_NNN`.
   **Mod-kit parts**: `<car>_<part>_<kit>`. Both with `_hi`/`_mid`.
 

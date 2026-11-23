@@ -261,7 +261,7 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     channel meaning medium). The array uses member type 0x44 (a pool
     reference u64, then u16 count and u16 capacity, [§8](08-meta.md)); the
     same type holds number plate text in `7e0936de` (name + characters) in
-    vehicle packs.
+    vehicle packs (4 plate strings in the one vehicle checked).
   - **Binding** `501ff112` (medium-high): `662d9b79` group, `178cc382`
     channel, `1470edc0` priority and six flags, of which `c8d27281` =
     colour and `7a84e7bf` = surface (`75939b79`, `db4bdec4`, `e2e82803`,

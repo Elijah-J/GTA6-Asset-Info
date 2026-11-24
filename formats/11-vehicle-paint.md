@@ -142,7 +142,28 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     every stock alternative as elements: bonnet variants, aerials, roof
     lights, and the vehicle model itself at bone 0. Which alternatives the
     game shows is not decoded (records `6191ddc2` / `deade5a9` name
-    elements).
+    elements). *Decoded below (switches).*
+  - **Switches and keys** (2026-11-24; record layout high, precedence
+    medium: read from two vehicles, not checked in game):
+    - Switch `6191ddc2`: name; `89f7b2c6` default element name (0 = none);
+      `99773916` options, each a `deade5a9` {`3ffe5fbc` key, `295c3278`
+      second key (0 = none), `58994e97` element name (0 = none)};
+      `f6f1b5b2` unknown (0 in the records read). A switch is named in the
+      modifier list (`61e1e572`) of the part it belongs to: the chassis
+      part, or for example a front bumper for its own plate mount.
+    - Key modifier `b21fa2e2`: name, `c3afd061` key (the same hash as
+      joaat(`trigger`), probably the field name). Parts name key modifiers
+      in `61e1e572`, in vehicle packs and in the shared library; 14 of the
+      15 keys of one pickup's switches are found there.
+    - Reading: a fitted part sets keys. While its part is fitted, a switch
+      shows the element of the option whose key (and second key, if any)
+      is set, else its default element. Example: a front plate part with
+      no model sets a key, and the chassis switch then shows the stock
+      bumper's plate bracket, unless a fitted bumper's key is also set, in
+      which case that bumper's own switch shows its bracket.
+    - 142 vehicles have switches (1,042 switches, 158 with a default
+      element); 399 of those vehicles' 2,187 configurations set a key some
+      switch answers to, and 65 match more than one option of a switch.
   - Pickups have a bed model `<model>_pickup`; parts that fit a bed put
     their models at bone `mod_bed_attach`. The part in the bed slot
     (`1c9dd6fe`) names its models by hashes that match no model name, so
@@ -498,6 +519,13 @@ most of slice 4, slices 6 and 7), and which shader inputs read group X and
 `specularPalette` → `e50efcde` (name, specular colour); `paintPalette` →
 coat record `2b84f07e`; `materialPresetPalette` → surface record
 `9e4de959`.
+
+**Paint finish** (2026-11-24; numbers high, that the game shows paint
+exactly so medium: flake, pearl and the wear layer are not decoded): each
+part id's surface record gives low / high roughness and metalness. For the
+primary-paint parts the vertex-weighted values are non-metallic on all
+eight vehicles checked, with roughness 0.06–0.17 on cars, trucks and a tank
+and 0.5 on a motorhome's painted parts.
 
 **Surface names** (2026-11-23; the only 1–3 word hits for these hashes, and
 each fits the record type its values name on all 757 surfaces; high). The

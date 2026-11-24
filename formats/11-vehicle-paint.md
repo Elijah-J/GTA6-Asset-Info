@@ -122,18 +122,37 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   - In the library the **low 32 bits of `8605bf0e` are joaat of the
     element's model name**: 1,996 of 2,027 elements name an existing model
     this way. In a vehicle's own pack the low half often matches no model
-    name (see the part-set reading above).
+    name (see the part-set reading above). *Answered (2026-11-23, high):*
+    in the packs `8605bf0e` is a **64-bit asset id**: the first half (h1)
+    of MurmurHash3 x64 128, seed 0, over the model's lower-case name
+    without LOD suffix. All 69 elements of one pickup's pack resolve to an
+    existing model, and 13,274 of 13,349 elements across all vehicle packs
+    (checked on the low 32 bits). The library's 32-bit field is joaat
+    instead. The same 64-bit value names the model's part set
+    (`f14244fd`), so a part set's name is its model's asset id (high for
+    element → set; not checked set by set against model names). Whether
+    other 64-bit ids (texture hashes, light archetype ids) use the same hash
+    is not tested.
   - Truck bodies are shared models `truckbeds_<kind>_<nn>[_lrg|_med]` (box,
     flatbed, garbage, mixer, tanker, tipper, cartransport, fifthwheel, plus
     sideguards and footboards), placed at bone `cmnb_truckbed_attach`; 202
     library elements name one.
   - The first part of every configuration is `<model>_chassis` (all 26
-    trucks and pickups tried).
+    trucks and pickups tried). The chassis part (slot `chassis`) lists
+    every stock alternative as elements: bonnet variants, aerials, roof
+    lights, and the vehicle model itself at bone 0. Which alternatives the
+    game shows is not decoded (records `6191ddc2` / `deade5a9` name
+    elements).
   - Pickups have a bed model `<model>_pickup`; parts that fit a bed put
     their models at bone `mod_bed_attach`. The part in the bed slot
     (`1c9dd6fe`) names its models by hashes that match no model name, so
     that link is not decoded (the bed placement above is by name and bone,
-    medium).
+    medium). *Decoded with the asset id above (high):* beds are fitted by a
+    part of the vehicle's own pack in slot `1c9dd6fe` (name unknown), with
+    elements for the bed (bone `mod_bed_attach`) and usually the rear
+    bumper. All 23 pickup and flatbed models are named by such a part, each
+    in its vehicle's configurations; one vehicle has pickup, flatbed, cargo
+    flatbed and tow bed parts in that slot, chosen per configuration.
   - A part list contains every choice of its option lists, so two beds can
     appear in one list; the game takes one.
   - Record `be692119` in a vehicle pack (96 bytes: name, kind hash,

@@ -319,7 +319,7 @@ three keys:
 |---|---|---|
 | `e12585d1` | one shared texture, BC1 512 × 512, array of 3 slices; each colour channel of each slice masks one face region (9: brow, eye, cheek and mouth areas, left and right) | region masks (high); wrinkle masks (medium) |
 | `85858f5e` | one shared texture, BC1 1024 × 512: red on brows, eyelids, nose bridge and chin, green on cheeks and neck, blue around the mouth | unknown (medium-low) |
-| `2633887d` | one per sex; about 60 named-character presets override it with their own. None of the 61 distinct hashes is in any texture store | probably the wrinkle normal map (guess) |
+| `2633887d` | one per sex; about 60 named-character presets override it with their own. None of the 61 distinct hashes is in any texture store; a search of every archive found them only inside the presets that name them | probably the wrinkle normal map (guess) |
 
 Counts: 29,093 presets list a head drawable; of 1,300 distinct face
 albedos, 1,291 resolve keyed textures (1,269 all three keys, 22 without

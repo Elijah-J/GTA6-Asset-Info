@@ -509,7 +509,9 @@ and names high, names re-hashed with joaat; readings marked inferred):
   `3b7601de` = list of {Key: layer hash, Item: list of {Key: 1 or 2,
   Item: u64 mask}}. The masks probably address the `GM_U01_*` region bones
   ([§7](07-models.md)) of the keyed layer (inferred); what keys 1 and 2
-  mean is unknown.
+  mean is unknown. *Refuted (2026-11-24): the `GM` bones are a shared
+  garment rig (69 bones, more than 64, and the same set on every upper
+  garment; see the layer table below), so the masks do not address them.*
 - **State names:** `base` `44e21c90`, `hairhidden` `612d31ea`,
   `hathairalt` `93be327e`, `maskhairalt` `54685207`, `hatcapbackwards`
   `1465a09b`, `hatunderhood` `e8cddf6b`, `left` `6fa34840`, `right`
@@ -526,7 +528,11 @@ and names high, names re-hashed with joaat; readings marked inferred):
   every one. One hair item has 7 states, each alternate naming a different
   hair asset.
 - Garment drawables carry one bone per body region, named
-  `GM_U01_<side>_<region>_<part>` (69 on one upper garment).
+  `GM_U01_<side>_<region>_<part>` (69 on one upper garment). *Later
+  (2026-11-24, high): every upper-body garment carries the same 69
+  `GM_U01_*` bones and every lower-body garment the same 51 `GM_L01_*`
+  bones; skin meshes have none, and hats carry `HatBand*` bones. So these
+  are a shared garment rig, not per-item regions.*
 - Reading (inferred): a hat switches the hair item to `hathairalt` or
   `hairhidden`. Open: the rule that picks a hair state for a given hat.
 
@@ -555,6 +561,27 @@ tshirt_b00, tshirt_c05}` and `feet_<fit>_000_{pantshigh_a02 … a04,
 shortshigh_a02, shortsmid_a02, pantsrip_a00, gstring_a00}`; female fits have
 `_full`, male fits only `nude_cull`. Which garment selects which cut is
 still unknown.
+
+**Body skin patches** (2026-11-24, high, read directly): the body skin that
+outfits name is a patch mesh, `<hand|feet>_<fit>_000_nude_cull`; the
+install has 22 of them and only the few garment-cut ones above. On one
+female fit the upper mesh has 5,821 vertices and 5,168 triangles in 535
+connected patches, the lower 2,794 and 2,112 in 368. 532 of the 535
+patches are contiguous vertex runs, in spatial order. The vertex is the
+same 76 bytes as the whole skin mesh; no vertex attribute is constant per
+patch, and vertex colour red equals green everywhere.
+
+**Ped layer table** (2026-11-24, high for the layout): a PSO file in
+`packs.rpf` (about 524 KB) holds 64 records of struct `5b61506c`
+{`6f0339bf` layer id, `Categories` a list of item category hashes,
+`bbdfcbac` a link holding another layer id}, and a map (`35ff19d7` under
+`83d0e903`) from 10 layer ids to region lists of struct `1a6f35e1`
+{`6680b9cc` name hash, `fe54524a` a number, three more u32 that are 0 in
+all 748 records}. Regions per layer: 273, 250, 68, 50, 40, 22, 16, 10, 10
+and 9; the numbers run from 1 up to 250. The layer ids occur only in the
+wardrobe resources and in three PSO files of `packs.rpf`. Open: what a
+region is and how its number maps to the 64-bit item masks; the 748 region
+names and the layer names other than `layer_1`–`layer_3`.
 
 **Negative results** (2026-11-23): head-shape distance does not identify a
 character (the nearest of 142 named female heads to `cs_lucia`'s is

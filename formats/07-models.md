@@ -260,7 +260,10 @@ with the palette, 50 % with the bone order.
 The palette names two kinds of bones:
 
 - the drawable's own `GM_U01_*` girth helper bones (69 on that top,
-  parentless, with parent-relative binds whose parent bone is not known);
+  parentless, with parent-relative binds whose parent bone is not known;
+  *the same 69 on every upper garment and 51 `GM_L01_*` on every lower
+  one, a shared garment rig, see
+  [§12](12-materials.md#material-presets-peds)*);
 - bones of a **shared ped skeleton** that is not in the clothing file: 596
   bones from `SKEL_ROOT`, with `BM_*`, `MH_*`, `RB_*` and `SEC_*` helpers,
   in the `ambient_femalebody` / `ambient_malebody` fragments of

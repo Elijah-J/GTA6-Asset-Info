@@ -512,7 +512,10 @@ per-layer vec4s are in [§12](12-materials.md).
       intensities 1000, 2600 and 4000, so the colour seen in game must come
       from the lens.
   - Open: what each flash type looks like over time (no table found in the
-    meta resources), the cycle length, the two clock values; whether the
+    meta resources; *a later search, 2026-11-24, also found none, counting
+    26 type numbers in 217 patterns, 168 on one clock and 49 on the other;
+    the count differs from the 29 above, probably from a different set of
+    patterns*), the cycle length, the two clock values; whether the
     light colour bytes are linear or sRGB, and where the lens colour comes
     from.
 - **Steering** (medium): `wheel_turn_lf` / `wheel_turn_rf` are the parents

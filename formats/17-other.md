@@ -549,6 +549,15 @@ byte is its class.**
   or an object reference. Emergency vehicles fill fewer fields than cars.
   No sound name hash appears in the record, so which vehicle uses which
   siren or horn is still unknown.
+  *File tables (2026-11-24, medium):* after the hash index comes a table of
+  one 12-byte entry per object (8 bytes of unknown meaning, then the
+  object's data offset; every offset matches an object). Then comes a
+  sorted list of 255,535 data positions; in the first 20,000, about three
+  quarters hold an object index or `0xffffffff`. The first table after the
+  data groups 7,305 hashes into 2,040 lists (the 2,040 entries above).
+  249 of 315 vehicle models have a class 9 record. No game object holds the
+  hash of a known siren sound or of a sound above one, so where a vehicle's
+  siren is chosen is still unknown.
 - **Siren sounds** (2026-11-23; names and waves high, from decoded audio):
   the sound file holds class-12 simple sounds under plain joaat names:
   `RESIDENT_VEHICLES_SIREN_WAIL_01`–`_04`,

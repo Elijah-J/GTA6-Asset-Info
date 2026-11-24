@@ -415,7 +415,11 @@ Distances as BC7 ([§6.3](#63-bc7-blocks-codec-0x1c)).
   the final block-to-pixel step (not tested).
 - **Indices:** the BC7 scheme with a 4-bit MSB-aligned state, 3-bit reads in
   two-region modes; distance 0 predicts 8. Anchor top bits are dropped
-  (truncating fits better than keeping them).
+  (truncating fits better than keeping them). *Superseded (2026-11-23,
+  high):* an anchor index never has its top bit set on chains that stay
+  inside the chunk (the [anchor rule](#63-bc7-blocks-codec-0x1c)), and the
+  published index presets satisfy it, so there is nothing to drop; the
+  earlier truncation was compensating for wrong preset values (inferred).
 
 Chunks of the lighting stores have inconsistent neighbouring mips (a flat
 mip 3 under a mip 1 with a logo), so they cannot be scored.
@@ -541,8 +545,20 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
   index presets (256 × 16, 4-bit); the BC7 header table (285 (E, O) pairs
   to mode, partition, rotation and index selection), endpoint presets
   (256 slots × 3 subsets × 2 endpoints × RGBA, 8-bit) and index presets
-  (256 × 2 sets × 16, 4-bit). They will be published here once the BC6H
-  and BC7 refits settle.
+  (256 × 2 sets × 16, 4-bit). **Published** (2026-11-23) in
+  [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) and
+  [`data/bcpack-fitted-tables.json`](data/bcpack-fitted-tables.json).
+  Slots fitted: BC3 35 of 256, BC4 172, BC5 214, BC6H endpoints 226 and
+  indices 251, BC7 endpoints 248 and indices 255; the rest are read by no
+  chunk. BC3 is the least reliable (34.3 dB against 50.3 for plain BC3, on
+  16 textures).
+- **Final BC7 figures** (2026-11-23, after a second alpha-aware refit; mip
+  check on 1,433 textures): colour mean 39.2 dB, median 38.1 dB, 4.6 %
+  under 30 dB, 1.2 % (17 textures) under 20 dB; alpha mean 49.2 dB, 13.2 %
+  under 30 dB. By format: median 37.6 dB on the 1,133 textures of DXGI
+  format 98 and 44.4 dB on the 300 of format 99 (plain BC7 40.9 dB). BC6H
+  unchanged: median 24.0 dB, mean 24.7 dB, 23.6 % under 20 dB (plain BC6H
+  29.1 dB).
 - **Anchor-consistent BC6H tables** (2026-11-23; tables medium-low): a
   joint fit of all slots on plain-reference and bootstrap chunks, then index
   presets made anchor-consistent: 992 slot / anchor entries (pixels 0, 2, 8,

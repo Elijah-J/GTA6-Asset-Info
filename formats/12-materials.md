@@ -441,7 +441,7 @@ re-hashed and matching; high for one- and two-word hits that fit the data):
 |---|---|
 | `f795e8ba` kit (the item / preset above) | `KitName` `65121749`, `TemplateName` `080eec39`, `States` `ebacf18c`, `Palette` `5ecf9331`, `Tint0` / `Tint1` / `Tint2` (`c4d75d79`, `f4fb3dec`, `ab5d2a85`), `GarmentPreset` `e13ebaf8`, `PropertyTags` `12f85293` |
 | `37e52277` kit state | `StateName` `3eaddcd7`, `Asset` `e7cb9e1b`, `KitLayer` `1d52bc91`, `ToStateNames` `83698d93`, `PropertyTags` `12f85293` (its own tags, 2026-11-24) |
-| `147fdab5` asset | `Drawable` `41acf8eb`, `Albedo` `ead733fc`, `Normal` `d689b17f` (2026-11-24), `Material` `9d1000d8` |
+| `147fdab5` asset | `Drawable` `41acf8eb`, `Albedo` `ead733fc`, `Normal` `d689b17f` (2026-11-24), `Material` `9d1000d8`, unnamed `b70a22c1` = keyed list of extra textures ([head maps](07-models.md#ped-heads-face-textures-confirmed)) |
 | `a9d57751` kit set | `IncludedKits` `fb5bb20d` |
 | other | `AssetName` `7deba6f8` |
 

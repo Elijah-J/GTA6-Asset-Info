@@ -307,6 +307,35 @@ Example: `cs_jada_watts_head_fr1_afr_000_y_full` (`eb9b7bee`) → albedo
 | crowd heads `hc_*`: tagged, but by presets with empty texture slots | — |
 | `a_head_base_*` and some `cs_*` heads (e.g. `cs_lucia`): not tagged in `packs.rpf`, and no link was found anywhere else in the install (the 188,449 meta resources of `levels.rpf` hold no presets) | — |
 
+**Extra head maps** (2026-11-24; structure high, roles as marked): a
+preset's state `Asset` (`147fdab5`) also has a keyed list `b70a22c1` of
+{Key u32 hash, Item {`AssetName` = 64-bit texture hash}}, and
+`TemplateName` names another preset (by `KitName`) that the preset inherits
+from; chains of two occur. The head templates `c17f02fe` (male base head,
+1,466 identical copies across files) and `a3bfa046` (female, 893) each list
+three keys:
+
+| Key | Texture | Reading |
+|---|---|---|
+| `e12585d1` | one shared texture, BC1 512 × 512, array of 3 slices; each colour channel of each slice masks one face region (9: brow, eye, cheek and mouth areas, left and right) | region masks (high); wrinkle masks (medium) |
+| `85858f5e` | one shared texture, BC1 1024 × 512: red on brows, eyelids, nose bridge and chin, green on cheeks and neck, blue around the mouth | unknown (medium-low) |
+| `2633887d` | one per sex; about 60 named-character presets override it with their own. None of the 61 distinct hashes is in any texture store | probably the wrinkle normal map (guess) |
+
+Counts: 29,093 presets list a head drawable; of 1,300 distinct face
+albedos, 1,291 resolve keyed textures (1,269 all three keys, 22 without
+`85858f5e`). Face albedos are BC1 sRGB, 1024² or 256²; face normals are BC5
+512 × 1024 with nothing packed in. The template's `Material` hash is in no
+store either. *The 723 / 350 above count presets whose parent is each
+template; the 1,466 / 893 here count copies of the templates themselves.*
+
+The head shader `ped_standard_head` is `379efcef` and the eye shader
+`ped_standard_eye` is `89a1cf72` (joaat). `ped_standard_head` has the
+slots `materialctexture`, `diffusetex`, `0cd27763`, `7c0055b9`,
+`0814a7fc`, `speculartex`, `diffusetexanimatedblend`, `bumptex` and
+`speculartex2`; head drawables bind none of them. Open: the three key
+names (not lower-case or PascalCase joaat of the obvious words), which slot
+each key feeds, and what fills the specular slots at run time.
+
 About 1,000 face albedos are ordinary textures in the `ttdb_peds_*_3`
 stores. `peds_loose.ttpf` holds clothing patterns, head-space masks (beard,
 brows, mouth) and red / green UV remap maps.

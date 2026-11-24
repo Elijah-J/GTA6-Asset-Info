@@ -607,7 +607,8 @@ the material palette guess:
 - *Negative result (medium):* the two material name hashes used by weapon
   component lists (`b5e90fae`, `228565d0`) occur in no decoded PSO or
   script document of the script archive, the story script pack or the
-  common archive, and a 1–3 word name search found no name. Where weapon
+  common archive, and a 1–3 word name search found no name. *Extended:*
+  they occur in no meta resource and no PSO file of any indexed archive. Where weapon
   tint colours are defined is unknown.
 
 Open: which variant of each slot a weapon carries by default and where part

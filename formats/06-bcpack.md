@@ -280,6 +280,15 @@ the 4-colour palette; alpha is standard BC3. The data uses 35 of the 256
 history slots; they and the selector codebook were fitted against
 neighbouring mips (no plain copy of any mip 0 exists).
 
+**Colour endpoint order** (2026-11-24, high): colour endpoint 0 is never
+below endpoint 1 as a 16-bit 565 value (0 of 61,383 blocks on chains
+without presets). With it as a constraint, preset-rooted violations fall
+from 727 of 534,073 to 13, and the two slots that held 713 of them go from
+about 36 dB to 41.4 and 38.9 dB against plain child mips. The same gap
+rule as BC4 (below) holds for BC3 alpha without presets (4 of 61,383
+exceptions), but enforcing it on the alpha presets raised the error, so
+they are unchanged (open).
+
 ## 6.3 BC7 blocks (codec `0x1C`)
 
 Decodes on all 5,167 chunks (2026-11-22). Lanes 0 and 1 are not BC3's
@@ -365,6 +374,12 @@ bit positions and O on the odd ones.
   differ). The fitted endpoint presets break this in 17,451 of 447,824
   table-dependent cases, so some preset values are provably wrong. *Later
   count over all BC7 mode 1 data:* 38,866 of 8,853,332 still mismatch.
+  *Exact rule (2026-11-24, high):* both endpoints of a mode 1 subset carry
+  the same p-bit position (bit 1 of the 8-bit MSB-aligned channel-0
+  state): 0 of 3,359,376 subsets differ on chains without presets. Used as
+  a constraint, it fixes the preset-rooted cases from 31,054 of 8,853,332
+  to 0 (103 of 478 slot / subset entries change, in the low two bits of
+  channel 0 only).
 - **History:** endpoints and indices both have a fixed 256-slot table. Each
   chunk's root blocks only fix the top w bits their mode reads, so the
   table was fitted by voting per value at each root's width (inferred).
@@ -394,6 +409,18 @@ pairs (fitted, inferred).
 BC4 and BC5 differ only in lanes 0–3 (8 bits each in BC4; 4, 4, 8, 8 in
 BC5). BC4's distance is unzigzag(v) mod 256 like BC1's; BC5's is BC3's
 bit-interleaved form (widths confirmed, meaning high).
+
+**Endpoint gap** (2026-11-24): e0 − e1 is never in −4 … 0, so 8-value
+blocks have e0 > e1 and 6-value blocks have e1 at least 5 above e0.
+
+- BC4 (high): 0 of 52,049 blocks on chains without presets. As a
+  constraint it cuts preset-rooted violations from 407 of 149,679 to 31;
+  against plain child mips 38.12 → 38.31 dB.
+- BC5 (medium-high, near-exact): 286 of 1,256,644 endpoint pairs break it,
+  leaving out the flat 128 / 128 default blocks (23,296 per channel).
+  Applied only where the child-mip error allows: preset-rooted violations
+  380,478 of 8,524,092 → 1,052; 38.98 → 39.60 dB. Whether the remaining
+  exceptions are real or mark further preset errors is unknown.
 
 ## 6.5 BC6H blocks (codec `0x18`)
 

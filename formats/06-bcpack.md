@@ -414,9 +414,31 @@ bit positions and O on the odd ones.
   Re-measured against every plain texture of the same store and size (82
   matched textures, lighting store left out), BCPack BC6H is about 1.1 dB
   below plain; 16.9 % of BCPack BC6H textures are under 20 dB against
-  2.1 % of plain ones.* The BC6H tables in
-  [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are this refit
-  (39 endpoint and 7 index slots changed).
+  2.1 % of plain ones.* This refit changed 39 endpoint and 7 index slots;
+  the BC6H tables in
+  [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are now the
+  edge-continuity refit that follows.
+  *Edge-continuity refit (2026-11-24; high that the changed slots were
+  wrong and are now much closer, three independent checks agree; values
+  still fitted):* flat areas of some BC6H textures decoded as speckle,
+  because neighbouring blocks whose endpoint chains start at different
+  preset slots got different colours. A reference-free check measures the
+  log2 pixel step across edges between neighbouring blocks rooted at
+  different slots; the normal step is 0.2. For 46 slots it was more than
+  1.0 higher with a constant sign, so the slot value was off by a large
+  constant. Each slot was refitted to minimise that step, with the no-wrap
+  rule as a penalty; 48 endpoint slots changed, no index slots. Real
+  references, which the fit does not use: down-mip 25.1 → 32.7 dB, up-mip
+  32.2 → 34.1 dB. Slots more than 1.0 above the normal step: 46 → 1. Mip
+  check of the 89 BCPack-only BC6H textures: median 25.7 → 29.1 dB, under
+  20 dB 21.3 → 5.6 %, 52 better, 2 worse (by 0.1 and 0.2 dB); the "before"
+  figures here are from a corrected pixel decode, so they differ from the
+  24.9 dB above. Blocks breaking the no-wrap rule rose from 221 to 288.
+  Against plain: plain BC6H textures of the same stores have a mip-check
+  median of 28.7 dB, and BCPack-only ones outside the lighting store now
+  28.8 dB, so outside that store BCPack BC6H is at plain quality on this
+  measure. Open: 20 slots still show a moderate edge excess (0.5 to 1.0
+  above normal).
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606

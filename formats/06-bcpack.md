@@ -82,6 +82,25 @@ BC5 is at plain quality and BC7 about 4–5 dB short. BC6H is weakest, partly
 because the measure clips HDR to 8 bits (plain BC6H reaches only 29 dB)
 and partly real; how much is each is open. The plain baselines contain
 real outliers (9.3 % of plain BC7 under 20 dB, where the mips differ).
+
+**Limits of the mip check and the fair gap** (2026-11-23, high for the
+counts):
+
+- The lighting store's mips are **prefiltered, not downsampled**, so mip 0
+  against mip 1 is not a valid check there: plain BC6H in that store scores
+  14.9 dB, and its BCPack blocks with a plain reference match only 12 %.
+  Leaving that store out, the BC6H plain-reference check reads 90.3 % of
+  blocks within tolerance and 32.2 dB. A refit that leaves it out of the
+  targets is running.
+- Comparing BCPack against plain textures **of the same store and size**
+  gives the fair gap: BC1 −2.2 dB (32,459 textures; 1024² −1.0, 512² −3.1,
+  128² −4.3), BC7 −2.2 dB (1,161), BC6H −3.9 dB (40), BC5 −0.6 dB (9). BC3
+  and BC4 have no matched plain textures. *This revises the reading above
+  that BC1's gap is only a population effect:* BC1 with the
+  [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) presets is not exact
+  either, and a refit of its preset table is running.
+- In the imposter store plain BC7 scores 22.0 dB and BCPack 22.9 dB, so most
+  BC7 textures "under 20 dB" reflect the check, not the decode.
 No exact preset values are published anywhere found.
 
 ## 6.1 What is solved

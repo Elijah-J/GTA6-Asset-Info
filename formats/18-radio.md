@@ -48,6 +48,47 @@ named by hash `0xA6D93246` in chunk `0xBD` as chapter times. The wave-ID
 and duration match identifies the mix even when a catalogue set-group ID
 gives only the station object.
 
+## Deterministic `GAME.DAT` / `SOUNDS.DAT` (`audMetadataFile` `0x045A88EA`)
+
+The zlib stream groups at the start of `audio.rpf` (before the first `ADAT` bank) can be parsed
+without hardcoded archive offsets by grouping consecutive 64 KiB streams until a short stream ends
+each `audMetadataFile` payload (magic `0x045A88EA` at `+0x08` after `u32 version, u32 meta_size`):
+
+- **Container layout:** metadata body (`meta_size` bytes from `+0x08`), `u32 s1_size` + section 1,
+  `u32 s2_size` + section 2 (note: uncompressed 64 KiB runs wholly inside section 2 may be skipped
+  by zlib-only carvers and must be subtracted before the object table), `u32 obj_count` +
+  `(u32 hash, u32 offset)` pairs sorted by `hash & 0xFF`, `u32 pre_ref_count` + `u32[]`, then
+  `u32, u32, u32 ref_count` + `(u32 target_hash, u32)` reference table.
+- **`GAME.DAT`** is identified by `joaat("RADIO_STATIONS_01")` (`type 0x0E`). Walking
+  `RADIO_STATIONS_01`..`16` (`count` byte at `+0x05`, `u32` ref indices from `+0x08`) enumerates
+  `RadioStationSettings` (`type 0x10`) objects:
+  - `+0x01` `u32 flags`: `(flags & 0x30) == 0x10` marks static world emitters (not on the player
+    wheel); `(flags & 0x0C) == 0x04` marks hidden player wheel stations (23 player wheel stations
+    total on the measured build).
+  - `+0x08` `u32 name_hash`, `+0x0C` `u32 wheel_position`, `+0x3C` `u32 tracklist_count` followed by
+    12-byte tracklist entries starting at `+0x40` (first `u32` is the tracklist ref index).
+- **`RadioStationTrackList` (`type 0x11`):** optional external `ObjectList` (`type 0x02`, `u32 count`
+  at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44` (`0xFFFFFFFF` if absent), plus `u16 inline_count`
+  at `+0x48` and `u32` refs from `+0x4C`. Tracklists not referenced by any `RADIO_STATIONS_01..16`
+  station represent unattached/script tracklists.
+- **`RadioTrackSettings` (`type 0x0F`):** `u32 sound_ref` at `+0x0C` resolves to a `SOUNDS.DAT`
+  `StreamingSound` (`type 0x08`) object.
+- **`SOUNDS.DAT` `StreamingSound` (`type 0x08`) -> `SimpleSound` (`type 0x0C`):** each
+  `StreamingSound` carries `u32 duration_ms` immediately before `0x0C <channel_count> <u32 child_ids...>`,
+  followed sequentially in the object table by `<channel_count>` `SimpleSound` (`type 0x0C`) objects
+  holding `(u32 bank_hash, u32 wave_hash)` at `+0x02` (`wave_hash & 0x1FFFFFFF` = AWC stream ID).
+  Parsing `StreamingSound` directly handles multi-channel (`channel_count > 1`) venue/club mixes as
+  well as single-channel radio tracks.
+
+## Track and station text lookup (`trackid` -> `GLOBAL`)
+
+For each `0xBD` `trackid` marker with track number `N > 1` (rejecting `0` and `1`), the game resolves
+label hashes `joaat("<N>s")` (title) and `joaat("<N>a")` (artist/show) in English `0DRP` text tables
+with `globalSearch` precedence: check the `trackid` table first, then fall back to `GLOBAL` only if
+the hash is absent from `trackid` (an explicit empty string in `trackid` stops fallback). Wheel talk
+radio segments carry an empty `<N>s` title and a non-empty `<N>a` show/host label. Station display
+names resolve `RadioStationSettings.name_hash` in `GLOBAL`.
+
 ## Build a rotating station timeline
 
 | Record | Observed layout relative to its tag |

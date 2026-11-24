@@ -194,6 +194,15 @@ with the files. Matching them in order against a plain-text content list
 is reported to recover names for some groups (unverified: the list is
 not identified).
 
+### Bink Audio 2.0 bitstream (`KB2n`)
+
+The 48 kHz stereo DCT audio tracks (`0x3000` / `0x7000`) inside `KB2n` files use Bink Audio 2.0
+packet coding: **7-bit** band quantizer indices and sign bits grouped **after** each non-zero
+coefficient run, rather than Bink Audio 1.1's 8-bit band quantizer indices and interleaved per-coefficient
+sign bits. Because the underlying DCT transform, quantization table, and overlap-add window match
+Bink Audio 1.1, packets can be losslessly bit-repacked to Bink Audio 1.1 (inside a minimal `BIKi`
+audio container) for decoding with stock FFmpeg `binkaudio_dct` without re-quantization or proprietary DLLs.
+
 ### Decoding
 
 (2026-11-23, high confidence.) A recent open-source Bink 2 video decoder

@@ -112,8 +112,11 @@ The `0x55` data is `block count` blocks of `block size` bytes; the last
 block is shorter and the data ends exactly at its end (all 3,008 streams).
 Each block:
 
-1. 24 bytes per sub-stream: u32 `0xFFFFFFFF`, u32 count of 2 KiB blocks,
-   u32 0, u32 samples (both channels counted, as above), u32 0, u32 0;
+1. 24 bytes per sub-stream: `u32` `0xFFFFFFFF` (`start_entry`), `u32` count of 2 KiB blocks (`subblock_count`),
+   `u32 skip_samples` (interleaved across packet channels; repeated prefix from the previous block, or
+   deficit-continued when the previous block stopped short of its `block_samples` budget), `u32 block_samples`
+   (interleaved sample budget for this block; trailing sub-block padding packets past `block_samples / channels`
+   are trimmed), `u32 0`, `u32 0`;
 2. one u32 seek table per sub-stream: a sample position per 2 KiB block;
 3. padding to 2 KiB;
 4. each sub-stream's 2 KiB blocks in turn, packed like single-channel

@@ -613,6 +613,9 @@ the material palette guess:
   per-component asset struct `85492dc3` field `72f5e33e` and the variant
   list `6724161c`.`14b064c2` hold keys of the weapon
   [layered material library](12-materials.md#layered-material-library).
+  `85492dc3`.`873ef899` is joaat of the component's model name (972 of
+  1,006 resolve), and `6724161c`.`c763edb4` names the part a variant
+  recolours (frame, body …).
   The Components list (struct `b8784be8`: id, material, byte `593b09b0`)
   is not the colour source: its two material values (the hashes above)
   match nothing in either library, and their role is still unexplained. Where weapon

@@ -209,7 +209,7 @@ The probability scale is 65536; because value 0 is reserved, each model's freque
 
 ## 6A.2 BC1 preset slots
 
-(Fitted against neighbouring mips by their author, not extracted; see [BC1 blocks](06-bcpack.md#bc1-blocks-codec-0x04).) Each slot is `R0 G0 B0 R1 G1 B1` (5, 6, 5, 5, 6, 5 bits). Slots 0 and 4 are never referenced and have no value (`-`). Slots marked `*` (33, 48, 73, 120, 159, 166, 194, 208 and 222) were refitted for this specification on 2026-11-24 and replace the third-party values; see the three-colour index check in [BC1 blocks](06-bcpack.md#bc1-blocks-codec-0x04) (medium-high). Further slots, among them 127, 152 and 192, are probably wrong but keep their third-party values.
+(Fitted against neighbouring mips by their author, not extracted; see [BC1 blocks](06-bcpack.md#bc1-blocks-codec-0x04).) Each slot is `R0 G0 B0 R1 G1 B1` (5, 6, 5, 5, 6, 5 bits). Slots 0 and 4 are never referenced and have no value (`-`). Slots marked `*` (33, 48, 73, 120, 159, 166, 194, 208 and 222) were refitted for this specification on 2026-11-24 and replace the third-party values; see the three-colour index check in [BC1 blocks](06-bcpack.md#bc1-blocks-codec-0x04) (medium-high). Further slots, among them 127, 152 and 192, are probably wrong but keep their third-party values. *A recount (2026-11-24) returns six of the marked slots to the third-party values and refits 17 others; these values are not yet published here (see [BC1 blocks](06-bcpack.md#bc1-blocks-codec-0x04)).*
 
 ```text
   0:  -                    1:  7 29  6  8 30  7     2: 15 29 15 16 36 17     3: 20 37 14  3  6  2

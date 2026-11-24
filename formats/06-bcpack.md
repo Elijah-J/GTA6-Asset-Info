@@ -268,6 +268,21 @@ directly; detile as for a zlib chunk.
   in [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots), marked `*`. 31 more slots moved in the fit but failed a test (no plain
   reference, or higher reference error; probably real cut-out textures),
   among them 192, 127 and 152; their true values are unknown.
+  *Revised (2026-11-24; medium, all fitted; new values not yet published):*
+  a slot's plain references come from few textures (often under 50), so
+  counting blocks overstated the evidence above. Counting each texture once
+  and validating on held-out textures, 6 of the 9 refits go back to the
+  third-party values (48, 73, 120, 159, 194, 208), 3 stay (33, 166, 222)
+  and 17 more slots are refitted: 20 replaced in all. Two independent
+  checks agree. Against the third-party window, the mip check of 35,533
+  BCPack BC1 textures has 2,003 better and 207 worse (837 more than 2 dB
+  better, 1 worse); under 20 dB 0.77 → 0.39 %; mean 33.58 → 33.79 dB.
+  Three-colour blocks using index 3 on preset-rooted chains (5 % sample):
+  121,918 → 50,334. Open: slot 152 (31 % of its blocks break the rule;
+  references inconclusive), slot 153 (the reference and mip checks
+  disagree), and slots 0 and 4 (no plain reference). Until these values
+  are released, [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) still
+  carries the nine earlier refits.
 
 **Prediction (BC1, BC3, BC7).** Every block is coded as residuals against a
 reference: the zero state (distance 0), block `i − d` of the same chunk in

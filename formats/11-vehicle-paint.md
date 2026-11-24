@@ -10,7 +10,7 @@
 | `84d22f74` | fine scratches and flakes | inferred |
 | `b9f4bdac` | grime | inferred |
 | `fb03ae36` (`dusttexture`) | green-dominant mask (mask pack or normal detail) | unknown |
-| `4d56d7fe` / `2bb2ede8` (`lyr1materialatex` / `lyr0materialatex`) | BC1 atlas, normal-like. *Later (2026-11-23, high, one car): **not a normal map**.* R and G are exact complements (R + G = 1, mean error 0.005, correlation −0.998) and only 54 % of texels are unit length (100 % on the real normal map): one signed edge / cavity signal stored as R = x, G = 1 − x, about 0.5 on flat areas. The pixel shader uses R as the metal blend (`metalLow` → `metalHigh`) and G as the roughness blend (`roughnessLow` → `roughnessHigh`); B and A are read, use not traced | inferred; later high |
+| `4d56d7fe` / `2bb2ede8` (`lyr1materialatex` / `lyr0materialatex`) | BC1 atlas, normal-like. *Later (2026-11-23, high, one car): **not a normal map**.* R and G are exact complements (R + G = 1, mean error 0.005, correlation −0.998) and only 54 % of texels are unit length (100 % on the real normal map): one signed edge / cavity signal stored as R = x, G = 1 − x, about 0.5 on flat areas. The pixel shader uses R as the metal blend (`metalLow` → `metalHigh`) and G as the roughness blend (`roughnessLow` → `roughnessHigh`); B is an **occlusion factor** multiplying both the diffuse-side and the specular-side colour at the end of the pixel shader (high); A is read once and unused in the variant read (medium, one variant) | inferred; later high |
 | `84c69350` / `58b6e707` (`lyr0normaltex` / `lyr1normaltex`) | BC5 normals | confirmed |
 | shader constant buffer (+0x08) | ~0x160 bytes of floats, layout not keyed by the parameter table | unknown |
 | `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours). **Array of 8 slices (2026-11-23, high):** the texture is 128 × 256 × 8 slices; the descriptions above looked only at slice 0. A colour record's Page is the slice, Selection the row ([slices](#vehicle-library-field-names)) | format, sharing, array confirmed; role high |
@@ -399,7 +399,7 @@ confirms the stem. Every name below was re-hashed and matches
 |---|---|
 | `307f162c` surface ranges (complete) | name, `metalLow` `f763652d`, `metalHigh` `09dd33c1`, `roughnessLow` `e4be3b70`, `roughnessHigh` `26e5d460`, `albedoMultiply` `4b19d0cb`, `albedoScreen` `de1ccc51`, `sunBleachScreen` `d3d2bcd6` |
 | `cf980e6f` detail set | `detailIndex0` / `1` (`57eed29a`, `3f50215d`), `detailStrength0` / `1` (`fc889990`, `0c1f38bd`), `detailRoughnessStrength0` / `1` (`d289cb55`, `39711926`), `detailTintStrength0` / `1` (`fcb994fa`, `27f2eb6c`), `detailTile0` / `1` (`f8602adc`, `ea228e61`), `detailFadeRange` `a2590842`, `anisoIndex` `39adfa9f`, `anisoTile` `913ee1ad` |
-| `9e4de959` surface | `detailTiling0` / `1` (`6c5cd25d`, `6322bfe9`), `detailRotation` `a6500dc0`, `paintHash` `96479496` (reference to the coat record), `primerType` `78b545dd` |
+| `9e4de959` surface | `material0Hash` `2cc72f7c` and `material1Hash` `174770cc` (each names a `307f162c` range record), `albedo1Hash` `5cffe5e0` (names a colour record `f1379639`), `detailMapsHash` `6c3ddabc` (names a `cf980e6f` detail set), `detailTiling0` / `1` (`6c5cd25d`, `6322bfe9`), `detailRotation` `a6500dc0`, `paintHash` `96479496` (reference to the coat record), `primerType` `78b545dd` |
 | `2b84f07e` coat | `useAnisotropy` `495363e4`, `anisotropyIntensity` `d92602db`, `clearCoatIntensity` `f0310a8b`, `clearCoatRoughness` `c5cb49ba`, `useSpecularColor` `61e82f14`, `useFlakes` `e57c6a65`, `flakeCoverage` `df5b7432`, `flakeSize` `ef79abb2`, `flakeOrientation` `a17adbe1`, `baseCoatRoughness` `c92019cc`, `useEmissive` `c8d48032`, `filmThickness` `85d188cc`, `sheenIntensity` `210d19b3`, `sheenFade` `469c3c58`, `sheenReflectance` `850e331c` |
 | `825d57ab` per-part entry | `index` `91501139`, `albedoPalette` `328f860c`, `specularPalette` `dd222aef`, `paintPalette` `a609a79a`, `materialPresetPalette` `db0f3f7c` |
 | `1b1a2e6c` preset set | `wearPresets` `edad007e`, `materialPresets` `0723c6c9` |
@@ -463,6 +463,16 @@ most of slice 4, slices 6 and 7), and which shader inputs read group X and
 `specularPalette` → `e50efcde` (name, specular colour); `paintPalette` →
 coat record `2b84f07e`; `materialPresetPalette` → surface record
 `9e4de959`.
+
+**Surface names** (2026-11-23; the only 1–3 word hits for these hashes, and
+each fits the record type its values name on all 757 surfaces; high). The
+reading (medium, from names and values, not from code): the two materials
+are the two layers of the two-layer vehicle shader. Material 0 is layer 0,
+coloured by the part's `albedoPalette`; material 1 is layer 1, with its own
+colour record (`albedo1Hash`). In 701 of 756 surfaces material 1 is as rough
+as material 0 or rougher; 25 surfaces use one record for both. Still
+unnamed: `038e1179` (a second detail set), `e9aaa040`, `2bb71aae`,
+`6a368a1f`, `30250c4c`, `610cee1b`, `7be02d72`, `1e8b9429`.
 
 The part set's `3d9aef8b` third field (`96479496`) is the same `paintHash`
 name. Open: stem Y; the surface struct's remaining reference fields

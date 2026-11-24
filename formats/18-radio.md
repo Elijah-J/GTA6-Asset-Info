@@ -72,8 +72,11 @@ missing three stored 64 KiB chunks from section 2 when carved that way.
   at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44`. If that field is `0xFFFFFFFF`, use the
   `u16` inline count at `+0x48` and `u32` refs from `+0x4C`.
   Some tracklists without station references are looked up by hash at runtime.
-- **`RadioTrackSettings` (`type 0x0F`):** `u32 sound_ref` at `+0x0C` resolves to a `SOUNDS.DAT`
-  `StreamingSound` (`type 0x08`) object.
+- **`RadioTrackSettings` (`type 0x0F`):** for the observed `u32 sound_ref` at `+0x0C`, bit 19 is
+  clear, selecting the reference table. Use `sound_ref & 0x7FFFF` as a zero-based index into
+  `GAME.DAT`'s reference table and read the entry's first `u32` (`target_hash`). Find that hash in
+  `SOUNDS.DAT`'s object table and use its paired offset from the start of the metadata body (`+0x08`
+  in the file). The first byte of the target object is `0x08` (`StreamingSound`).
 - **`SOUNDS.DAT` `StreamingSound` (`type 0x08`) -> `SimpleSound` (`type 0x0C`):** in the
   observed layout, `u32 duration_ms` immediately precedes `0x0C <child_count> <u32 child_refs...>`.
   In six checked three-stem mixes, three `SimpleSound` objects immediately follow in metadata offset order.

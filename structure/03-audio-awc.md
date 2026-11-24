@@ -120,11 +120,20 @@ Each block:
 4. each sub-stream's 2 KiB blocks in turn, packed like single-channel
    streams (`u16 length + packet`).
 
-When the budget is positive, keep the packet that reaches or crosses
-`block_samples / packet_channels` frames and drop later packets in the
-block. If an exact overlap check fails and the previous block fell short,
-the recovery check subtracts that deficit from `skip_samples / packet_channels`.
-The resulting skip must be nonnegative and end at a packet boundary.
+Apply a positive `block_samples / packet_channels` frame budget starting at
+the first packet, before removing any leading packets. Keep the packet that
+reaches or crosses the budget and drop later packets in the block.
+
+For a nonzero `skip_samples`, find the leading whole packets whose durations
+sum to `skip_samples / packet_channels` frames. Drop that prefix if its
+packets match the preceding block's budget-retained tail byte-for-byte.
+The reader also accepts the raw skip count in frames when it gives an exact
+match. If neither count matches and the preceding block fell short of its
+budget before prefix removal, subtract that shortfall in frames from
+`skip_samples / packet_channels`. Drop only the leading whole packets whose
+durations sum exactly to that nonnegative remainder. A zero remainder drops
+no packets.
+
 On Xbox Series 1.0.2.1, the combined budget-and-overlap reader recovered four
 banks (three from `audio.rpf`, one from `story000.rpf`). FFmpeg decoded all 11
 stems to the declared `0x48` lengths after Ogg end trimming. Deficit recovery

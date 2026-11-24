@@ -95,7 +95,8 @@ counts):
   [§6.7](#67-open-unknowns).
 - Comparing BCPack against plain textures **of the same store and size**
   gives the fair gap: BC1 −2.2 dB (32,459 textures; 1024² −1.0, 512² −3.1,
-  128² −4.3), BC7 −2.2 dB (1,161), BC6H −3.9 dB (40), BC5 −0.6 dB (9). BC3
+  128² −4.3), BC7 −2.2 dB (1,161), BC6H −3.9 dB (40; *corrected below*),
+  BC5 −0.6 dB (9). BC3
   and BC4 have no matched plain textures. *This revises the reading above
   that BC1's gap is only a population effect:* BC1 with the
   [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) presets is not exact
@@ -264,11 +265,10 @@ directly; detile as for a zlib chunk.
   Refits of slots 33, 48, 73, 120, 159, 166, 194, 208 and 222 pass both
   tests (fewer violations on held-out chunks, 28,387 → 907 in the sample;
   error against plain child mips 11.6 % lower, at least 30 reference
-  blocks each; medium-high). Their values replace the third-party ones
-  in [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots), marked `*`. 31 more slots moved in the fit but failed a test (no plain
+  blocks each; medium-high). *Superseded by the recount below.* 31 more slots moved in the fit but failed a test (no plain
   reference, or higher reference error; probably real cut-out textures),
   among them 192, 127 and 152; their true values are unknown.
-  *Revised (2026-11-24; medium, all fitted; new values not yet published):*
+  *Revised (2026-11-24; medium, all fitted):*
   a slot's plain references come from few textures (often under 50), so
   counting blocks overstated the evidence above. Counting each texture once
   and validating on held-out textures, 6 of the 9 refits go back to the
@@ -280,9 +280,10 @@ directly; detile as for a zlib chunk.
   Three-colour blocks using index 3 on preset-rooted chains (5 % sample):
   121,918 → 50,334. Open: slot 152 (31 % of its blocks break the rule;
   references inconclusive), slot 153 (the reference and mip checks
-  disagree), and slots 0 and 4 (no plain reference). Until these values
-  are released, [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) still
-  carries the nine earlier refits.
+  disagree), and slots 0 and 4 (no plain reference). The 20 slots (3, 27,
+  28, 33, 69, 80, 81, 102, 115, 117, 125, 127, 140, 142, 160, 165, 166,
+  192, 197 and 222) replace the third-party values in
+  [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots), marked `*`.
 
 **Prediction (BC1, BC3, BC7).** Every block is coded as residuals against a
 reference: the zero state (distance 0), block `i − d` of the same chunk in
@@ -406,8 +407,14 @@ bit positions and O on the odd ones.
   down-mip 24.6 → 25.1 dB, up-mip unchanged at 32.2 dB. Mip check of the
   89 BCPack-only BC6H textures: median 24.0 → 24.9 dB (29 better, 4 worse),
   under 20 dB 23.6 → 22.5 %. The share of blocks within tolerance did not
-  move. About 4 dB below matched plain BC6H remains, and the 221 remaining
-  violations show some preset values are still wrong. The BC6H tables in
+  move. The 221 remaining violations show some preset values are still
+  wrong. *Corrected BC6H gap (2026-11-24, medium, small sample): the
+  earlier "−3.9 dB" and "about 4 dB below plain" came from a check run
+  with an older BC6H pixel decode and an incomplete plain baseline.
+  Re-measured against every plain texture of the same store and size (82
+  matched textures, lighting store left out), BCPack BC6H is about 1.1 dB
+  below plain; 16.9 % of BCPack BC6H textures are under 20 dB against
+  2.1 % of plain ones.* The BC6H tables in
   [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are this refit
   (39 endpoint and 7 index slots changed).
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per

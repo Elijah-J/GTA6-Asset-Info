@@ -637,10 +637,45 @@ the material palette guess:
   `muzzle` `3af92b85`, `grip` `6fad1258`, `slide` `74e3d185`, `optic`
   `1301cc6f`, `handguard` `60a91853`, `dustcover` `a9bccac1`, `body`
   `8c255aa8` and `pump` `66eafecf`. Open: which finish a weapon has by
-  default, the variant names, and 18 part words.
+  default, the variant names, and 18 part words. *Later (2026-11-24): 53 of
+  54 part words named; new: `optics` `879e7ea8`, `sight_optic` `6a758e81`,
+  `optic_rail` `8a34e978`, `carry_handle` `8e73a6a7`, `mag_assist`
+  `c7b6710c`, `saddle` `1d2fedf7`, `accs` `3a998c68` (each re-hashed).
+  Unnamed: `060dc09e`, on fore grips. The default finish is answered
+  below.*
+- **How finishes link to weapons** (2026-11-24; chain and default high,
+  from full-population counts; condition reading medium, from structure
+  only). Weapon family PSO files hold:
+  - Weapon `bc92474a` (168 records): `20fa4150` is the part set name (0 =
+    use the weapon type's), `WeaponType` names a record `454c2e3b` (112)
+    whose `20fa4150` is the part set, `43ab621f` is a list of mod names
+    and `b5fbecab` the default mod name (non-zero on 72 of 168).
+  - Part set `5ad6772f` (113): `Entries` of `ffddc90c` {`5cceffc2` part
+    type hash (the part words above), `Options` of `19962073`
+    {`cac8083d` component record name (`85492dc3`), `Condition`}}.
+  - Condition `38d9ad3a` {`285cceca` mod name}: the option applies when
+    that mod is fitted (1,247 options). `e6b9cf20` and `fed5f24b` hold
+    `Entries` of conditions, probably and / or (which is which is not
+    checked).
+  - Mod `a5791c62` (3,338): `72f3252e` category hash, `c897af02` list of
+    record names. Category `0ee68bd5` is the finish mods, listing variant
+    records `6724161c`; category `1f185279` lists `349a32ad` records (a
+    `Mods` list plus `ba466b50` weapon) or nothing.
+  - Variant `6724161c` (1,301 here, 1,300 in the count above):
+    `c763edb4` part type hash, `14b064c2` layered preset key.
+  - Weapon preset `8d690ccf` (825): `Mods` list and `ba466b50` weapon
+    name; 111 include a finish mod.
 
-Open: which variant of each slot a weapon carries by default and where part
-colours come from; what mounts on the `WAP_Rail_*` points and how the shared
+  Checks: all 1,299 (weapon, variant) pairs find the variant's part type
+  among that weapon's part set entries, and 1,276 of 1,301 variants reach a
+  model this way (621 models). **Default finish:** the default mod is of
+  category `1f185279` in all 72 cases and lists nothing in 71, so a weapon's
+  default look is each component's own preset (`85492dc3`.`72f5e33e`).
+  Open: the variant names, the other mod categories, the entries' `Flags`
+  values, and which condition struct is and / or.
+
+Open (*the default variant of each slot and the source of part colours are
+answered above: each component's own layered preset*): what mounts on the `WAP_Rail_*` points and how the shared
 `w_at_*` attachments choose them; where a magazine follower and a pistol's
 reflex mount attach (no matching `WAP` bone on the builds tried); how a
 weapon model is tied to its display text (the text tables hold weapon names,

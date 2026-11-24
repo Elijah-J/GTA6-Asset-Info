@@ -514,7 +514,7 @@ and names high, names re-hashed with joaat; readings marked inferred):
   `hathairalt` `93be327e`, `maskhairalt` `54685207`, `hatcapbackwards`
   `1465a09b`, `hatunderhood` `e8cddf6b`, `left` `6fa34840`, `right`
   `b8ccc339`, `raised` `ebfd59b5`. **Layer names:** `layer_1` `b4d9d470`,
-  `layer_2` `e0622b84`, `layer_3` `d23c8f39`; layer `275822c4` is unnamed.
+  `layer_2` `e0622b84`, `layer_3` `d23c8f39`; layer `275822c4` is probably `self`.
 - **Tag values** resolved: `has_hair`, `has_headwear`, `glasses_down`,
   `glasses_raised`, `hood_down`, `covered_neck`, `covered_back`, `open`,
   `half_open`; tag keys `kittype`, `hairlength` and `style` (`a9473ab4`).
@@ -579,8 +579,8 @@ share root struct `8419ab01`, which has four hash maps keyed by name hash:
 | `2d71e4f7` `TransmissionProfiles` | transmission profile `440c9ecb` (has fields `scattering` and `Absorption`) | 184 | 7 |
 
 Field names are case-sensitive joaat (2026-11-23, high: 13 hits forming
-one consistent set, each re-hashed); the map `fd540657`, the sub-material
-field `aadeb53e` and `c897af02` are still unnamed.
+one consistent set, each re-hashed); the map `fd540657` and the sub-material
+field `aadeb53e` are still unnamed; `c897af02` is `Features`.
 
 - A **tile preset** names one tile (`TileName` `03e52760`; all resolve) and
   optionally a transmission profile (`TransmissionProfileName`
@@ -602,7 +602,7 @@ field `aadeb53e` and `c897af02` are still unnamed.
   (one per sub-material; all resolve in the same file), the per-sub-material
   overrides `TileNameOverrides` `4bee7340` and
   `TransmissionProfileOverrides` `cfc17384` (8 optional names each) and
-  `c897af02`, a 64-bit id.
+  `c897af02` (`Features`), a 64-bit id.
 - The wardrobe kit field `GarmentPreset` (`e13ebaf8`) is a key of the
   layered preset map (every value checked resolves). About 38 % of the kits
   in the largest wardrobe file have one, and those rarely have a
@@ -729,7 +729,7 @@ field `aadeb53e` and `c897af02` are still unnamed.
 ### Ped model table
 
 (2026-11-23.) One PSO in the packs holds 2,714 records of struct
-`eb66d086`, one per ped model, `Name` = joaat of the model name.
+`eb66d086` (`CPedModelInfo__InitData`), one per ped model, `Name` = joaat of the model name.
 
 | Field | Contents | Confidence |
 |---|---|---|

@@ -540,10 +540,10 @@ per-layer vec4s are in [§12](12-materials.md).
     (4-byte struct), in the library a u16 `fc46055f` plus u8 `96e5b9a7`
     (6-byte struct). 29 type numbers are in use (0–38); 1 is by far the most
     common, indicators use 6.
-  - Link chain: configuration part `0caef606` → list `61e1e572` →
+  - Link chain: configuration part `0caef606` → list `61e1e572` (`features`) →
     `da592d57` {`1ff6a884` pattern names, `dd466dfe` another name list,
     probably lamp sets} → pattern.
-  - Lamp set `865400aa` {list `804fdca7` of `ba860a07`}: `079baba7` u64 whose
+  - Lamp set `865400aa` {list `804fdca7` of `ba860a07`}: `079baba7` (`attachBone`) u64 whose
     low 32 bits are the bone name hash, `066532dd` light archetype name hash,
     plus an archetype u64 (name hash in the high half, a second hash in the
     low half). Archetype names found by guessing: `red`, `amber`,
@@ -717,7 +717,7 @@ the material palette guess:
     that mod is fitted (1,247 options). `e6b9cf20` and `fed5f24b` hold
     `Entries` of conditions, probably and / or (which is which is not
     checked).
-  - Mod `a5791c62` (3,338): `72f3252e` category hash, `c897af02` list of
+  - Mod `a5791c62` (3,338): `72f3252e` category hash, `c897af02` (`Features`) list of
     record names. Category `0ee68bd5` is the finish mods, listing variant
     records `6724161c`; category `1f185279` lists `349a32ad` records (a
     `Mods` list plus `ba466b50` weapon) or nothing.

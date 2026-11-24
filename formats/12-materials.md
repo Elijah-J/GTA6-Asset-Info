@@ -602,6 +602,22 @@ field `aadeb53e` and `c897af02` are still unnamed.
   choose between the two `tiletint` entries; over 4,607 colour-tagged items
   the tag fits entry 0 (mean RGB distance 71) better than entry 1 (109)
   whatever the bytes are.
+- **Clothing sub-material per vertex** (2026-11-23; encoding medium-high,
+  colours not compared against the game): a garment with no `materialid`
+  texture numbers its sub-materials in the vertex colour stream, green
+  byte = 4 × id + 2 (2, 6, 10 … 30), id 0–7 indexing the garment preset's
+  per-sub-material colours; garments with a `materialid` texture use it
+  instead (red × 63). Every garment inspected (a few dozen: boots,
+  sneakers, jackets, T-shirts, jeans) held only such values, the same
+  encoding as on weapon parts ([§7.8](07-models.md#78-weapons-modular)), and
+  belts, soles and laces come out as separate colours. Open: the red, blue
+  and alpha bytes of that stream on clothing.
+- **Preset against tint row** (medium; nearest of 18 colour words, neutral
+  tags excluded): over about 6,100 items with a colour tag, a garment
+  preset and a tint row, the preset's sub-material 0 colour matches the tag
+  on 2,970 and the tint row on 390; on the `vstation` palettes it is closer
+  (tint row 327, preset 284). What tint rows do on items that also have a
+  preset is unknown.
 - **The small file is the weapon library** (high). In the 65 weapon family
   PSO files, the per-component asset struct `85492dc3` has field
   `72f5e33e` = a layered preset key (1,005 of 1,006 non-zero values

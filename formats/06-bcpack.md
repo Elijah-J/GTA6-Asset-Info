@@ -71,6 +71,10 @@ at least 2 mips), mip 0 box-downsampled against mip 1, RGB PSNR on the
 *Later figures (2026-11-23):* BC7 median 37.9 dB with 1.7 % under 20 dB
 after the [secondary index reset](#63-bc7-blocks-codec-0x1c); BC6H 22.1 dB
 with 36 % under 20 dB after the refits in [§6.7](#67-open-unknowns).
+Later still: BC7 colour median 38.1 dB (mean 39.1, 5.0 % under 30 dB, 1.5 %
+under 20 dB) with alpha in the preset fit, alpha mean 39.8 → 48.0 dB
+([§6.3](#63-bc7-blocks-codec-0x1c)); BC6H median 24.0 dB (mean 24.7, 23.6 %
+under 20 dB) after the no-wrap refit.
 
 BC1 has no fitted tables, so its 3.6 dB gap is a population effect (BCPack
 mip 0s are larger and more detailed), not decode error. Allowing for that,
@@ -278,6 +282,18 @@ bit positions and O on the odd ones.
   Subset 0 uses lanes 2, 3, 4 (, 5 for alpha), subset 1 lanes 6, 7, 8 (, 9),
   subset 2 lanes 10, 5, 9 (R, G, B; 98.3 % fit). RGB-only modes 0–3 set
   alpha to 0; subsets a mode does not use copy subset 0.
+- **Alpha presets** (2026-11-23; tables medium): earlier BC7 preset fits
+  scored only RGB, so the alpha preset values had never been fitted. With
+  alpha in the fit, on 1,433 BC7 textures (mip 0 against mip 1): alpha mean
+  39.8 → 48.0 dB, textures with alpha under 30 dB 40.8 → 18.4 %; colour mean
+  39.1 dB, median 38.1 dB, 5.0 % under 30 dB, 1.5 % under 20 dB. A second
+  alpha refit is running.
+- **Rules tested and rejected** (2026-11-23): each scored worse than the
+  rules above on table-independent blocks against plain references, so the
+  text above stands: unused subsets keeping their previous state, unused
+  subsets set to zero, unused subsets copying only colour, RGB-only modes
+  keeping alpha, and endpoint state held in block-field order for rotated
+  mode 4/5 blocks.
 - **Field widths** (from lane maxima): mode 0 R/G/B 5/4/4 (R includes the
   p-bit), 1 7/6/6, 2 5/5/5, 3 8/7/7, 6 8/7/7/7, 7 6/5/5/5, mode 4 5/6 and
   mode 5 7/8 (colour/alpha). Mode 6 uses R8 = 2·R7 + p.
@@ -317,12 +333,19 @@ bit positions and O on the odd ones.
   wraps in 1,606,398 table-independent endpoints (all 268 chunks). The
   fitted endpoint presets break it in 23,162 of 30,227,202 table-dependent
   endpoints (0.077 %, concentrated in a few slots), so those values are
-  wrong; a refit is under way.
+  wrong. *Refit (tables medium-low):* with wraps penalised in the fit, 599
+  remain. BCPack-only mip check: mean 18.7 → 24.7 dB, median 19.6 →
+  24.0 dB, under 20 dB 51.7 → 23.6 %. Plain-reference check: parent mip
+  unchanged (87.7 % of blocks within tolerance, 28.6 dB), child mip 86.1 →
+  88.4 % and 18.5 → 23.6 dB; plain BC6H scores 29.1 dB. The fit has
+  converged (a third round moved the BCPack-only score by 0.1 point), so
+  further gains need new evidence rather than more rounds.
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606
   differ). The fitted endpoint presets break this in 17,451 of 447,824
-  table-dependent cases, so some preset values are provably wrong.
+  table-dependent cases, so some preset values are provably wrong. *Later
+  count over all BC7 mode 1 data:* 38,866 of 8,853,332 still mismatch.
 - **History:** endpoints and indices both have a fixed 256-slot table. Each
   chunk's root blocks only fix the top w bits their mode reads, so the
   table was fitted by voting per value at each root's width (inferred).

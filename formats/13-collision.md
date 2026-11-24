@@ -106,17 +106,31 @@ for each byte c:  h = (h << 4) + c;  g = h & 0xF0000000;
 map collision. Example: `ROAD_TARMAC` → `elf` = `0x04D164F3` → 7199 → id
 **`0x1C31`**.
 
-| Evidence (389 distinct ids in map collision) | Count |
+| Evidence (distinct ids in map collision) | Count |
 |---|---|
 | readable `<name>` entries in the material XML | 413, all with distinct ids |
 | of those, ids that occur in map collision | **212** (random ids: mean 5.1, max 12 over 200 runs) |
 | `DEFORM_*` names from the deformable-terrain XML (`<PhysicsMaterials><Item>`) hitting otherwise unmatched ids | **9 of 11** (chance about 0.06) |
-| total resolved | **221 of 389 ids, 64 % of collision triangles** |
+| `TERRAIN_*` names recovered by hash (2026-11-23, SixNG): the suffixes of the readable categories (`DEFORM_`, `SUBMERGED_`, `TRACK_`, `STUNT_`, `VEG_`) under `TERRAIN_` | **31 of 76** hit unnamed ids (chance below 1), about 21 % of collision triangles |
+| `DEFAULT` (2026-11-24, inferred) | `317b`, the generic default id of [§13.3](#133-inferred-surface-categories) |
+| total resolved | **257 of 398 ids in `levels.rpf`, 84 % of collision triangles** (SixNG `annotate`, 2026-11-23); 258 with `DEFAULT` |
 
 The nine deformable materials are `DEFORM_DIRT_COMPACT`, `_DIRT_LOOSE`,
 `_QUICKSAND`, `_SEAWEED`, `_PLASTIC_MULCH`, `_PERIPHYTON_SOFT`, `_CLAY`,
 `_ALGAE` and `_RUBBISH`. Unmatched names are mostly ped and animal
 body-part materials (`SPINE…`, `THIGH…`) that map collision does not use.
+
+The 31 `TERRAIN_*` materials are `TERRAIN_CORAL`, `_DIRT_COMPACT`,
+`_DIRT_LOOSE`, `_GRASS_DEAD`, `_GRASS_LONG`, `_GRASS_LUSH`, `_GRASS_SHORT`,
+`_GRAVEL_LARGE` (`4180`), `_GRAVEL_MEDIUM`, `_GRAVEL_SMALL` (`2287`),
+`_GRAVEL_TRAP`, `_LEAVES`, `_LEAVES_DEAD`, `_MIXED_DIRT_GRASS`,
+`_MIXED_GRAVEL_DIRT`, `_MIXED_GRAVEL_GRASS`, `_MIXED_SAND_DIRT`,
+`_MIXED_SAND_GRASS`, `_MIXED_SAND_GRAVEL`, `_MUD_HARD`, `_MUD_SOFT`,
+`_PINE_NEEDLES`, `_ROCK_BRITTLE`, `_SAND_COMPACT`, `_SAND_LOOSE`,
+`_SAND_SHELL`, `_SAND_WET`, `_SEAWEED`, `_SOIL`, `_TWIGS` and `_WOODCHIPS`.
+`DEFAULT` is the first material of GTA V's material list; it is not in the
+readable XML, so it is a hash match only.
+
 The remaining ids are most likely materials from the unreadable parts of
 the XML: its first block (file offset `0x20f000`–`0x210a62`) is neither
 zlib nor raw deflate at any start offset, and the block at `0x212190`
@@ -167,10 +181,10 @@ These are categories, not material names.
 (dirt tracks, verges, railway beds), not railway-only. `4180` is 9–21 %
 against 0.13 % of area, in 5,535 clustered bounds files, probably a gravel
 variant (verges, yards). The rest falls on the generic default id `317b`
-and grass ids; the track geometry itself mostly has no up-facing collision
-under the sample points. Neither id resolves with the formula of
-[§13.2](#132-surface-ids) from the readable material XML, so their names are
-in the part that is not read, and the labels stay inferred.
+(`DEFAULT`, inferred) and grass ids; the track geometry itself mostly has no
+up-facing collision under the sample points. Neither id is in the readable
+material XML; both resolve by hash ([§13.2](#132-surface-ids)):
+`2287` = `TERRAIN_GRAVEL_SMALL`, `4180` = `TERRAIN_GRAVEL_LARGE`.
 
 ## 13.4 Fragment physics
 

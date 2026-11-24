@@ -429,6 +429,24 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   (rendered this way, a plausible grey alloy with darker centre parts on
   three vehicles). The embedded 129 × 1 marker palette on the wheel shaders
   is still unexplained.
+- **Library part colours** (2026-11-24; high that the ids index the fitted
+  vehicle's set, medium that nothing else colours box body sides): a model
+  of a shared library part takes its part colours from the vehicle it is
+  fitted to, as the wheels do. Configurations name 980 library part models;
+  41 of them are the shared truck beds (`truckbeds_*`, see
+  [vehicle tables](#vehicle-tables)). Their vertices carry part ids in the
+  vertex colour alpha like a vehicle's own meshes: the beds use ids 5, 36,
+  80, 101, 102, 126, 141 and 219–223. Ids 219–223 hold the same colour and
+  surface records in about 150 of the 338 part sets (`f14244fd`), and the
+  other ids in 150 to 209 of them, so an id means the same piece across
+  vehicles. A configuration that names the bed part changes those ids in
+  the vehicle's part set through the part's modifier list (`61e1e572`), as
+  for the vehicle's own parts. No part set is named after any of the 41 bed
+  models (asset id of the model name tested). Rendered this way, seven
+  trucks get wooden decks, a red utility body and an orange frame instead
+  of a grey stand-in; box body sides come out black on every truck. Open:
+  18 part sets in the packs are not linked to any model, and whether a
+  livery or company colour goes over box sides.
 - **From the shader code** (2026-11-23, medium; one vehicle G-buffer
   pixel shader read as machine code, see
   [the shader archive](../structure/06-models-shaders.md#archive-layout-in-detail-2026-11-23)):

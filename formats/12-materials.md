@@ -440,8 +440,8 @@ re-hashed and matching; high for one- and two-word hits that fit the data):
 | Struct | Fields |
 |---|---|
 | `f795e8ba` kit (the item / preset above) | `KitName` `65121749`, `TemplateName` `080eec39`, `States` `ebacf18c`, `Palette` `5ecf9331`, `Tint0` / `Tint1` / `Tint2` (`c4d75d79`, `f4fb3dec`, `ab5d2a85`), `GarmentPreset` `e13ebaf8`, `PropertyTags` `12f85293` |
-| `37e52277` kit state | `StateName` `3eaddcd7`, `Asset` `e7cb9e1b`, `KitLayer` `1d52bc91`, `ToStateNames` `83698d93` |
-| `147fdab5` asset | `Drawable` `41acf8eb`, `Albedo` `ead733fc`, `Material` `9d1000d8` |
+| `37e52277` kit state | `StateName` `3eaddcd7`, `Asset` `e7cb9e1b`, `KitLayer` `1d52bc91`, `ToStateNames` `83698d93`, `PropertyTags` `12f85293` (its own tags, 2026-11-24) |
+| `147fdab5` asset | `Drawable` `41acf8eb`, `Albedo` `ead733fc`, `Normal` `d689b17f` (2026-11-24), `Material` `9d1000d8` |
 | `a9d57751` kit set | `IncludedKits` `fb5bb20d` |
 | other | `AssetName` `7deba6f8` |
 
@@ -460,6 +460,35 @@ Property tag keys (lower-case joaat; medium-high where the values fit):
 `lob`, `bun`, `topknot` and `cornrows`. *`2a8cdb1d` was read above as a
 garment name or shape; the name `slodstyle` suggests a low-detail style
 (not reconciled).*
+
+**Item states in detail** (2026-11-24, from one ped wardrobe resource; fields
+and names high, names re-hashed with joaat; readings marked inferred):
+
+- Besides the fields above, each `States` entry has two mask lists:
+  `35ff19d7` = list of {Key: layer hash, Item: u64 bit mask}, and
+  `3b7601de` = list of {Key: layer hash, Item: list of {Key: 1 or 2,
+  Item: u64 mask}}. The masks probably address the `GM_U01_*` region bones
+  ([§7](07-models.md)) of the keyed layer (inferred); what keys 1 and 2
+  mean is unknown.
+- **State names:** `base` `44e21c90`, `hairhidden` `612d31ea`,
+  `hathairalt` `93be327e`, `maskhairalt` `54685207`, `hatcapbackwards`
+  `1465a09b`, `hatunderhood` `e8cddf6b`, `left` `6fa34840`, `right`
+  `b8ccc339`, `raised` `ebfd59b5`. **Layer names:** `layer_1` `b4d9d470`,
+  `layer_2` `e0622b84`, `layer_3` `d23c8f39`; layer `275822c4` is unnamed.
+- **Tag values** resolved: `has_hair`, `has_headwear`, `glasses_down`,
+  `glasses_raised`, `hood_down`, `covered_neck`, `covered_back`, `open`,
+  `half_open`; tag keys `kittype`, `hairlength` and `style` (`a9473ab4`).
+  Category names are plural words: `shirts`, `hoodies`, `pants`, `shorts`,
+  `gloves`, `jackets`, `piercings`, `hair`.
+- **Counts** in that resource: 271 items, 111 distinct state names (about
+  100 still unnamed). 7 hair items have more than one state; all 7 have
+  `base` and `hairhidden`, and `hairhidden` names the same asset GUID on
+  every one. One hair item has 7 states, each alternate naming a different
+  hair asset.
+- Garment drawables carry one bone per body region, named
+  `GM_U01_<side>_<region>_<part>` (69 on one upper garment).
+- Reading (inferred): a hat switches the hair item to `hathairalt` or
+  `hairhidden`. Open: the rule that picks a hair state for a given hat.
 
 **Hair colour on items** (2026-11-23, counts high): of the hair items used
 by outfit variations, about 14 K have tint bytes 0, 0, 0 (palette

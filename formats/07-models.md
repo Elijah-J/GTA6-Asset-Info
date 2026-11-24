@@ -413,7 +413,7 @@ are referenced by no preset; `story000` has no material presets.
 |-----|---------|-----------|
 | 0x00 | u32 shader name hash = joaat of the lower-case name (`standard` = `bcf03fc1`) | confirmed (all 344 shaders) |
 | 0x04 | `"atem"` | confirmed |
-| 0x08 | ptr → constant block (~0x160 bytes of floats; 0x310 bytes, 196 floats, on the four-layer shaders), keyed by the parameter table (below) | measured on samples |
+| 0x08 | ptr → constant block: one 8-byte pointer per constant buffer, then the buffers' data ([constants](#material-constants), below) | confirmed (2026-11-24) |
 | 0x10 | ptr → per-parameter slot pointers | confirmed |
 | 0x20 | ptr → parameter table: u8 ?, u8 count, …, then count × (u32 param hash, u32 data offset); param hash = joaat of the lower-case name (`diffusetex` = `c8e8c282`) | confirmed |
 | 0x38..0x3F | flags, see [§12](12-materials.md) | confirmed (bytes 1, 4) |
@@ -431,6 +431,37 @@ there); entries are {u32 joaat name, u32 descriptor}.
 | `4 × index` | texture slot |
 | `0x0040XXtt` | constant in the +0x08 block at float offset `XX` (`tt` = 03 or 07, probably a type) |
 | `0x01YYYY07`, `0x0041XX07` | constant in another buffer (not read) |
+
+*The two constant rows above are superseded by the descriptor layout
+below: `XX` is a byte offset, not a float offset, and `tt` is the buffer,
+not a type.*
+
+### Material constants
+
+(2026-11-24; high: a full fit on about 13,000 materials sampled in three
+archives, and agreement with the shader archive's reflection tables.)
+
+- After the texture entries, the parameter table holds the constants, 8
+  bytes each: u32 name hash, u32 **descriptor** = components << 22 | byte
+  offset << 8 | buffer. Bits 22 and up give the number of floats (1–4 seen;
+  1 = `0x0040xxxx`, 4 = `0x0100xxxx`), bits 8–21 the byte offset inside the
+  buffer, and the low byte which constant buffer (`0x03`; `0x07` on
+  materials with a second buffer).
+- The **constant block** (+0x08) starts with one 8-byte pointer per buffer,
+  in rising order of the buffer byte, each pointing at that buffer's data
+  inside the same block: with one buffer the data starts at +8, with two at
+  +16. The block ends where the texture pointer array (+0x10) begins.
+- Counts: 10,184 sampled materials have one buffer and 2,915 have two (the
+  four-layer ground shaders, buffers of 112 and 656 bytes). Every constant
+  lies inside its buffer.
+- The offsets, sizes and component counts match the effect's constant
+  buffer members in the reflection tables
+  ([structure/06](../structure/06-models-shaders.md)), which also carry the
+  type. The descriptor does not, so integer and boolean constants cannot
+  be told from floats here.
+- Open: why the first buffer of the two-buffer material sampled is all
+  zero, and 71 sampled materials whose block lies after the texture array
+  (read with a looser end bound).
 
 Constant names recovered by dictionary search include `blendsoftness`,
 `bumpiness`, `fresnel`, `puddlemaskscale`, `tintblendamount`, `tintbump`,

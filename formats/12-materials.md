@@ -569,6 +569,35 @@ field `aadeb53e` and `c897af02` are still unnamed.
 - *Correction:* `d2b598e5` is not the tiling fabric texture but
   `tintmaskmap`, single-channel masks of extra tint layers (5 entries); the
   tiling textures are the tile's two maps.
+- **Tint-mask layers** (2026-11-23; offsets and formula high, read from
+  the clothing pixel shader; which named parameter feeds each field medium,
+  matched by array shape and name). Each sub-material has four mask
+  layers L = 0–3 in the 0xF00-byte parameter block (offsets per
+  sub-material add sub × 16):
+
+  | Block offset | Contents | Parameter |
+  |---|---|---|
+  | +0x810 + L × 4 | mask texture index; the red channel is the mask | `tintmaskmap`[L] |
+  | +0x310 / +0x390 + L × 0x100 | 2 × 3 UV transform, applied to the same tiling UV as the tile texture | `tintmaskscale`[2L, 2L+1], `tintmaskrotation`[L], `tintmasktranslation`[2L, 2L+1] (`b3643800`) |
+  | +0x31c + L × 0x100 | flags; bit 2 inverts the mask (values seen 8, 0, 12 and rarer ones; the other bits are unknown) | `tintmaskflags`[L] |
+  | +0x39c + L × 0x100 | opacity | `tintmaskopacity`[L] |
+  | +0xa10 + L × 0x80 | three RGBA-byte gradient stops; second colour set at +0xc10 + L × 0x80 | `tintmasktint`[L], [4 + L] |
+  | +0x710 + L × 4 | emissive intensity | `tintmaskemissiveintensity`[L] (`6f235650`) |
+  | +0x890 + L × 4 | packed metallic, roughness and their opacities | – |
+
+  Composition, base first, then L = 0, 1, 2, 3 in order, with g the tile's
+  grey value:
+
+  ```text
+  colour = gradient(tiletint, g) * a + (1 - a) * g     # a = tiletint alpha
+  per layer: t = mask * opacity * tint alpha
+             colour = lerp(colour, gradient(tintmasktint[L], g), t)
+  ```
+
+  2,529 of 13,071 clothing presets set an active layer themselves, and
+  5,943 of 7,994 tile presets carry mask textures. Open: the other flag
+  bits, the fifth `tintmaskmap` entry, and how the pattern, stitch, dirt
+  and sheen layers are combined.
 - **Tint bytes** (medium, data only): the wardrobe `Tint0`–`2` bytes do not
   choose between the two `tiletint` entries; over 4,607 colour-tagged items
   the tag fits entry 0 (mean RGB distance 71) better than entry 1 (109)

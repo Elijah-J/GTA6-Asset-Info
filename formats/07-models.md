@@ -582,7 +582,11 @@ the material palette guess:
 - Textures: `speculartex`, `20245319`, `bumptex`, `speculartex2` and an
   optional `materialid` (BC4). There is no colour texture.
 - Sub-material index = min(7, floor(63 × `materialid`.r)), or a flat
-  per-vertex uint when there is no `materialid` texture, so a weapon
+  per-vertex uint when there is no `materialid` texture (*2026-11-23,
+  medium, from data:* weapon parts bind no `materialid` texture; the index
+  is in the green byte of the vertex colour stream (slot 1) as 4k + 2. 60
+  of 62 parts of three weapons hold only such values, and the indices
+  used match the distinct colours of each part's preset), so a weapon
   material has up to 8 sub-materials.
 - Everything else comes from one parameter block per material in a raw GPU
   buffer, read at base + index × 16: arrays of 8 entries of 16 bytes,

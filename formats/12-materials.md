@@ -188,6 +188,42 @@ numbering:
 A tiling test of `c35e27af` was undecided, and a brightness test against
 the baked map had no power.
 
+### From the shader code
+
+(2026-11-24; read from one deferred pixel program of `standard_uber_4lyr`,
+which the other four-layer variants also use for their alpha-clip pass;
+their own main programs were not read; not compared with a rendered
+image.) Material textures are fetched through a list of texture indices,
+4 bytes per slot, not through registers. The 17 slots match the table
+above, with `0cd27763` an array texture in p6.
+
+- **Weights** (high, read directly; each layer block runs only when its
+  weight is above 0, and its results are multiplied by the weight and
+  summed): w.rgb = mix(lookup.rgb, C.rgb, C.a), where C is the second
+  vertex colour input, and w3 = mix(saturate(1 − lookup.r − lookup.g −
+  lookup.b), saturate(1 − C.r − C.g − C.b), C.a). R weights layer 0, G
+  layer 1, B layer 2 and w3 layer 3. *This confirms the seam test and the
+  layer 3 remainder above, and adds the vertex colour override.*
+- **Per layer**, in order: its data map (layer 0 `3022de38`, 1
+  `42110214`, 2 `0cd6179f`, 3 `3ea37b39`, as in the pairing above), its
+  colour texture, the shared array `0cd27763`, its normal map.
+- **Data map channels** (medium: one layer traced, the same pattern seen in
+  the other three): A is the layer's tint mask, colour = mix(layer colour,
+  tinted colour, A), and a constant can switch it to 1 − A. G and B are
+  read, B also as 1 − B later; R is not read.
+- **Constants** (medium): the vec4s are per layer (x = layer 0 … w =
+  layer 3), among them `tintintensity`, `tintblendamount`,
+  `verttintintensity` and `bumpiness`. A layer picks one of two UV sets by
+  a component of `724bed95` (1 = the first), each with its own scale and
+  offset (`4344d2cc` for the first, `9ecaaa1e` for the second). The lookup
+  texture's UV set is chosen by the scalar `f354f896` (0, 1 or 2). *This
+  disagrees with the per-layer table above, which lists `f354f896` as a
+  vec4 at float 112 with values 1–16; both readings are kept.*
+- Open: G and B of the data maps, the height blend, a branch driven by
+  world position (an 8 × 8 grid per 512 units), a vec4 `b43d042b` that
+  diverts part of each weight to textures outside the material, and what
+  the array texture contributes.
+
 ### Render check
 
 (2026-11-23; from rendering exported minigame levels and comparing with

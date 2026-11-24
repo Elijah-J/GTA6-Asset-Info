@@ -91,7 +91,8 @@ counts):
   14.9 dB, and its BCPack blocks with a plain reference match only 12 %.
   Leaving that store out, the BC6H plain-reference check reads 90.3 % of
   blocks within tolerance and 32.2 dB. A refit that leaves it out of the
-  targets is running.
+  targets is described under the BC6H no-wrap rule in
+  [§6.7](#67-open-unknowns).
 - Comparing BCPack against plain textures **of the same store and size**
   gives the fair gap: BC1 −2.2 dB (32,459 textures; 1024² −1.0, 512² −3.1,
   128² −4.3), BC7 −2.2 dB (1,161), BC6H −3.9 dB (40), BC5 −0.6 dB (9). BC3
@@ -384,6 +385,17 @@ bit positions and O on the odd ones.
   88.4 % and 18.5 → 23.6 dB; plain BC6H scores 29.1 dB. The fit has
   converged (a third round moved the BCPack-only score by 0.1 point), so
   further gains need new evidence rather than more rounds.
+  *Refit without the lighting store (2026-11-24; medium, tables not yet
+  published):* since the lighting store's mips are prefiltered and do not
+  predict each other, its chunks only feed the no-wrap rule, not the fit
+  targets. Blocks breaking the rule fall from 599 to 221. Plain references:
+  down-mip 24.6 → 25.1 dB, up-mip unchanged at 32.2 dB. Mip check of the
+  89 BCPack-only BC6H textures: median 24.0 → 24.9 dB (29 better, 4 worse),
+  under 20 dB 23.6 → 22.5 %. The share of blocks within tolerance did not
+  move. About 4 dB below matched plain BC6H remains, and the 221 remaining
+  violations show some preset values are still wrong. The published BC6H
+  tables in [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are the
+  earlier fit until these are released.
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606

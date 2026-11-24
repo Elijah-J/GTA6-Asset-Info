@@ -385,17 +385,16 @@ bit positions and O on the odd ones.
   88.4 % and 18.5 → 23.6 dB; plain BC6H scores 29.1 dB. The fit has
   converged (a third round moved the BCPack-only score by 0.1 point), so
   further gains need new evidence rather than more rounds.
-  *Refit without the lighting store (2026-11-24; medium, tables not yet
-  published):* since the lighting store's mips are prefiltered and do not
+  *Refit without the lighting store (2026-11-24; medium):* since the lighting store's mips are prefiltered and do not
   predict each other, its chunks only feed the no-wrap rule, not the fit
   targets. Blocks breaking the rule fall from 599 to 221. Plain references:
   down-mip 24.6 → 25.1 dB, up-mip unchanged at 32.2 dB. Mip check of the
   89 BCPack-only BC6H textures: median 24.0 → 24.9 dB (29 better, 4 worse),
   under 20 dB 23.6 → 22.5 %. The share of blocks within tolerance did not
   move. About 4 dB below matched plain BC6H remains, and the 221 remaining
-  violations show some preset values are still wrong. The published BC6H
-  tables in [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are the
-  earlier fit until these are released.
+  violations show some preset values are still wrong. The BC6H tables in
+  [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) are this refit
+  (39 endpoint and 7 index slots changed).
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606
@@ -620,8 +619,8 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
   to mode, partition, rotation and index selection), endpoint presets
   (256 slots × 3 subsets × 2 endpoints × RGBA, 8-bit) and index presets
   (256 × 2 sets × 16, 4-bit). **Published** (2026-11-23; BC3, BC4, BC5
-  and BC7 revised 2026-11-24 under the exact rules above, with the same
-  slots fitted) in
+  and BC7 revised 2026-11-24 under the exact rules above, BC6H refitted
+  2026-11-24 without the lighting store, with the same slots fitted) in
   [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) and
   [`data/bcpack-fitted-tables.json`](data/bcpack-fitted-tables.json).
   Slots fitted: BC3 35 of 256, BC4 172, BC5 214, BC6H endpoints 226 and

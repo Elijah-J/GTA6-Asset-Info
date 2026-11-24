@@ -111,9 +111,9 @@ map collision. Example: `ROAD_TARMAC` → `elf` = `0x04D164F3` → 7199 → id
 | readable `<name>` entries in the material XML | 413, all with distinct ids |
 | of those, ids that occur in map collision | **212** (random ids: mean 5.1, max 12 over 200 runs) |
 | `DEFORM_*` names from the deformable-terrain XML (`<PhysicsMaterials><Item>`) hitting otherwise unmatched ids | **9 of 11** (chance about 0.06) |
-| `TERRAIN_*` names recovered by hash (2026-11-23, SixNG): the suffixes of the readable categories (`DEFORM_`, `SUBMERGED_`, `TRACK_`, `STUNT_`, `VEG_`) under `TERRAIN_` | **31 of 76** hit unnamed ids (chance below 1), about 21 % of collision triangles |
+| `TERRAIN_*` names recovered by hash (2026-11-23): the suffixes of the readable categories (`DEFORM_`, `SUBMERGED_`, `TRACK_`, `STUNT_`, `VEG_`) under `TERRAIN_` | **31 of 76** hit unnamed ids (chance below 1), about 21 % of collision triangles |
 | `DEFAULT` (2026-11-24, inferred) | `317b`, the generic default id of [§13.3](#133-inferred-surface-categories) |
-| total resolved | **257 of 398 ids in `levels.rpf`, 84 % of collision triangles** (SixNG `annotate`, 2026-11-23); 258 with `DEFAULT` |
+| total resolved | **257 of 398 ids in `levels.rpf`, 84 % of collision triangles** (2026-11-23); 258 with `DEFAULT` |
 
 The nine deformable materials are `DEFORM_DIRT_COMPACT`, `_DIRT_LOOSE`,
 `_QUICKSAND`, `_SEAWEED`, `_PLASTIC_MULCH`, `_PERIPHYTON_SOFT`, `_CLAY`,

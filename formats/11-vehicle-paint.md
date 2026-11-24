@@ -612,10 +612,32 @@ Liveries are **brand variations** that place stickers on named layouts.
   and further fields not decoded.
 - Counts for one truck's pack: 70 variation sets, 370 sticker entries, 192
   stickers, 239 layouts, 36 values of `b13f2c2f`.
-- Open: where a layout sits on the model (layout names are not record
-  names in any archive, not bone names and not 32-bit values in the model
-  files), what `b13f2c2f` and `1903684e` mean, and how the game picks a
-  brand for a vehicle. *This adds to the livery and decal records
+- **Sticker zones** (2026-11-24, high: they match the layouts' zone lists,
+  and the vehicle pixel shader reads a per-vertex value whose low byte is
+  the part id and whose next byte indexes a zone table): the fourth byte of
+  the mesh's second RGBA8 colour stream (slot 12, [§7](07-models.md)) is the
+  vertex's sticker zone. On one truck's box body, zones 169–174 are the left
+  side wall in six panels, 177–182 the right side wall and 165–168 the
+  front wall; on the cab, 24 is the left door and 32 the right door.
+- **Sticker layouts** (2026-11-24, high) are in one PSO file of `data.rpf`,
+  with field names hashed with their capitals. The root holds a list
+  (`3274d53f`) of groups, struct `b0dd20cb` {`Name`, list `c19c0de4` of
+  layouts}. A layout, struct `e2d9c73a`, has `Name`, `Location`,
+  `Rotation` (degrees), a position (`26bab388`, `79dd59cc`), a size
+  (`8eed562c`, `9d2ff2b1`; it acts as a scale, so a larger number is a
+  smaller sticker), `20b757b6` (a list of 1–6 sticker zones), `041ebd1d`
+  (aspect class 0, 1, 2 = square, 2:1, 4:1, equal to the sticker record's
+  `aspectRatio`), `4d763aa5` (UV mode: 1 first UV set, 3 second, 4 third)
+  and `80c88a97`, `9f8b8007` (unknown). A sticker entry's `b13f2c2f` is the
+  group name and its `1903684e` the layout's `Location`.
+- Counts over the full install: 2,299 groups, 14,561 layouts, 5,614
+  sticker records, 1,898 brands on 281 vehicles, 18,157 stickers placed,
+  17,005 of them with their layout; UV mode 3 on 14,871.
+- Open: the exact map from a layout's position to UV space (two fits
+  disagree on the scale), what `Location` means, and how the game picks a
+  brand for a vehicle. *Answered since the first pass: where a layout
+  sits (its zone list and the slot 12 zone byte) and what `b13f2c2f` and
+  `1903684e` are.* *This adds to the livery and decal records
   (`44cc9d8c`, `ed9cf5df`) read earlier under
   [vehicle tables](#vehicle-tables).*
 
@@ -627,8 +649,8 @@ as `8605bf0e` above.
 
 ## Open questions
 
-- Secondary and pearl colours; where a livery layout sits on the model
-  ([liveries](#vehicle-liveries)); whether the colours are linear.
+- Secondary and pearl colours; how a livery layout's position maps to UV
+  space ([liveries](#vehicle-liveries)); whether the colours are linear.
 - What `wheelScale` measures and how the game sets the rim radius and
   tyre profile (the tyre's outer radius and width are the wheel discs): what
   drives the shared wheel skeleton's width and profile bones.

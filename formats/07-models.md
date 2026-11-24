@@ -44,7 +44,7 @@ u32 magic `0x4042` at 0.
 | 7 | 0x26 | 4 | ped meshes: a second set of 4 skin weights (the 8 weights sum to 255) | confirmed |
 | 9 | 0x25 | 4 | ped meshes: a second set of 4 skin joints, with slot 7 | confirmed |
 | 11 | 0x27 | 4 | tangent R10G10B10A2: xyz = v / 1023 × 2 − 1 (model space); A2 = 3 → bitangent sign w = −1. **The frame is the second UV set's** (2026-11-23, high on two models with two UV sets: a tank fragment agrees with UV1 on 100 % of its surface and with UV0 on about 50 %, i.e. chance; ped jeans 99.9 % with UV1). cross(n, t) × w runs along +v of UV1 (v down the image), and normal maps are DirectX style (green = +v). Open: the frame for normal maps sampled on UV0, and whether single-UV meshes store a UV0 frame | confirmed; frame high |
-| 12, 13 | 0x26 | 4 | RGBA8 | unknown |
+| 12, 13 | 0x26 | 4 | RGBA8. *Slot 12 on vehicle bodies (2026-11-24, high): the fourth byte is the vertex's **sticker zone** ([liveries](11-vehicle-paint.md#vehicle-liveries)); the other three bytes are not understood* | unknown; slot 12 byte 4 high |
 | 14, 15 | 0x28 | 4 | UV2, UV3 | confirmed |
 | 17 | 0x42 | 8 | ? | unknown |
 

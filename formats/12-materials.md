@@ -504,44 +504,91 @@ share root struct `8419ab01`, which has four hash maps keyed by name hash:
 
 | Map | Record | Large file | Small file |
 |---|---|---|---|
-| `42fa4d39` | base material `6cc4c278` | 7,994 | 556 |
+| `42fa4d39` `TilePresets` | tile preset `6cc4c278` (first called "base material") | 7,994 | 556 |
 | `fd540657` | layered preset `756aef9c` | 13,071 | 2,635 |
-| `951cf6e3` | `83021d7a` | 432 | 129 |
-| `2d71e4f7` | `440c9ecb` (has fields `scattering` and `Absorption`) | 184 | 7 |
+| `951cf6e3` `Tiles` | tile `83021d7a` | 432 | 129 |
+| `2d71e4f7` `TransmissionProfiles` | transmission profile `440c9ecb` (has fields `scattering` and `Absorption`) | 184 | 7 |
 
-- Every record has four parameter lists: floats `1652fce8` (items
-  `38f05860`), textures `0f208402` (items `f1cb6289`, 64-bit texture
-  hash), colours `fc24d9c5` (items `e9d99e0a`, u32 colour; first read as A,
+Field names are case-sensitive joaat (2026-11-23, high: 13 hits forming
+one consistent set, each re-hashed); the map `fd540657`, the sub-material
+field `aadeb53e` and `c897af02` are still unnamed.
+
+- A **tile preset** names one tile (`TileName` `03e52760`; all resolve) and
+  optionally a transmission profile (`TransmissionProfileName`
+  `04be3aea`). A **tile** holds the tiling surface textures
+  `tilematerialmap` and `tilenormalmap`. All 125,640 sub-materials (15,705
+  presets × 8) resolve a tile.
+
+- Every record has four parameter lists: `FloatParameters` `1652fce8`
+  (items `38f05860`), `TextureNameParameters` `0f208402` (items
+  `f1cb6289`, 64-bit texture hash), `ColorParameters` `fc24d9c5` (items `e9d99e0a`, u32 colour; first read as A,
   R, G, B from high to low; *corrected 2026-11-23, high:* **A, B, G, R
   from high to low, red in the low byte**, checked against wardrobe colour
   tags: 83 of 85 items tagged blue, navy, brown, red, orange or yellow
   agree) and
-  ints `9f6b5b03` (items `4b2625bb`). Item fields: `Name` (parameter name
+  `UIntParameters` `9f6b5b03` (items `4b2625bb`). Item fields: `Name` (parameter name
   hash), `Index` (array element 0–7, 255 = scalar), `Value`, and
   `aadeb53e` = sub-material 0–7 (255 = the whole record).
-- A layered preset adds `4a1ebc36`, 8 base-material names (one per
-  sub-material; all resolve in the same file), `4bee7340` and `cfc17384`
-  (8 optional names each) and `c897af02`, a 64-bit id.
+- A layered preset adds `TilePresetNames` `4a1ebc36`, 8 tile preset names
+  (one per sub-material; all resolve in the same file), the per-sub-material
+  overrides `TileNameOverrides` `4bee7340` and
+  `TransmissionProfileOverrides` `cfc17384` (8 optional names each) and
+  `c897af02`, a 64-bit id.
 - The wardrobe kit field `GarmentPreset` (`e13ebaf8`) is a key of the
   layered preset map (every value checked resolves). About 38 % of the kits
   in the largest wardrobe file have one, and those rarely have a
   `Palette`; about 54 % of one main character's listed wardrobe items
   (1,292 of 2,393) carry one.
-- The main colour parameters are `f574261b` (4 entries per sub-material)
-  and `1c85bdf6` (3 entries, at preset level). How they become the
-  shader's three gradient stops is not covered here.
+- The main colour parameters are `tiletint` `f574261b` (4 entries per
+  sub-material) and `stitchtint` `1c85bdf6` (3 entries, at preset level).
+  How they become the shader's three gradient stops is not covered here.
+- **Parameter names** (2026-11-23; joaat of lower-case text, each
+  re-hashed; 68 of 99 recovered, 38 listed here). High for two-word names
+  and for three-word names inside a family:
+  - tile: `tiletint` `f574261b`, `tilescale` `01ae45d3`, `tilerotation`
+    `8bbce09b`, `tileoffset` `9dfe6abf`, `tilesheen` `71c79bb7`,
+    `tilemetallic` `6c75b6b2`, `tileflags` `521acac3`, `tilematerialmap`
+    `c380e141`, `tilenormalmap` `1b689ba7`;
+  - tint mask: `tintmaskmap` `d2b598e5`, `tintmasktint` `587b7f6d`,
+    `tintmaskopacity` `568fd269`, `tintmaskscale` `5bb20a63`,
+    `tintmaskrotation` `3c72fd1c`, `tintmaskroughness` `0a1d5d6a`,
+    `tintmaskmetallic` `349d273f`, `tintmaskflags` `59303da7`;
+  - pattern: `tintablepatternmap` `f4f6bfcc`, `tintablepatterntint`
+    `dc2f61da`, `tintablepatternscale` `79ffce9a`;
+  - other: `stitchtint` `1c85bdf6`, `dirttint` `4a7be614`, `dirtcontrol`
+    `b5b4d917`, `sheencolor` `ec2767ca`, `sheenblend` `08d15d02`,
+    `anisointensity` `e208e0c6`, `specularfresnel` `27b9b2fa`, `windscale`
+    `76259dac`, `alphathreshold` `c391fd51`, `emissivemultiplier`
+    `5eebed48`, `engravingcolor` `df293ca1`, `engravingheight` `a0c31b78`.
+
+  Medium (three-word names of a `…blendamount` family):
+  `dirtmapblendamount` `83d9ae8b`, `heightmapblendamount` `14320490`,
+  `roughnessmapblendamount` `cf86f980`, `detailnormalblendamount`
+  `545a21f2`, `albedovariationblendamount` `8dffd2cd`,
+  `curvatureblendamount` `58645355`.
+- *Correction:* `d2b598e5` is not the tiling fabric texture but
+  `tintmaskmap`, single-channel masks of extra tint layers (5 entries); the
+  tiling textures are the tile's two maps.
+- **Tint bytes** (medium, data only): the wardrobe `Tint0`–`2` bytes do not
+  choose between the two `tiletint` entries; over 4,607 colour-tagged items
+  the tag fits entry 0 (mean RGB distance 71) better than entry 1 (109)
+  whatever the bytes are.
 - **The small file is the weapon library** (high). In the 65 weapon family
   PSO files, the per-component asset struct `85492dc3` has field
   `72f5e33e` = a layered preset key (1,005 of 1,006 non-zero values
   resolve), and struct `6724161c` {`Name`, `c763edb4`, `14b064c2`} has
   `14b064c2` = a layered preset key (1,300 of 1,301), a named variant list
-  per family.
+  per family. `85492dc3`.`873ef899` is joaat of the component's model name
+  (972 of 1,006 records resolve, 894 distinct models, 57 with two presets);
+  `6724161c`.`c763edb4` is the part the variant recolours (frame, body and
+  other part-name hashes).
 - A second wardrobe field also holds clothing-library preset keys:
-  `e830a068` of struct `12712917` (every value resolves); its role is
-  unknown.
-- Open: the parameter names (hashes only); the default values; the role of
-  the kit's `Tint0`–`2` on preset kits; the five texture indices of
-  `d2b598e5`.
+  `garmentPreset` `e830a068` of struct `12712917` (every value resolves);
+  its role is unknown.
+- Open: 31 parameter names; the file holding the parameter defaults (not
+  located); the source of the per-part blend byte; the role of the kit's
+  `Tint0`–`2` on preset kits; how the mask, pattern, stitch and dirt
+  layers are combined.
 
 ### Ped model table
 

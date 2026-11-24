@@ -186,7 +186,11 @@ numbering:
 | `9ede7c13` | 124 | 83 % / 23 % | 1–14 |
 
 A tiling test of `c35e27af` was undecided, and a brightness test against
-the baked map had no power.
+the baked map had no power. *Caution (2026-11-24): the "float offsets" in
+this table are the descriptor's byte offset field read as floats, and the
+two constant buffers of these shaders were not told apart; see
+[material constants](07-models.md#material-constants). The values may come
+from the wrong buffer or offset until re-measured.*
 
 ### From the shader code
 

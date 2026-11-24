@@ -351,6 +351,19 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   dark to bright. Rows 1–32 are black because the game fills them from paint
   colours; mode 3 records use their stored row. What selects the column is
   unknown.
+  *Rows are colour ramps (2026-11-24; ramps high, measured; sampling
+  medium):* the same 128 × 256 × 8 image in the three vehicles compared. A
+  part's colour record names a slice and a row, and the column comes per
+  pixel from the green channel of the material's layer detail texture
+  `346394ea`. 141 rows are in use; in 140 of them the colour changes by more
+  than 48 of 255 along the row (median 97), running light tone, the colour,
+  dark tone. *This disagrees in direction with "dark to bright" above;
+  both readings are kept until the column order is checked.* On one detail
+  texture checked, green averages 120 (spread 12, range 8–197), so most
+  pixels sit near the middle of the ramp. The detail texture appears to be
+  sampled on the first UV set without tiling (medium: wood grain follows
+  the planks in a render). Its blue channel looks like an edge wear mask
+  (unknown).
 - **Colour byte order:** type 0x15 colour values have **red in the low
   byte** (`0xAABBGGRR` as a u32). High for the library's 151 named colours
   (`4ce375e6`), which begin 37, 37, 39 / 101, 106, 121 / 88, 89, 90 / 156,
@@ -455,7 +468,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   (three surface records per part); metalness and roughness are low / high
   byte pairs in the same record, blended by the red and green channels of
   `lyr0materialatex`; the G-buffer has no metalness channel.
-- Open: the column choice in a palette row and how metalness reaches the
+- Open: the column choice in a palette row (*answered above: green of the
+  layer detail texture, per pixel*) and how metalness reaches the
   output (decided in shader code, only partly read), how modifiers combine, the
   second layer's colour, modes 4 and 5, weapon colours.
 
@@ -569,7 +583,7 @@ not listed here.
   tyre profile (the tyre's outer radius and width are the wheel discs): what
   drives the shared wheel skeleton's width and profile bones.
 - The shader constant buffer.
-- The `19df25d7` palette column choice ([part colours](#vehicle-part-colours)), which two-layer materials are painted, and the channel layout of the layer maps.
+- The `19df25d7` palette column order (the column is the detail texture's green, see the palette texture under [part colours](#vehicle-part-colours)), which two-layer materials are painted, and the channel layout of the layer maps.
 - Where the rim colour comes from: vehicle configurations store one body
   colour; variation sets have a list (`0bf8dac6`) parallel to the paint
   list, holding 64-bit hashes (4 distinct in the one resource looked at),

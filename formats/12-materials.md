@@ -371,6 +371,25 @@ unknown.
   colour texture. The packed data map (`739e3d0d`) reads R = 255
   (251–255), G = fabric shade (about 60–205), B = flat per-region levels
   (0 to about 100), A about 127 (measured).
+- **Both packed maps** (2026-11-23; channels measured, roles confirmed by
+  render). *Correction to the bullet above:* the clean fabric shade is
+  `speculartex` G, not `speculartex2` G; shading with `speculartex2` G
+  mottles every garment. Each garment binds:
+  - `speculartex` (`c6f46e79`, 512² or 1024² BC7, in the garment's UV
+    layout): G flat mid grey with seams, B mid grey with fine fabric
+    detail, R a dark noisy mask, A white.
+  - `speculartex2` (`739e3d0d`, 256² BC7, also in the garment's layout, not
+    tiling): R 255, G a blotchy pattern, B two flat levels (about 98 inside
+    the garment, 63 outside), A about 128.
+  - In the pixel shader (pass `PS_DeferredPedTexturedNC_28d6614a`; read
+    from machine code, see the weapon shader in
+    [§7.8](07-models.md#78-weapons-modular) for the same scheme):
+    `speculartex` G is overlaid on the base colour and B added as linear
+    light, both neutral at 0.5; R masks a second colour set.
+    `speculartex2` never enters the colour: G modulates gloss and R is the
+    amount of a wear overlay. The base colour is a three-stop gradient per
+    sub-material over a tiling fabric texture, all held in a run-time
+    parameter block whose source was not found.
 - **Palette textures** (high): 21 textures in one `textures.rpf`
   dictionary (the `distant_window_emissives_atlas` txd):
   `ped_tint_generic_{clean,desaturated,vibrant}`,
@@ -449,7 +468,10 @@ the 21 named palettes of the ped tint dictionary. The game probably picks
 the hair colour at run time for the rest (inferred). *A second survey
 (medium, absence of evidence) found hair kits with `Palette` = the general
 clothing palette or 0 and `Tint0`–`2` always 0 or 255; this disagrees with
-the 330 `ped_tint_hair` rows above and is kept alongside them.* The strand
+the 330 `ped_tint_hair` rows above and is kept alongside them.* A
+re-check found that the hair items naming `ped_tint_hair` carry a real row
+in `Tint0`, and the rest have 0, 0, 0 or 255, 255, 255, so the second survey
+probably saw only the other palettes (inferred). The strand
 hair colour is also not in the kit property tags or in the groom resource
 header (512 bytes: bounds, counts, half-float shape parameters, a 16-byte
 profile curve, no colours). The hair pixel shader reads its two ramp row

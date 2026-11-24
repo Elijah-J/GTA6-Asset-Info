@@ -592,9 +592,43 @@ floats and one bool of the detail set. About 287 names were recovered in
 all; the rest (wheel, edge, bleach, scratch, cutoff fields and others) are
 not listed here.
 
+## Vehicle liveries
+
+(2026-11-24; chain and named fields high, every reference resolves.)
+Liveries are **brand variations** that place stickers on named layouts.
+
+- A variation set `fc1c7000` whose name comes from the game's name list,
+  in the pattern `<VEHICLE>_BRAND_<COMPANY>` (about 1,000 brand and vinyl
+  names), gives slots with weighted part options as above and can name
+  parent variations (`03ae1cb0`).
+- One of its parts, in slot `livery` (`805d8f10`) and with no model
+  elements, lists sticker entries in its modifier list (`61e1e572`).
+- **Sticker entry** `86cdf3df`: `sticker` (name of a sticker record),
+  `layout` (a name), `b13f2c2f` (a name), `1903684e` (2 values seen),
+  `stickerPack` (0 in all seen), five bools and one float.
+- **Sticker record** `ed9cf5df` (5,650 in the vehicle library): `3950a760`
+  a 64-bit texture id (4,758 distinct; three tested are in the vehicle
+  texture stores), `9b5dcd73` and `9dbbd803` ARGB colours, `aspectRatio`
+  and further fields not decoded.
+- Counts for one truck's pack: 70 variation sets, 370 sticker entries, 192
+  stickers, 239 layouts, 36 values of `b13f2c2f`.
+- Open: where a layout sits on the model (layout names are not record
+  names in any archive, not bone names and not 32-bit values in the model
+  files), what `b13f2c2f` and `1903684e` mean, and how the game picks a
+  brand for a vehicle. *This adds to the livery and decal records
+  (`44cc9d8c`, `ed9cf5df`) read earlier under
+  [vehicle tables](#vehicle-tables).*
+
+**Distant models** (2026-11-24, high: 9 of 9 names matched): a
+configuration's 64-bit field `395485c9`, a variation set's list `0bf8dac6`
+and the model info's list `cfcf6550` hold asset ids of the vehicle's
+distant models (names ending `_batchlod`), the same MurmurHash3 asset ids
+as `8605bf0e` above.
+
 ## Open questions
 
-- Secondary and pearl colours, liveries; whether the colours are linear.
+- Secondary and pearl colours; where a livery layout sits on the model
+  ([liveries](#vehicle-liveries)); whether the colours are linear.
 - What `wheelScale` measures and how the game sets the rim radius and
   tyre profile (the tyre's outer radius and width are the wheel discs): what
   drives the shared wheel skeleton's width and profile bones.

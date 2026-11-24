@@ -526,10 +526,18 @@ share root struct `8419ab01`, which has four hash maps keyed by name hash:
 - The main colour parameters are `f574261b` (4 entries per sub-material)
   and `1c85bdf6` (3 entries, at preset level). How they become the
   shader's three gradient stops is not covered here.
+- **The small file is the weapon library** (high). In the 65 weapon family
+  PSO files, the per-component asset struct `85492dc3` has field
+  `72f5e33e` = a layered preset key (1,005 of 1,006 non-zero values
+  resolve), and struct `6724161c` {`Name`, `c763edb4`, `14b064c2`} has
+  `14b064c2` = a layered preset key (1,300 of 1,301), a named variant list
+  per family.
+- A second wardrobe field also holds clothing-library preset keys:
+  `e830a068` of struct `12712917` (every value resolves); its role is
+  unknown.
 - Open: the parameter names (hashes only); the default values; the role of
   the kit's `Tint0`–`2` on preset kits; the five texture indices of
-  `d2b598e5`; what references the small library; how weapon components
-  link to a preset.
+  `d2b598e5`.
 
 ### Ped model table
 

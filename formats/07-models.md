@@ -608,7 +608,14 @@ the material palette guess:
   component lists (`b5e90fae`, `228565d0`) occur in no decoded PSO or
   script document of the script archive, the story script pack or the
   common archive, and a 1–3 word name search found no name. *Extended:*
-  they occur in no meta resource and no PSO file of any indexed archive. Where weapon
+  they occur in no meta resource and no PSO file of any indexed archive.
+- **Weapon colours come from layered presets** (2026-11-23, high): the
+  per-component asset struct `85492dc3` field `72f5e33e` and the variant
+  list `6724161c`.`14b064c2` hold keys of the weapon
+  [layered material library](12-materials.md#layered-material-library).
+  The Components list (struct `b8784be8`: id, material, byte `593b09b0`)
+  is not the colour source: its two material values (the hashes above)
+  match nothing in either library, and their role is still unexplained. Where weapon
   tint colours are defined is unknown.
 
 Open: which variant of each slot a weapon carries by default and where part

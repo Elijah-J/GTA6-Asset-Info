@@ -20,7 +20,7 @@ documentation only: no game files, no extracted assets, no keys. Read
 | Map data | [Meta resources](formats/08-meta.md) · [Placements and batches](formats/09-placements.md) · [Interiors](formats/10-interiors.md) |
 | World | [Collision](formats/13-collision.md) · [Navmesh](formats/14-navmesh.md) · [Lights](formats/15-lights.md) · [Road graph](formats/16-roads.md) |
 | Materials | [Vehicle paint and tables](formats/11-vehicle-paint.md) · [Material classes](formats/12-materials.md) |
-| Other | [PSO, RBF, BVH4, audio, animation, body shape, video, UI](formats/17-other.md) · [Radio stations](formats/18-radio.md) |
+| Other | [PSO, RBF, BVH4, audio, animation, body shape, video, UI, world height map](formats/17-other.md) · [Radio stations](formats/18-radio.md) |
 | Byte-level notes | [Index](structure/00-INDEX.md) · [RPF9 container](structure/01-rpf9-container.md) · [Resources and textures](structure/02-resources-textures.md) · [Audio (`ADAT`)](structure/03-audio-awc.md) · [PSO and object graph](structure/04-pso-objectgraph.md) · [`ttpf` stores](structure/05-ttpf-stores.md) · [Models and shaders](structure/06-models-shaders.md) |
 
 The [format index](formats/README.md) has the conventions. Every page gives

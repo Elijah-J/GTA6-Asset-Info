@@ -18,6 +18,7 @@
 | PSIN scene placements (`story000_script.rpf`) | 97,504 64-byte placement records (confirmed). See [PSIN scene placements](#psin-scene-placements) |
 | movies (`movies.rpf`) | Bink 2: 515 movies, 505 `KB2n` and 10 `KB2j`, stored uncompressed; header, frame index and Bink Audio tracks parse (confirmed); all 515 decode with a public Bink 2 decoder (high). 276 more in three content packs. See [Video](#video) |
 | UI graphics | named texture dictionaries in `data.rpf` and UI texture stores. See [UI graphics](#ui-graphics) |
+| world height map (`MHIU`, `common.rpf`) | 2048 × 2048 u8 surface heights in row runs, two copies (high). See [World height map](#world-height-map-mhiu) |
 | text (GXT) | `0DRP` type `0x7a` key/text resources; 54,118 keys (confirmed). All 14,482 tables of `data.rpf` (4.21 M strings, one table per language) and the 78 of `shared_minigame000` decode (confirmed). See [Text (GXT)](#text-gxt) |
 
 ## PSO
@@ -1128,6 +1129,40 @@ u64 key and a value pointer.
 | 0x38 | u64 id; zero in about half the records | inferred (meaning) |
 
 These are a different family from the map-metadata entities in [§9](09-placements.md).
+
+## World height map (`MHIU`)
+
+(2026-11-24; layout high, decoded and checked against the data.) A
+whole-world surface height map in `common.rpf`. All fields are little
+endian.
+
+| Off | Meaning |
+|---|---|
+| 0x00 | magic `MHIU` |
+| 0x04 | u16 version (1) |
+| 0x06 | u16 width (2048) |
+| 0x08 | u32 row count (2048) |
+| 0x0C | f32 × 6 world box: min x, y, z, then max x, y, z (−13000, −9000, −50 / 7000, 11000, 500) |
+| 0x24 | u32 byte count after the header (row table plus samples) |
+| 0x28 | u8 fill value (`0x17`, sea) |
+| 0x29 | 3 bytes, unknown; they differ between the two copies (the third may be a checksum, a guess) |
+
+- **Row table** after the 0x2C-byte header, 8 bytes per row: u16 first
+  column, u16 count, i32 offset. The offset is biased by −first, so column
+  x of the row is `samples[offset + x]`. The counts add up to the sample
+  bytes exactly.
+- **Samples** are u8. Row 0 is the south edge and column 0 the west edge;
+  each sample covers 9.77 m. Height = min_z + v × (max_z − min_z) / 255, so
+  one step is 2.16 m and the fill value `0x17` is −0.39 m. Cells outside
+  every run are sea.
+- **Two copies** on the same grid (about 1.2 MB each) store 1.17 M and
+  1.19 M samples. Of the samples both store, 892 K are equal and 139 K
+  differ by +1 step; some land exists in only one copy. What sets the two
+  apart in game is unknown.
+- **Against the collision top surface** ([§13](13-collision.md), 8 m grid,
+  about 750 K land samples): median difference about −2 m; the second copy
+  has 72 % within 3 m, 96 % within 10 m and correlation 0.993, the first
+  copy correlation 0.974. It is a surface map: buildings show up.
 
 ## Text (GXT)
 

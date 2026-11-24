@@ -251,6 +251,22 @@ directly; detile as for a zlib chunk.
   247/248, 254/255). The preset slots and codebook are in
   [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) and
   [§6A.3](06a-bcpack-tables.md#6a3-bc1-selector-quadrant-codebook).
+- **Three-colour index check** (2026-11-24; a near-exact rule, not exact,
+  since real cut-out textures break it): a block in three-colour mode
+  (c0 ≤ c1 as 16-bit values) does not use index 3. On a 5 % sample of the
+  102,725 BC1 chunks, chains that start at the default prediction break it
+  in 1,705 of 9,402,103 blocks (0.018 %), and c0 = c1 blocks never use
+  index 3 (0 of 168,197). Chains that start at a preset slot break it in
+  121,918 of 85,387,017 (0.14 %), concentrated in a few slots (192: 55 %,
+  127: 37 %, 152: 31 %, 33: 24 %), so some
+  [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots) presets are wrong.
+  Refits of slots 33, 48, 73, 120, 159, 166, 194, 208 and 222 pass both
+  tests (fewer violations on held-out chunks, 28,387 → 907 in the sample;
+  error against plain child mips 11.6 % lower, at least 30 reference
+  blocks each; medium-high). Their values will be added once they are
+  final. 31 more slots moved in the fit but failed a test (no plain
+  reference, or higher reference error; probably real cut-out textures),
+  among them 192, 127 and 152; their true values are unknown.
 
 **Prediction (BC1, BC3, BC7).** Every block is coded as residuals against a
 reference: the zero state (distance 0), block `i − d` of the same chunk in

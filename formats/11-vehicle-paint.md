@@ -14,7 +14,12 @@
 | `84c69350` / `58b6e707` (`lyr0normaltex` / `lyr1normaltex`) | BC5 normals | confirmed |
 | shader constant buffer (+0x08) | ~0x160 bytes of floats, layout not keyed by the parameter table | unknown |
 | `19df25d7` | 128 × 256 R8G8B8A8 sRGB texture of horizontal colour bands; one texture (same hash) is bound by every two-layer material of a car and by the shared tyre model (12 of 12 `standard_vehicle_2lyr` materials on one SUV, plus the tyre). Probably a material palette indexed by the layer maps or constants; the lookup is unknown. *Later check (ambulance and SUV): every vehicle binds the **same** texture: row 0 R / G / B markers, rows 1–32 black, rows 33 and up ramps, so it is probably a placeholder the game replaces (inferred); this disagrees with "one per car" and is kept alongside it.* **Later still (2026-11-23, high): not a placeholder but the shared material palette**; row = a colour record's palette row, see [part colours](#vehicle-part-colours). **Array of 8 slices (2026-11-23, high):** the texture is 128 × 256 × 8 slices; the descriptions above looked only at slice 0. A colour record's Page is the slice, Selection the row ([slices](#vehicle-library-field-names)) | format, sharing, array confirmed; role high |
-| `346394ea` / `7d4f12e2` (`lyr0diffusetex` / `lyr1diffusetex`) | **linear BC7 detail maps, not colour**: R and G grey around 0.5, B a sparse mask. *Later (2026-11-23, high):* R 0.50 ± 0.04, G 0.47 ± 0.05, B mostly 0; G (plus a detail term) is the **palette column**, so most texels sample near the middle of a palette row; the shader does not flip or remap the column for any palette page | confirmed (not colour; channels on one map) |
+| `346394ea` / `7d4f12e2` (`lyr0diffusetex` / `lyr1diffusetex`) | **linear BC7 detail maps, not colour**: R and G grey around 0.5, B a sparse mask. *Base colour slot (2026-11-23,
+high that it is data):* on two-layer vehicle materials the base colour
+slot often binds the **same texture** as `lyr0diffusetex` / `lyr1diffusetex`
+(linear, mean about 128, 120, 21, alpha unused at 250 or more); it is not an
+albedo, and shown as one it gives olive parts. Whether an sRGB texture in
+that slot is a real colour is assumed from its format only. *Later (2026-11-23, high):* R 0.50 ± 0.04, G 0.47 ± 0.05, B mostly 0; G (plus a detail term) is the **palette column**, so most texels sample near the middle of a palette row; the shader does not flip or remap the column for any palette page | confirmed (not colour; channels on one map) |
 | COLOR0.a on `standard_vehicle_2lyr` | a **part id** (0–255, a few values per material), not a layer weight | confirmed (ambulance, SUV) |
 
 ### Vehicle shaders (2026-11-22)
@@ -48,6 +53,17 @@ vehicle tables. Field names are case-sensitive joaat and match GTA V's
 With the per-vehicle packs this covers 373 models (305 named), 4,063
 configurations (3,339 with a rim and a tyre) and 2,377 colour lists. Handling is
 a separate PSO ([§17](17-other.md#vehicle-handling)).
+
+- **Multi-vehicle tables** (2026-11-23): variation sets (`fc1c7000`, with
+  the owner link to a vehicle's part set `f14244fd`) and configurations
+  (`51019114`) are not only in single-vehicle packs. Both name their
+  vehicle, and some vehicles have them only in tables that hold several
+  vehicles; reading those too gives 320 vehicles with a part set instead
+  of 319 (the new one has 12 configurations; high: no vehicle lost a
+  configuration). A vehicle's configurations can also sit in more than one
+  resource, so gather them per owner and apply modifiers once to the base
+  set: doing so changed 2 vehicles (5 configurations) that had been
+  modified twice (count high; that the game applies them once is medium).
 
 - **Joining model info to a model** (2026-11-23, high): `gameName` is not
   always the model name: 46 of 325 distinct records hold a different value

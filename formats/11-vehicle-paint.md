@@ -569,6 +569,22 @@ as material 0 or rougher; 25 surfaces use one record for both. Still
 unnamed: `038e1179` (a second detail set), `e9aaa040`, `2bb71aae`,
 `6a368a1f`, `30250c4c`, `610cee1b`, `7be02d72`, `1e8b9429`.
 
+**Second layer** (2026-11-24; fields high, all resolve; medium that the
+second layer is the worn or rusted look, from its colours and roughness):
+all 757 surface records name a second layer, `material1Hash` plus
+`albedo1Hash`, in 92 distinct colour and material pairs. The most common
+(201 surfaces) is palette slice 3 row 251, a brown, with roughness
+0.65–1.0 and metalness 0. The body paint surface uses slice 3 row 255,
+also brown, with the same material. Bare-metal surfaces have a grey row
+with metalness 0.9–1.0. `primerType` (`78b545dd`) is 0 on 563 records and
+1 on 194; its meaning is unknown. The `cf980e6f` parameter records that
+`detailMapsHash` and `038e1179` name hold about 20 floats each, not
+decoded. A part set's surface entry (`f5908771`) repeats the same field
+names, with one constant value for all 256 ids in the set checked. Open:
+what masks the second layer and how much of it the game shows. The blue
+channel of the layer detail texture `346394ea` (mean 21 of 255) looks like
+an edge wear mask (inferred).
+
 The part set's `3d9aef8b` third field (`96479496`) is the same `paintHash`
 name. Open: stem Y; the surface struct's remaining reference fields
 (probably ending in `Hash`); the colour record's six trailing colours; six

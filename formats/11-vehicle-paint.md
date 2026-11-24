@@ -96,6 +96,39 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     part models; 323 of 373 vehicles have parts (7,915 records with
     elements). Open: slots `46268fee`, `9bbfb64c`, `ac89920d`, `5a4394ab`
     and others.
+- **Shared part models and truck bodies** (2026-11-23; high for the library
+  chain: 16 trucks and pickups render with the right body; 6,084 shared
+  parts with models over 316 vehicle records):
+  - A configuration's part list names `0caef606` part records both in the
+    vehicle's own pack **and in the shared vehicle library**. In the
+    library a `77f2b89e` element is 48 bytes and its bone `079baba7` is a
+    plain u32 (the low half of a u64 in the packs).
+  - In the library the **low 32 bits of `8605bf0e` are joaat of the
+    element's model name**: 1,996 of 2,027 elements name an existing model
+    this way. In a vehicle's own pack the low half often matches no model
+    name (see the part-set reading above).
+  - Truck bodies are shared models `truckbeds_<kind>_<nn>[_lrg|_med]` (box,
+    flatbed, garbage, mixer, tanker, tipper, cartransport, fifthwheel, plus
+    sideguards and footboards), placed at bone `cmnb_truckbed_attach`; 202
+    library elements name one.
+  - The first part of every configuration is `<model>_chassis` (all 26
+    trucks and pickups tried).
+  - Pickups have a bed model `<model>_pickup`; parts that fit a bed put
+    their models at bone `mod_bed_attach`. The part in the bed slot
+    (`1c9dd6fe`) names its models by hashes that match no model name, so
+    that link is not decoded (the bed placement above is by name and bone,
+    medium).
+  - A part list contains every choice of its option lists, so two beds can
+    appear in one list; the game takes one.
+  - Record `be692119` in a vehicle pack (96 bytes: name, kind hash,
+    `attachBoneId`, offset, `spawnDistance`) is a **prop set attachment**,
+    not a body: its name matches a small entity-list resource in the levels
+    archive (struct `35abc248` plus entity entries of litter, tools,
+    boxes). A part reaches it through an `8f58f964` {name, `2850d1b3` =
+    attachment name} modifier.
+  - *This revises the material-set bullet below, where 71 of one car's 75
+    part-list names were found in no vehicle resource: many of them are
+    shared library parts (not re-counted for that car).*
 - **Material set: located, not decoded** (2026-11-23; high that this is the
   vehicle's material set, since the counts 41 and 256 match the layer
   records and the 0–255 part ids in the body's vertex colour alpha; low on

@@ -29,7 +29,7 @@ that slot is a real colour is assumed from its format only. *Later (2026-11-23, 
 | `4aa38282` `standard_vehicle_2lyr` | **not only body paint**: one SUV has 12 materials on it, the largest (82 K triangles) spanning the whole car including the interior. Rule of thumb (inferred): a material is body paint when it binds no detail texture and its meshes sit on body bones. Real per-part colours are not decoded | confirmed (coverage) |
 | `99ad6fc9` `standard_vehicle_2lyr_tyre_inst` | tyres; `diffusetex` is the engine-default white | confirmed |
 | `c5cdbdd2` `standard_vehicle_2lyr_wheel_inst`, `99ad6fc9` | rims and tyres embed one **129 × 1 tint palette**, `584f3a883128c1a4`, identical on every rim and tyre looked at: entries 0–7 pure red, yellow, green, blue, magenta, grey (85), orange, cyan; 8–63 shades in groups of four; 64–128 one pink. Probably a placeholder the game overwrites with the wheel colour (inferred from the marker colours and the sharing) | palette confirmed; role medium |
-| `389206d1` `standard_vehicle_alpha` | lamp lenses and clear covers, alpha bucket. `diffusetex` RGB is one constant colour (128, 128, 98 on the sample), opacity in alpha (78–255); also `extinctionlut` and `refractionbumptexture` slots. 41 materials in a 20,000-model sample | confirmed on one vehicle |
+| `389206d1` `standard_vehicle_alpha` | lamp lenses and clear covers, alpha bucket; on one truck box also decal meshes (bolts, markers, reflective strips; 2026-11-24, one model). `diffusetex` RGB is one constant colour (128, 128, 98 on the sample), opacity in alpha (78–255); also `extinctionlut` and `refractionbumptexture` slots. 41 materials in a 20,000-model sample | confirmed on one vehicle |
 | `03b27476` `standard_vehicle_2lyr_reflector` | lamp reflectors (earlier grouped with car paint) | inferred (name, position) |
 | `29648098` `standard_vehicle_emissive_animated_bones`, `5a693bbe` `standard_vehicle_emissive_layer` | lamps and lit panels; `emissivetex` (`8e0d63ee`) and `diffusetex` bind the same texture | confirmed on one vehicle |
 | `5a693bbe` **runtime screen overlay** | a dashboard screen is two meshes about 1 mm apart: behind, `standard_vehicle_emissive_layer` with a real colour map; in front, the same shader with `diffusetex` and `emissivetex` both `a800afccf01aa36b` (in no store), always in the cutout bucket (record flags `0003a80108ff0000`; `0003a00108ff0000` on generic models). 570 models bind it (284 `_hi`, 275 `_mid`, 11 others; also on `standard_emissive_layer`); of the 284 `_hi`, 251 in both slots, 31 have no emissive slot, 2 another emissive map, and 267 have a textured emissive mesh behind it. Probably the texture the game draws dials and navigation into at runtime, or a transparent default; what is drawn and its size are unknown | medium |
@@ -640,6 +640,15 @@ Liveries are **brand variations** that place stickers on named layouts.
   vertex's sticker zone. On one truck's box body, zones 169–174 are the left
   side wall in six panels, 177–182 the right side wall and 165–168 the
   front wall; on the cab, 24 is the left door and 32 the right door.
+  Zones are read only from body surfaces (`4aa38282`); decal meshes carry
+  other ids in that byte ([§7](07-models.md)). Zone 63 is the largest
+  zone on every model looked at (49–62 m² on vehicle bodies, fitted parts
+  too), which fits "no sticker" (inferred).
+- **Second UV set across zones** (2026-11-24, high for the two vehicles
+  checked, not surveyed wider): on one car the second UV set runs across
+  the front wing and the door without a break (one sticker spans zones 83
+  and 25 continuously); on a box truck the box walls are 7.66–7.81 m per
+  UV unit in the second UV set.
 - **Sticker layouts** (2026-11-24, high) are in one PSO file of `data.rpf`,
   with field names hashed with their capitals. The root holds a list
   (`3274d53f`) of groups, struct `b0dd20cb` {`Name`, list `c19c0de4` of

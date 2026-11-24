@@ -913,6 +913,26 @@ is not referenced by the footer. The trajectory reaches 0.728 m of
 planar displacement and about 141 degrees of heading change. How the
 runtime combines it with the pose is not yet verified.
 
+**Mover tracks** (2026-11-24; names and values high, names re-hashed with
+joaat): tracks with bone id 0 are the **mover**. Kind `7e58c0a0` is
+`moverabsolutetranslation` (vector3, metres, Z-up, forward +Y) and kind
+`103ca38a` is `moverabsoluterotation` (quaternion, a turn about Z). Both are
+absolute over the whole animation, so a clip cut from the middle of an
+animation starts away from the origin; the movement since the clip's start
+is inverse(start) × current. The bind pose of a character faces −Y, and
+a walk clip's bone tracks turn it to face +Y.
+
+- Check (one dictionary): on a female walk clip (3.70 s, 6.65 m, no turn),
+  adding the mover to forward kinematics keeps each planted foot within
+  1 cm of the ground at four contacts per foot; without it the foot slides
+  about 0.7 m per step. Two turn clips of the same dictionary turn 346°
+  left and right. *This answers, for these clips, how the trajectory
+  combines with the pose: the mover is applied on top of the bone tracks.*
+- Open: five more mover track kinds in the same animations, not named or
+  decoded: `60d0644c` (float, zero in the sample), `765c7d5f` (vector3),
+  and the quaternions `a8219307`, `af65ca97` and `bd8d191d` (nearly equal
+  to the absolute rotation, as track 153 above).
+
 ## Ped body shape
 
 Body shape is a **sparse additive pose rig** on helper bones (`BM_*`,

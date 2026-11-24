@@ -50,13 +50,14 @@ gives only the station object.
 
 ## Deterministic `GAME.DAT` / `SOUNDS.DAT` (`audMetadataFile` `0x045A88EA`)
 
-The zlib stream groups at the start of `audio.rpf` (before the first `ADAT` bank) can be parsed
-without hardcoded archive offsets by grouping consecutive 64 KiB streams until a short stream ends
-each `audMetadataFile` payload (magic `0x045A88EA` at `+0x08` after `u32 version, u32 meta_size`):
+On Xbox Series 1.0.2.1 the file groups before the first `ADAT` bank in `audio.rpf` can be identified
+by grouping consecutive 64 KiB inflated chunks until a short chunk ends the group. An
+`audMetadataFile` payload has magic `0x045A88EA` at `+0x08`, after `u32 version` and `u32 meta_size`.
+A zlib-only carve identifies the groups but omits stored chunks. In this build, `SOUNDS.DAT` is
+missing three stored 64 KiB chunks from section 2 when carved that way.
 
 - **Container layout:** metadata body (`meta_size` bytes from `+0x08`), `u32 s1_size` + section 1,
-  `u32 s2_size` + section 2 (note: uncompressed 64 KiB runs wholly inside section 2 may be skipped
-  by zlib-only carvers and must be subtracted before the object table), `u32 obj_count` +
+  `u32 s2_size` + section 2 including its stored chunks, `u32 obj_count` +
   `(u32 hash, u32 offset)` pairs sorted by `hash & 0xFF`, `u32 pre_ref_count` + `u32[]`, then
   `u32, u32, u32 ref_count` + `(u32 target_hash, u32)` reference table.
 - **`GAME.DAT`** is identified by `joaat("RADIO_STATIONS_01")` (`type 0x0E`). Walking
@@ -67,27 +68,32 @@ each `audMetadataFile` payload (magic `0x045A88EA` at `+0x08` after `u32 version
     total on the measured build).
   - `+0x08` `u32 name_hash`, `+0x0C` `u32 wheel_position`, `+0x3C` `u32 tracklist_count` followed by
     12-byte tracklist entries starting at `+0x40` (first `u32` is the tracklist ref index).
-- **`RadioStationTrackList` (`type 0x11`):** optional external `ObjectList` (`type 0x02`, `u32 count`
-  at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44` (`0xFFFFFFFF` if absent), plus `u16 inline_count`
-  at `+0x48` and `u32` refs from `+0x4C`. Tracklists not referenced by any `RADIO_STATIONS_01..16`
-  station represent unattached/script tracklists.
+- **`RadioStationTrackList` (`type 0x11`):** external `ObjectList` (`type 0x02`, `u32 count`
+  at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44`. If that field is `0xFFFFFFFF`, use the
+  `u16` inline count at `+0x48` and `u32` refs from `+0x4C`.
+  Some tracklists without station references are looked up by hash at runtime.
 - **`RadioTrackSettings` (`type 0x0F`):** `u32 sound_ref` at `+0x0C` resolves to a `SOUNDS.DAT`
   `StreamingSound` (`type 0x08`) object.
-- **`SOUNDS.DAT` `StreamingSound` (`type 0x08`) -> `SimpleSound` (`type 0x0C`):** each
-  `StreamingSound` carries `u32 duration_ms` immediately before `0x0C <channel_count> <u32 child_ids...>`,
-  followed sequentially in the object table by `<channel_count>` `SimpleSound` (`type 0x0C`) objects
-  holding `(u32 bank_hash, u32 wave_hash)` at `+0x02` (`wave_hash & 0x1FFFFFFF` = AWC stream ID).
-  Parsing `StreamingSound` directly handles multi-channel (`channel_count > 1`) venue/club mixes as
-  well as single-channel radio tracks.
+- **`SOUNDS.DAT` `StreamingSound` (`type 0x08`) -> `SimpleSound` (`type 0x0C`):** in the
+  observed layout, `u32 duration_ms` immediately precedes `0x0C <child_count> <u32 child_refs...>`.
+  In six checked three-stem mixes, three `SimpleSound` objects immediately follow in metadata offset order.
+  Each holds `(u32 bank_hash, u32 wave_hash)` at `+0x02` (`wave_hash & 0x1FFFFFFF` = AWC stream ID).
 
-## Track and station text lookup (`trackid` -> `GLOBAL`)
+The object tables contain 86,715 entries in `GAME.DAT` and 241,999 in `SOUNDS.DAT`. The radio type
+names have precedent in GTA V tooling. The radio type IDs and field offsets here were checked
+against the Xbox build's metadata and lookup code.
+[CodeWalker radio types](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5084-L5086)
+· [Track settings](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5149)
 
-For each `0xBD` `trackid` marker with track number `N > 1` (rejecting `0` and `1`), the game resolves
-label hashes `joaat("<N>s")` (title) and `joaat("<N>a")` (artist/show) in English `0DRP` text tables
-with `globalSearch` precedence: check the `trackid` table first, then fall back to `GLOBAL` only if
-the hash is absent from `trackid` (an explicit empty string in `trackid` stops fallback). Wheel talk
-radio segments carry an empty `<N>s` title and a non-empty `<N>a` show/host label. Station display
-names resolve `RadioStationSettings.name_hash` in `GLOBAL`.
+## Track and station text lookup
+
+The radio label formatters reject track numbers `0` and `1` and return `joaat("<N>s")` for the title
+and `joaat("<N>a")` for the artist or show. The game's wildcard text resolver searches loaded
+`globalSearch` blocks in reverse lookup order and moves a matching block to the front of future
+searches. In this build's English data, all 1,703 entries in `trackid` are radio label hashes with
+zero overlap against other eligible tables. Ten titles absent from `trackid` resolve in `GLOBAL`.
+There are 77 empty title entries with nonempty show or host labels. All 23 wheel station display
+labels resolve in `GLOBAL` via `RadioStationSettings.name_hash`.
 
 ## Build a rotating station timeline
 

@@ -196,12 +196,14 @@ not identified).
 
 ### Bink Audio 2.0 bitstream (`KB2n`)
 
-The 48 kHz stereo DCT audio tracks (`0x3000` / `0x7000`) inside `KB2n` files use Bink Audio 2.0
-packet coding: **7-bit** band quantizer indices and sign bits grouped **after** each non-zero
-coefficient run, rather than Bink Audio 1.1's 8-bit band quantizer indices and interleaved per-coefficient
-sign bits. Because the underlying DCT transform, quantization table, and overlap-add window match
-Bink Audio 1.1, packets can be losslessly bit-repacked to Bink Audio 1.1 (inside a minimal `BIKi`
-audio container) for decoding with stock FFmpeg `binkaudio_dct` without re-quantization or proprietary DLLs.
+Across the Xbox Series 1.0.2.1 archives in the export sample, 412 audio tracks in 375
+`KB2n` files used 48 kHz stereo DCT coding and parsed as Bink Audio 2.0.
+Band quantizer indices use **7 bits**. In each
+run that carries magnitudes, all magnitudes come first, followed by a sign bit for
+each nonzero magnitude. Repacking widens the indices to 8 bits and interleaves the
+sign bits with the magnitudes, preserving the coded values. Stock FFmpeg
+`binkaudio_dct` decoded all 412 repacked tracks from `BIKi` containers. PCM equality
+with the native Bink 2 decoder is unconfirmed.
 
 ### Decoding
 

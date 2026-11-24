@@ -609,7 +609,28 @@ Liveries are **brand variations** that place stickers on named layouts.
 - **Sticker record** `ed9cf5df` (5,650 in the vehicle library): `3950a760`
   a 64-bit texture id (4,758 distinct; three tested are in the vehicle
   texture stores), `9b5dcd73` and `9dbbd803` ARGB colours, `aspectRatio`
-  and further fields not decoded.
+  and further fields not decoded. *Revised below: `9dbbd803` is not one of
+  the mask colours.*
+- **Sticker record fields** (2026-11-24). With the packs included there are
+  8,415 sticker records and 6,663 distinct texture ids; 6,449 decode from
+  the vehicle texture stores and 214 are in no store (one is id 0; why is
+  open). No sticker record name is in the name list.
+  - `54ec9205` (bool) marks a **colour mask** texture (high: counts plus
+    pictures). Over 8,415 records: true with colours 6,116, true without
+    colours 1, false without colours 1,791, false with colours 507. The
+    mask textures looked at (about 10) are opaque (alpha 254–255) and their
+    red, green and blue channels are the cover of three colours; non-mask
+    textures carry their own colours and an alpha channel.
+  - The three mask colours are `colorRed` (`9b5dcd73`), `colorGreen`
+    (`b5752ae0`) and `colorBlue` (`9e679616`), ARGB, 32-bit (high: names
+    hashed with their capitals). `9dbbd803` is not one of them: it holds
+    `ffd9e0e5` on 7,995 of 8,415 records (meaning unknown).
+  - Seen, not interpreted: `aspectRatio` (`8de4f2ec`) 0–6 (0: 3,156;
+    1: 1,836; 2: 1,706; 3: 1,606; 4: 96; 5: 12; 6: 3), `layer` 0–3 (1 on
+    7,620), `718a6bbb` 0–4, bools `ec4371eb` (true on 5,583), `92dd759a`
+    (true on 115) and `c2c2dd36` (always true), 64-bit ids `aa79df8a` and
+    `b35f9888` (non-zero on 6,254 and 219), `emissiveRed`, `emissiveGreen`,
+    `emissiveBlue`, `glassAlpha`, `minRandomScale` and `randomRotation`.
 - Counts for one truck's pack: 70 variation sets, 370 sticker entries, 192
   stickers, 239 layouts, 36 values of `b13f2c2f`.
 - **Sticker zones** (2026-11-24, high: they match the layouts' zone lists,

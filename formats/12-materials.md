@@ -422,7 +422,9 @@ unknown.
 - Tint 0 probably follows the data map's G (medium); how R and B bring in
   tints 1 and 2 is unknown.
 - Open: palette `fcef23e3` (eyes, teeth, belts) is not in that dictionary;
-  the `e13ebaf8` link targets resolve to no item id or known name; on a few
+  the `e13ebaf8` link targets resolve to no item id or known name
+  (*answered 2026-11-23: `e13ebaf8` is `GarmentPreset`, a key of the
+  [layered material library](#layered-material-library)*); on a few
   sets `37e52277.46d26d93` holds ARGB colours (alpha `ff`), meaning
   unknown.
 
@@ -491,6 +493,43 @@ character (the nearest of 142 named female heads to `cs_lucia`'s is
 pairs reach the same ratio); and the hair placeholder tag `023e5a2f` cannot
 link a headless character to its model, because generic peds borrow named
 characters' placeholders as stand-ins.
+
+### Layered material library
+
+(2026-11-23; structure high, read from decoded PSO data.) The per-material
+parameter block that the clothing shaders (and, by the same scheme, the
+weapon shader, [§7.8](07-models.md#78-weapons-modular)) read is filled from
+a library of layered materials. Two PSO files in the game-data archive
+share root struct `8419ab01`, which has four hash maps keyed by name hash:
+
+| Map | Record | Large file | Small file |
+|---|---|---|---|
+| `42fa4d39` | base material `6cc4c278` | 7,994 | 556 |
+| `fd540657` | layered preset `756aef9c` | 13,071 | 2,635 |
+| `951cf6e3` | `83021d7a` | 432 | 129 |
+| `2d71e4f7` | `440c9ecb` (has fields `scattering` and `Absorption`) | 184 | 7 |
+
+- Every record has four parameter lists: floats `1652fce8` (items
+  `38f05860`), textures `0f208402` (items `f1cb6289`, 64-bit texture
+  hash), colours `fc24d9c5` (items `e9d99e0a`, u32 colour; byte order A, R,
+  G, B from high to low, medium, judged by plausible garment colours) and
+  ints `9f6b5b03` (items `4b2625bb`). Item fields: `Name` (parameter name
+  hash), `Index` (array element 0–7, 255 = scalar), `Value`, and
+  `aadeb53e` = sub-material 0–7 (255 = the whole record).
+- A layered preset adds `4a1ebc36`, 8 base-material names (one per
+  sub-material; all resolve in the same file), `4bee7340` and `cfc17384`
+  (8 optional names each) and `c897af02`, a 64-bit id.
+- The wardrobe kit field `GarmentPreset` (`e13ebaf8`) is a key of the
+  layered preset map (every value checked resolves). About 38 % of the kits
+  in the largest wardrobe file have one, and those rarely have a
+  `Palette`.
+- The main colour parameters are `f574261b` (4 entries per sub-material)
+  and `1c85bdf6` (3 entries, at preset level). How they become the
+  shader's three gradient stops is not covered here.
+- Open: the parameter names (hashes only); the default values; the role of
+  the kit's `Tint0`–`2` on preset kits; the five texture indices of
+  `d2b598e5`; what references the small library; how weapon components
+  link to a preset.
 
 ### Ped model table
 

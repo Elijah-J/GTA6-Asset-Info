@@ -511,8 +511,11 @@ share root struct `8419ab01`, which has four hash maps keyed by name hash:
 
 - Every record has four parameter lists: floats `1652fce8` (items
   `38f05860`), textures `0f208402` (items `f1cb6289`, 64-bit texture
-  hash), colours `fc24d9c5` (items `e9d99e0a`, u32 colour; byte order A, R,
-  G, B from high to low, medium, judged by plausible garment colours) and
+  hash), colours `fc24d9c5` (items `e9d99e0a`, u32 colour; first read as A,
+  R, G, B from high to low; *corrected 2026-11-23, high:* **A, B, G, R
+  from high to low, red in the low byte**, checked against wardrobe colour
+  tags: 83 of 85 items tagged blue, navy, brown, red, orange or yellow
+  agree) and
   ints `9f6b5b03` (items `4b2625bb`). Item fields: `Name` (parameter name
   hash), `Index` (array element 0–7, 255 = scalar), `Value`, and
   `aadeb53e` = sub-material 0–7 (255 = the whole record).
@@ -522,7 +525,8 @@ share root struct `8419ab01`, which has four hash maps keyed by name hash:
 - The wardrobe kit field `GarmentPreset` (`e13ebaf8`) is a key of the
   layered preset map (every value checked resolves). About 38 % of the kits
   in the largest wardrobe file have one, and those rarely have a
-  `Palette`.
+  `Palette`; about 54 % of one main character's listed wardrobe items
+  (1,292 of 2,393) carry one.
 - The main colour parameters are `f574261b` (4 entries per sub-material)
   and `1c85bdf6` (3 entries, at preset level). How they become the
   shader's three gradient stops is not covered here.

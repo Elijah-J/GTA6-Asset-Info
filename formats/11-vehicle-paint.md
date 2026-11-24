@@ -99,8 +99,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     slot: joaat of `bonnet`, `bumper_f`, `bumper_r`, `exhaust`, `spoiler`,
     `splitter`, `diffuser`, `towing`, `chassis`, `roof` (`bc96a7e5`) or
     `livery` (`805d8f10`). `7e5d1612` (`elements`) names `77f2b89e`
-    records; `61e1e572` is a list of hashes.
-  - `77f2b89e` is one model of a part: the low u32 of u64 `079baba7` is
+    records; `61e1e572` (`features`) is a list of hashes.
+  - `77f2b89e` is one model of a part: the low u32 of u64 `079baba7` (`attachBone`) is
     joaat of the bone the model is authored around (`chassis` `d418625e`, the
     car's own space; `boot`, `bumper_f`, `mod_spoiler_attach`,
     `mod_spoiler_attach01`, `mod_attach_exhaust_lr` / `_rr`); `2b490ab7`
@@ -180,7 +180,7 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     `attachBoneId`, offset, `spawnDistance`) is a **prop set attachment**,
     not a body: its name matches a small entity-list resource in the levels
     archive (struct `35abc248` plus entity entries of litter, tools,
-    boxes). A part reaches it through an `8f58f964` {name, `2850d1b3` =
+    boxes). A part reaches it through an `8f58f964` {name, `2850d1b3` (`propset`) =
     attachment name} modifier.
   - *This revises the material-set bullet below, where 71 of one car's 75
     part-list names were found in no vehicle resource: many of them are
@@ -199,7 +199,7 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     7,908 occurrences across packs, 1,611 in `data.rpf`).
   - The data hashes are defined in a **companion 0x7a resource** per
     vehicle: 41 × `b07176ab` (one per `44cc9d8c`; each with `09bd7c2c`, 32 ×
-    `fe88b23d` {`c6a46bcd` hash, floats}, three lists of `825d57ab`, a list
+    `fe88b23d` {`c6a46bcd` (`componentName`) hash, floats}, three lists of `825d57ab`, a list
     `fc07418c` and two 64-bit values); three tables of exactly 256 entries
     (`f5908771`: six hashes and three 16-byte fields that look like half
     floats; `b5feb11f`; `3d9aef8b`); 3,936 `825d57ab` (41 × 96), 1,312
@@ -403,8 +403,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     vehicle packs (4 plate strings in the one vehicle checked).
   - **Binding** `501ff112` (medium-high): `662d9b79` group, `178cc382`
     channel, `1470edc0` priority and six flags, of which `c8d27281` =
-    colour and `7a84e7bf` = surface (`75939b79`, `db4bdec4`, `e2e82803`,
-    `a1f60489` not understood). **Assignment** `b94308f5`: `ca2065a9`
+    colour and `7a84e7bf` = surface (`75939b79`, `db4bdec4` (`paintType`),
+    `e2e82803` (`windowTint`), `a1f60489` not understood). **Assignment** `b94308f5`: `ca2065a9`
     channel, `2c89a8d2` colour record (`f1379639`), `7a84e7bf` surface
     record (`9e4de959`), plus `a8167b82`, `b2e15619`, `43394f02`. Applying
     bindings in priority order gives sensible results on four vehicles.
@@ -604,7 +604,7 @@ Liveries are **brand variations** that place stickers on named layouts.
 - One of its parts, in slot `livery` (`805d8f10`) and with no model
   elements, lists sticker entries in its modifier list (`61e1e572`).
 - **Sticker entry** `86cdf3df`: `sticker` (name of a sticker record),
-  `layout` (a name), `b13f2c2f` (a name), `1903684e` (2 values seen),
+  `layout` (a name), `b13f2c2f` (a name, probably `preset`), `1903684e` (2 values seen),
   `stickerPack` (0 in all seen), five bools and one float.
 - **Sticker record** `ed9cf5df` (5,650 in the vehicle library): `3950a760`
   a 64-bit texture id (4,758 distinct; three tested are in the vehicle

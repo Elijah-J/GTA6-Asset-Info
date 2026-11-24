@@ -263,8 +263,8 @@ directly; detile as for a zlib chunk.
   Refits of slots 33, 48, 73, 120, 159, 166, 194, 208 and 222 pass both
   tests (fewer violations on held-out chunks, 28,387 → 907 in the sample;
   error against plain child mips 11.6 % lower, at least 30 reference
-  blocks each; medium-high). Their values will be added once they are
-  final. 31 more slots moved in the fit but failed a test (no plain
+  blocks each; medium-high). Their values replace the third-party ones
+  in [§6A.2](06a-bcpack-tables.md#6a2-bc1-preset-slots), marked `*`. 31 more slots moved in the fit but failed a test (no plain
   reference, or higher reference error; probably real cut-out textures),
   among them 192, 127 and 152; their true values are unknown.
 
@@ -607,7 +607,9 @@ mip 3 under a mip 1 with a logo), so they cannot be scored.
   index presets (256 × 16, 4-bit); the BC7 header table (285 (E, O) pairs
   to mode, partition, rotation and index selection), endpoint presets
   (256 slots × 3 subsets × 2 endpoints × RGBA, 8-bit) and index presets
-  (256 × 2 sets × 16, 4-bit). **Published** (2026-11-23) in
+  (256 × 2 sets × 16, 4-bit). **Published** (2026-11-23; BC3, BC4, BC5
+  and BC7 revised 2026-11-24 under the exact rules above, with the same
+  slots fitted) in
   [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables) and
   [`data/bcpack-fitted-tables.json`](data/bcpack-fitted-tables.json).
   Slots fitted: BC3 35 of 256, BC4 172, BC5 214, BC6H endpoints 226 and

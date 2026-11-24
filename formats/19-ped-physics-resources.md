@@ -180,6 +180,18 @@ box; strand continuity has a median of 100 % per groom (40 grooms are under
 expected. Bone hashes are lower-case joaat: the named fragment skeletons
 and head drawables name 97.4 % of the 391,179 bone references.
 
+**Grooms in other archives** (2026-11-23, confirmed by scan):
+`pack/core_restofworld` holds 36 grooms in 13 pieces, all rooted at the
+pelvis (z about −0.1). There are none in `pack/story000` (20 GB, 41,799
+unnamed objects scanned), `story000_restofworld`, `core_restofworld001`,
+`shared_minigame000` or `data.rpf`; `levels.rpf` was not scanned to the
+end. `player_story000_00`'s assets list 58 distinct hair piece ids, but its
+block of `packs.rpf` (between the leg-hair pieces and
+`player_story000_01`'s) holds about 24 pieces: brows, a bob (3 assets), a
+buzzcut, two pixie cuts and lashes. Its four ponytail assets (6, 8, 8 and 7
+pieces) have no files in any scanned archive (confirmed by count; inferred
+that the files are not in this install).
+
 **LODs (inferred):** neighbouring resources often hold the same groom
 with fewer strands. Where several resources in a row share the stored
 second box, S falls strictly from one to the next in 1,201 of 1,266
